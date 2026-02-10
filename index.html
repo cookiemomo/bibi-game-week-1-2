@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>鼻鼻養成闖關｜Week 1-2 研究版</title>
+  <title>鼻鼻養成闖關｜Week 1-2 最終修復版</title>
   <style>
     /* ===== 核心變數 ===== */
     :root{
@@ -229,7 +229,10 @@
         </div>
         
         <div class="bibi-container" onclick="pokeBibi()">
-           <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Martina&eyes=happy&eyebrows=default&mouth=smile&top=longHairCurvy&hairColor=4a312c&skinColor=f5d0c5&clothing=shirtCrewNeck" class="bibi-img" id="mainBibi">
+           <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Martina&eyes=happy&eyebrows=default&mouth=smile&top=longHairCurvy&hairColor=4a312c&skinColor=f5d0c5&clothing=shirtCrewNeck" 
+                class="bibi-img" 
+                id="mainBibi"
+                onerror="this.src='https://placehold.co/220x220/ffdfbf/4a312c?text=BIBI'">
            <div class="bibiMood" id="mood">👋</div>
         </div>
 
@@ -370,10 +373,11 @@
 </div>
 
 <script>
-// ⚠️ 已經填入妳的正確網址 (Mandy's Script)
+// ⚠️ 這是妳的資料收集網址
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWT_39e3ev68nMQhniLyBIGgkD-gqqBUGiWJ_6uAuAR7ILTwRKbPDTrXy3rcR_EMQbNw/exec"; 
 
-const DB_KEY = "bibi_final_v19_research";
+// ⚠️ 重要：我改了這個 Key，這會強制瀏覽器把舊的壞資料丟掉，重新開始！
+const DB_KEY = "bibi_final_v20_fix";
 
 const W1_CARDS = [
   { id: 1, i:"🤧", t:"連續打噴嚏", d:"最近你有這樣嗎？" },
@@ -410,8 +414,17 @@ const W2_CLUES = {
   3: { t:"中醫觀點", d:"中醫用『體質』形容每個人反應不太一樣。", r:"原來不是每個人都一樣，只是反應不太一樣而已。", i:"🧘" }
 };
 
-let s = JSON.parse(localStorage.getItem(DB_KEY)||"{}");
+// 嘗試讀取存檔，如果出錯就重置
+let s = {};
+try {
+  s = JSON.parse(localStorage.getItem(DB_KEY)||"{}");
+} catch(e) {
+  s = {}; // 如果存檔壞了，就變回空物件
+}
+
+// 初始化預設值
 if(!s.hp) s = { hp:60, lv:1, exp:0, streak:0, w1s:false, w1d:false, w2s:false, w2d:false, nick:"" };
+
 function save(){ localStorage.setItem(DB_KEY, JSON.stringify(s)); render(); }
 
 let storyIdx = 0;
@@ -419,7 +432,6 @@ let curStory = null;
 let cardIdx = 0;
 let cluesFound = 0;
 let selectedActions = new Set();
-// 紀錄 Week 2 的回答
 let w2Answers = { q1:"", q2:"", q3:"" };
 
 function getW1Story() {
@@ -447,6 +459,11 @@ function render(){
     document.getElementById("w1-game-ui").classList.add("hidden");
     document.getElementById("w1-action-ui").classList.add("hidden");
     document.getElementById("w1-done").classList.remove("hidden");
+    // 如果 Week 1 完成了但沒在看故事，顯示預設對話
+    if (!curStory) {
+         document.getElementById("bubbleText").innerText = "你真棒！我們去 Week 2 看看吧！";
+         document.getElementById("mood").innerText = "😊";
+    }
   } else {
     document.getElementById("w2-lock").classList.remove("hidden");
   }
@@ -574,14 +591,13 @@ function submitActions() {
   setTimeout(() => { finishW1(choiceNames); }, 2000);
 }
 
-// 統一的資料傳送函數
+// 統一的資料傳送函數 (修復相容性)
 function sendData(type, payload) {
-  // 將資料整合
-  const finalData = {
+  // 使用 Object.assign 替代展開運算符，避免舊裝置報錯
+  const finalData = Object.assign({}, {
      nick: s.nick,
-     exp: s.exp,
-     ...payload // 展開傳入的資料 (action, w2_done, q1_ans...)
-  };
+     exp: s.exp
+  }, payload);
 
   fetch(GOOGLE_SCRIPT_URL, {
     method: 'POST',
