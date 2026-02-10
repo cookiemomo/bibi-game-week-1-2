@@ -53,7 +53,7 @@
     .bar{height:6px;background:rgba(0,0,0,.1);border-radius:4px;margin-top:4px;overflow:hidden}
     .bar>div{height:100%;background:var(--accent2);transition:width .3s}
 
-    /* 鼻鼻圖像 (使用 Emoji 替代，絕對不破圖) */
+    /* 鼻鼻圖像 (Emoji) */
     .bibi-container { 
       margin: auto; width: 220px; height: 220px; position: relative; cursor: pointer; 
       display: flex; align-items: center; justify-content: center;
@@ -160,9 +160,10 @@
     .room-container {
       position: relative; width: 100%; height: 300px;
       border-radius: 16px; margin-top: 10px; border: 4px solid #fff;
-      /* 房間背景改用 CSS 漸層，保證不破圖 */
-      background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-      box-shadow: inset 0 0 40px rgba(0,0,0,.1);
+      /* 1. 背景圖片回歸 (使用 Unsplash 穩定圖源) */
+      background-image: url('https://images.unsplash.com/photo-1616594039964-40891a909606?q=80&w=600&auto=format&fit=crop');
+      background-size: cover; background-position: center;
+      box-shadow: inset 0 0 40px rgba(0,0,0,.2);
       overflow: hidden;
     }
     
@@ -176,29 +177,42 @@
     .prop:hover { transform: scale(1.1); }
     .prop.found { filter: grayscale(1) opacity(0.5); transform: scale(0.9); }
     
-    /* A. 冷氣 (CSS 繪製) */
     .ac-unit {
       top: 20px; left: 30px; width: 80px; height: 35px;
-      background: #fff; border-radius: 6px; border: 1px solid #ddd;
+      background: rgba(255,255,255,0.9); border-radius: 6px; border: 1px solid #ddd;
       display: flex; align-items: flex-end; justify-content: center;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     .ac-vent { width: 80%; height: 4px; background: #333; margin-bottom: 6px; border-radius: 2px; }
 
-    /* B. 灰塵 (CSS 繪製) */
     .dust-monster {
       bottom: 30%; left: 20%; width: 40px; height: 40px;
-      background: #555; border-radius: 50%;
+      background: rgba(85,85,85,0.8); border-radius: 50%;
       animation: float 3s infinite ease-in-out;
-      display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;
+      display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;
     }
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 
-    /* C. 鼻鼻 (中醫符號 ☯️) */
     .bibi-room {
       bottom: 20px; right: 40px; font-size: 60px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.8);
     }
 
+    /* === 排行榜樣式 (Duolingo 風格) === */
+    .leader-list { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+    .leader-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px; border-radius: 16px; background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 2px solid transparent;
+    }
+    .leader-item.me { border-color: var(--accent); background: #fffdf5; }
+    .rank-num { font-weight: 900; color: var(--muted); width: 30px; text-align: center; }
+    .user-info { flex: 1; display: flex; align-items: center; gap: 10px; }
+    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .user-name { font-weight: 900; font-size: 14px; }
+    .user-exp { font-weight: bold; color: var(--good); }
+    .league-badge { text-align: center; margin-bottom: 15px; }
+    
     /* 通用元件 */
     .btn { background: var(--ink); color: #fff; width: 100%; padding: 14px; border-radius: 14px; border: 0; font-weight: 900; cursor: pointer; margin-top: 10px; }
     .btn-choice { background: #fff; width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(0,0,0,.1); margin-top: 8px; text-align: left; cursor: pointer; }
@@ -208,7 +222,6 @@
     .hidden { display: none !important; }
     .lock-overlay { position: absolute; inset: 0; background: rgba(255,255,255,.7); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; border-radius: 16px; color: var(--muted); font-weight: 900; }
     
-    /* 彈窗 */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: .3s; }
     .modal-overlay.show { opacity: 1; pointer-events: auto; }
     .modal-box { background: #fff; width: 90%; max-width: 380px; padding: 24px; border-radius: 24px; text-align: center; }
@@ -310,11 +323,9 @@
                <div class="ac-unit prop" id="prop-ac" onclick="findClue(1,this)" title="冷氣">
                  <div class="ac-vent"></div>
                </div>
-               
                <div class="dust-monster prop" id="prop-dust" onclick="findClue(2,this)" title="灰塵">
                  🌫️
                </div>
-               
                <div class="bibi-room prop" id="prop-bibi" onclick="findClue(3,this)" title="鼻鼻">
                  ☯️
                </div>
@@ -322,21 +333,18 @@
 
              <div class="hidden" id="w2-quiz-area" style="margin-top:20px">
                <div style="font-weight:900;margin-bottom:10px;color:var(--bg2)">鼻鼻想問問你...</div>
-               
                <div id="w2q1">
                  <div style="font-size:14px;margin-bottom:6px">1. 聽完這些，你比較接近哪種感覺？</div>
                  <button class="btn-choice" onclick="answerQ('q1','原來不是每個人都一樣...','w2q1','w2q2')">原來不是每個人都一樣容易鼻子不舒服</button>
                  <button class="btn-choice" onclick="answerQ('q1','沒想過','w2q1','w2q2')">我以前沒有特別想過這件事</button>
                  <button class="btn-choice" onclick="answerQ('q1','不確定','w2q1','w2q2')">我現在還不太確定</button>
                </div>
-               
                <div id="w2q2" class="hidden">
                  <div style="font-size:14px;margin-bottom:6px">2. 聽到「體質」這個說法，你會怎麼想？</div>
                  <button class="btn-choice" onclick="answerQ('q2','難懂','w2q2','w2q3')">好像有點難懂</button>
                  <button class="btn-choice" onclick="answerQ('q2','可解釋','w2q2','w2q3')">好像可以解釋一些狀況</button>
                  <button class="btn-choice" onclick="answerQ('q2','沒感覺','w2q2','w2q3')">暫時沒有什麼感覺</button>
                </div>
-               
                <div id="w2q3" class="hidden">
                  <div style="font-size:14px;margin-bottom:6px">3. 最後... 你現在比較怎麼想？</div>
                  <button class="btn-choice" onclick="answerQ('q3','鼻子不同','w2q3','DONE')">原來每個人的鼻子真的不太一樣</button>
@@ -350,8 +358,12 @@
         </div>
 
         <div class="pane" id="p-leader">
-           <div style="font-weight:900;margin-bottom:10px">同儕排行榜</div>
-           <table class="board"><tbody id="leaderBody"></tbody></table>
+           <div class="league-badge" id="badgeArea">
+             <div style="font-size:40px" id="badgeIcon">🥉</div>
+             <div style="font-weight:900;color:var(--accent)" id="badgeName">銅牌新秀</div>
+           </div>
+           <div id="leaderList" class="leader-list">
+             </div>
         </div>
 
       </div>
@@ -372,11 +384,10 @@
 </div>
 
 <script>
-// ⚠️ 妳的網址
+// ⚠️ 妳的資料收集網址
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWT_39e3ev68nMQhniLyBIGgkD-gqqBUGiWJ_6uAuAR7ILTwRKbPDTrXy3rcR_EMQbNw/exec"; 
 
-// ⚠️ 強制重置 Key，解決無法對話的問題
-const DB_KEY = "bibi_final_v21_emoji";
+const DB_KEY = "bibi_final_v22_leader"; 
 
 const W1_CARDS = [
   { id: 1, i:"🤧", t:"連續打噴嚏", d:"最近你有這樣嗎？" },
@@ -387,12 +398,11 @@ const W1_CARDS = [
   { id: 6, i:"🌅", t:"早上起床", d:"剛醒來時最嚴重？" }
 ];
 
-// 使用 Emoji 替代圖片 (2.床 3.口罩)
 const W1_ACTIONS = [
   { t:"少吃冰的", img:"🧊" },
-  { t:"定期洗床單", img:"🛏️" }, /* 2. 床 */
+  { t:"定期洗床單", img:"🛏️" },
   { t:"規律服藥", img:"💊" },
-  { t:"出門戴口罩", img:"😷" }, /* 3. 口罩 */
+  { t:"出門戴口罩", img:"😷" },
   { t:"少放絨毛娃娃", img:"🧸" },
   { t:"作息固定", img:"⏰" },
   { t:"保持運動", img:"🏃" },
@@ -414,15 +424,8 @@ const W2_CLUES = {
   3: { t:"中醫觀點", d:"中醫用『體質』形容每個人反應不太一樣。", r:"原來不是每個人都一樣，只是反應不太一樣而已。", i:"🧘" }
 };
 
-// 嘗試讀取存檔，如果出錯就重置
 let s = {};
-try {
-  s = JSON.parse(localStorage.getItem(DB_KEY)||"{}");
-} catch(e) {
-  s = {}; 
-}
-
-// 初始化預設值
+try { s = JSON.parse(localStorage.getItem(DB_KEY)||"{}"); } catch(e) { s = {}; }
 if(!s.hp) s = { hp:60, lv:1, exp:0, streak:0, w1s:false, w1d:false, w2s:false, w2d:false, nick:"" };
 
 function save(){ localStorage.setItem(DB_KEY, JSON.stringify(s)); render(); }
@@ -459,7 +462,6 @@ function render(){
     document.getElementById("w1-game-ui").classList.add("hidden");
     document.getElementById("w1-action-ui").classList.add("hidden");
     document.getElementById("w1-done").classList.remove("hidden");
-    // 自動恢復鼻鼻
     if (!curStory) {
          document.getElementById("mainBibi").innerText = "😊";
          document.getElementById("bubbleText").innerText = "你真棒！我們去 Week 2 看看吧！";
@@ -593,14 +595,9 @@ function submitActions() {
 }
 
 function sendData(type, payload) {
-  const finalData = Object.assign({}, {
-     nick: s.nick,
-     exp: s.exp
-  }, payload);
-
+  const finalData = Object.assign({}, { nick: s.nick, exp: s.exp }, payload);
   fetch(GOOGLE_SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors',
+    method: 'POST', mode: 'no-cors',
     body: JSON.stringify(finalData),
     headers: {'Content-Type': 'application/json'}
   }).then(() => console.log("Sent " + type)).catch(err => console.error(err));
@@ -609,13 +606,7 @@ function sendData(type, payload) {
 function finishW1(choiceNames){
   if(s.w1d) return;
   s.w1d = true; s.exp+=20; s.hp+=10; save();
-  
-  // 傳送 Week 1 資料
-  sendData("W1", {
-     action: choiceNames,
-     w2_done: "No"
-  });
-  
+  sendData("W1", { action: choiceNames, w2_done: "No" });
   document.getElementById("w1-action-ui").classList.add("hidden");
   document.getElementById("w1-done").classList.remove("hidden");
   renderStats();
@@ -643,10 +634,8 @@ function findClue(id, el){
 
 function answerQ(qid, ansText, hideId, showId){
    w2Answers[qid] = ansText;
-   
-   if(showId === 'DONE'){
-      finishW2();
-   } else {
+   if(showId === 'DONE'){ finishW2(); } 
+   else {
       document.getElementById(hideId).classList.add("hidden");
       document.getElementById(showId).classList.remove("hidden");
    }
@@ -655,14 +644,7 @@ function answerQ(qid, ansText, hideId, showId){
 function finishW2(){
   if(s.w2d) return;
   s.w2d = true; s.exp+=30; s.hp=100; s.lv++; save();
-  
-  sendData("W2", {
-     w2_done: "Yes",
-     q1_ans: w2Answers.q1,
-     q2_ans: w2Answers.q2,
-     q3_ans: w2Answers.q3
-  });
-  
+  sendData("W2", { w2_done: "Yes", q1_ans: w2Answers.q1, q2_ans: w2Answers.q2, q3_ans: w2Answers.q3 });
   alert("Week 2 完成！");
   document.getElementById("bubbleText").innerText = "謝謝你陪我一起想這些事情。";
   render();
@@ -688,9 +670,53 @@ function switchTab(t){
   }
 }
 
+// 2. 修正：動態段位顯示
 function renderLeader(){
-  const list = [{n:"阿龍",e:80},{n:"小美",e:60},{n:s.nick||"我",e:s.exp}].sort((a,b)=>b.e-a.e);
-  document.getElementById("leaderBody").innerHTML = list.map((x,i)=>`<tr><td>${i+1}</td><td>${x.n}</td><td>${x.e}</td></tr>`).join("");
+  const myName = s.nick || "我";
+  const myExp = s.exp;
+  
+  // 判斷段位
+  let rankName = "🥉 銅牌新秀";
+  let rankIcon = "🥉";
+  let rankColor = "#cd7f32"; // 銅色
+  
+  if(myExp >= 50) { 
+    rankName = "🥈 銀牌高手"; 
+    rankIcon = "🥈";
+    rankColor = "#c0c0c0"; // 銀色
+  }
+  if(myExp >= 100) { 
+    rankName = "💎 鑽石大師"; 
+    rankIcon = "💎";
+    rankColor = "#ff7a59"; // 鑽石色
+  }
+  
+  // 更新介面上的段位
+  document.getElementById("badgeIcon").innerText = rankIcon;
+  document.getElementById("badgeName").innerText = rankName;
+  document.getElementById("badgeName").style.color = rankColor;
+
+  // 建立虛擬名單
+  const fakeUsers = [
+    { n: "小傑", e: myExp + 15, a: "👦" },
+    { n: "阿豪", e: myExp + 5, a: "😎" },
+    { n: "Yumi", e: Math.max(0, myExp - 10), a: "👧" },
+    { n: "小美", e: Math.max(0, myExp - 25), a: "👱‍♀️" }
+  ];
+  
+  const myList = [...fakeUsers, { n: myName, e: myExp, a: "😊", me: true }];
+  myList.sort((a,b) => b.e - a.e);
+  
+  document.getElementById("leaderList").innerHTML = myList.map((u, i) => `
+    <div class="leader-item ${u.me ? 'me' : ''}">
+      <div class="rank-num">${i+1}</div>
+      <div class="user-info">
+        <div class="user-avatar">${u.a}</div>
+        <div class="user-name">${u.n}</div>
+      </div>
+      <div class="user-exp">${u.e} EXP</div>
+    </div>
+  `).join("");
 }
 
 function closeModal(){ document.getElementById("modal").classList.remove("show"); }
