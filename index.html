@@ -1,594 +1,1839 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>鼻鼻養成闖關｜Week 1-2 闖關地圖版</title>
-  <style>
-    /* ===== 核心變數 ===== */
-    :root{
-      --bg1:#2b1b14; --bg2:#7a4b2b;
-      --panel:#f4e2c8; --panel2:#f0d6b0;
-      --ink:#1a1412; --muted:#5b4b42;
-      --accent:#ffb23f; --accent2:#ff7a59;
-      --good:#1b7f4b; --bad:#b45309;
-      --round:18px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family:system-ui,-apple-system,"Microsoft JhengHei",sans-serif;
-      color:var(--ink); min-height:100vh;
-      background: radial-gradient(circle at 50% 10%, rgba(255,255,255,0.1), transparent), linear-gradient(155deg, var(--bg1), var(--bg2));
-      overflow-x: hidden; padding-bottom: 40px;
-    }
-    .wrap{max-width:480px;margin:0 auto;padding:16px;} /* 手機版型優化 */
-    
-    /* 頂部 */
-    .topbar{display:flex;justify-content:space-between;align-items:center;color:#fff;margin-bottom:20px;padding:0 10px;}
-    .brand{font-weight:900;font-size:20px;text-shadow:0 2px 4px rgba(0,0,0,0.2);}
-    .btnTiny{background:rgba(0,0,0,.2);color:#fff;border:1px solid rgba(255,255,255,.2);padding:6px 12px;border-radius:20px;cursor:pointer;font-size:12px;backdrop-filter:blur(4px);}
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>鼻鼻大冒險</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #fdf6ec;
+  --warm1: #fff3e0;
+  --warm2: #ffe0b2;
+  --brown: #5d3a1a;
+  --brown2: #8b5e3c;
+  --brown3: #c8956c;
+  --accent: #ff7043;
+  --accent2: #ffb300;
+  --accent3: #66bb6a;
+  --accent4: #42a5f5;
+  --pink: #f48fb1;
+  --muted: #9e8272;
+  --shadow: rgba(93,58,26,0.12);
+  --r: 18px;
+}
 
-    /* === 🗺️ 闖關地圖樣式 (Duolingo 風格) === */
-    .map-container {
-      display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 40px 0;
-      position: relative;
-    }
-    /* 連接線 */
-    .path-line {
-      position: absolute; top: 60px; bottom: 60px; width: 8px; background: rgba(255,255,255,0.2);
-      z-index: 0; border-radius: 4px;
-    }
-    
-    /* 關卡球 */
-    .level-node {
-      width: 90px; height: 90px; border-radius: 50%;
-      background: #fff; border-bottom: 6px solid #e0e0e0;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      position: relative; z-index: 2; cursor: pointer;
-      transition: transform .1s;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    .level-node:active { transform: translateY(4px); border-bottom-width: 2px; }
-    
-    /* 狀態顏色 */
-    .level-node.locked { filter: grayscale(1); opacity: 0.7; cursor: not-allowed; }
-    .level-node.active { background: var(--accent); border-color: #e59400; animation: pulse 2s infinite; }
-    .level-node.done { background: var(--good); border-color: #145e35; color: #fff; }
-    .level-node.done::after { content:"👑"; position:absolute; top:-15px; right:-10px; font-size:30px; animation: bounce 1s infinite; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-    .level-icon { font-size: 36px; margin-bottom: 4px; }
-    .level-title { 
-      position: absolute; bottom: -30px; width: 140px; text-align: center;
-      font-weight: 900; color: #fff; font-size: 14px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      background: rgba(0,0,0,0.2); padding: 4px; border-radius: 10px;
-    }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--cream);
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
+  user-select: none;
+}
 
-    /* 獎盃按鈕 */
-    .trophy-btn {
-      width: 70px; height: 70px; border-radius: 50%; background: #fff;
-      display: flex; align-items: center; justify-content: center; font-size: 30px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 4px solid var(--accent2);
-      cursor: pointer; position: relative; z-index: 2; margin-top: 20px;
-    }
+/* ── APP SHELL ── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
 
-    @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(255,178,63,0.7)} 70%{box-shadow:0 0 0 15px rgba(255,178,63,0)} 100%{box-shadow:0 0 0 0 rgba(255,178,63,0)} }
-    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+/* ── PAGES ── */
+.page {
+  display: none;
+  flex: 1;
+  overflow-y: auto;
+  background: var(--cream);
+}
+.page.active { display: block; animation: pageIn .25s ease; }
+@keyframes pageIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 
-    /* === 遊戲內容容器 (原本的 Card) === */
-    .game-view {
-      position: fixed; inset: 0; background: linear-gradient(180deg, var(--panel), var(--panel2));
-      z-index: 100; overflow-y: auto; display: none; padding: 20px;
-    }
-    .game-view.show { display: block; animation: slideUp .3s; }
-    @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+/* ── TOP STATUS BAR ── */
+.statusbar {
+  background: var(--brown);
+  color: #fff;
+  padding: 12px 20px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.status-left { display: flex; align-items: center; gap: 10px; }
+.avatar-sm { width: 36px; height: 36px; border-radius: 50%; background: var(--warm2); display: flex; align-items: center; justify-content: center; font-size: 20px; border: 2px solid rgba(255,255,255,0.3); }
+.greeting { font-size: 13px; opacity: .75; }
+.username { font-size: 15px; font-weight: 900; line-height: 1.2; }
+.status-right { display: flex; align-items: center; gap: 10px; }
+.pill-stat {
+  background: rgba(255,255,255,0.15);
+  border-radius: 20px; padding: 5px 12px;
+  display: flex; align-items: center; gap: 5px;
+  font-size: 13px; font-weight: 800;
+}
 
-    .nav-header { display: flex; align-items: center; margin-bottom: 20px; }
-    .btn-back { background: none; border: none; font-size: 24px; cursor: pointer; margin-right: 15px; }
-    .view-title { font-weight: 900; font-size: 18px; color: var(--ink); }
+/* ── BOTTOM TAB BAR ── */
+.tabbar {
+  background: #fff;
+  border-top: 1.5px solid rgba(0,0,0,0.06);
+  display: flex;
+  flex-shrink: 0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+}
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 4px 12px;
+  cursor: pointer;
+  gap: 4px;
+  position: relative;
+  transition: all .15s;
+}
+.tab-icon { font-size: 22px; transition: transform .2s; }
+.tab-label { font-size: 10px; font-weight: 800; color: #bbb; transition: color .15s; }
+.tab.active .tab-icon { transform: scale(1.15); }
+.tab.active .tab-label { color: var(--accent); }
+.tab.active::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 20%; right: 20%;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 0 0 4px 4px;
+}
+.tab-badge {
+  position: absolute; top: 8px; right: calc(50% - 18px);
+  width: 16px; height: 16px;
+  background: var(--accent);
+  border-radius: 50%;
+  font-size: 9px; font-weight: 900; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+}
 
-    /* 以下保留原本的遊戲樣式 */
-    .charStage{
-      padding:14px; min-height:480px; margin-bottom: 15px;
-      background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.2));
-      display: flex; flex-direction: column; position: relative; border-radius: 18px;
-    }
-    .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
-    .statBox{background:rgba(255,255,255,.6);border-radius:12px;padding:8px;}
-    .statName{font-size:11px;color:var(--muted);font-weight:900}
-    .statVal{font-size:15px;font-weight:900;}
-    .bar{height:6px;background:rgba(0,0,0,.1);border-radius:4px;margin-top:4px;overflow:hidden}
-    .bar>div{height:100%;background:var(--accent2);transition:width .3s}
+/* ─────────────────────────────
+   PAGE: HOME
+───────────────────────────── */
+.home-header {
+  background: linear-gradient(160deg, var(--brown) 0%, var(--brown2) 100%);
+  padding: 20px 20px 50px;
+  position: relative;
+  overflow: hidden;
+}
+.home-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0; height: 40px;
+  background: var(--cream);
+  border-radius: 50% 50% 0 0 / 40px 40px 0 0;
+}
+.home-title { font-size: 22px; font-weight: 900; color: #fff; }
+.home-subtitle { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 3px; }
+.hero-emoji {
+  position: absolute; right: 20px; bottom: 10px;
+  font-size: 72px;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+  animation: heroFloat 3s ease-in-out infinite;
+}
+@keyframes heroFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 
-    .bibi-container { margin: auto; width: 180px; height: 180px; position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .bibi-emoji { font-size: 100px; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.15)); transition: transform .1s; }
-    .bibi-emoji:active { transform: scale(0.95); }
-    .bibiMood { position: absolute; bottom: 0; right: 0; font-size: 32px; background: #fff; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+/* Daily streak */
+.streak-card {
+  margin: -10px 16px 0;
+  background: #fff;
+  border-radius: var(--r);
+  padding: 16px 18px;
+  box-shadow: 0 4px 20px var(--shadow);
+  display: flex; align-items: center; gap: 14px;
+  position: relative; z-index: 2;
+}
+.streak-fire { font-size: 36px; animation: firePulse 1.5s infinite; }
+@keyframes firePulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+.streak-info { flex: 1; }
+.streak-days { font-size: 24px; font-weight: 900; color: var(--accent); }
+.streak-label { font-size: 12px; color: var(--muted); font-weight: 700; }
+.streak-dots { display: flex; gap: 6px; margin-top: 6px; }
+.streak-dot { width: 28px; height: 28px; border-radius: 50%; background: #f0e8e0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #bbb; }
+.streak-dot.done { background: var(--accent); color: #fff; }
+.streak-dot.today { background: var(--accent2); color: #fff; border: 2px solid #fff; box-shadow: 0 0 0 2px var(--accent2); }
 
-    .bubble { margin-top: auto; background: #fff; border: 2px solid var(--ink); border-radius: 18px; padding: 16px; position: relative; min-height: 110px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-    .bubble::after { content: ""; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); border-width: 0 10px 10px; border-style: solid; border-color: transparent transparent var(--ink); }
-    .bubbleText { font-size: 15px; line-height: 1.5; font-weight: 500; white-space: pre-line; color: var(--ink); }
-    .btnNext { align-self: flex-end; background: var(--ink); color: #fff; border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; margin-top: 8px; animation: bounce 1s infinite; }
+/* Section header */
+.sec-head {
+  padding: 20px 18px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sec-title { font-size: 16px; font-weight: 900; color: var(--brown); }
+.sec-more { font-size: 12px; color: var(--accent); font-weight: 800; cursor: pointer; }
 
-    /* W1/W2/Leaderboard 內容樣式 */
-    .tinder-container { position: relative; width: 100%; height: 320px; margin: 10px auto; display: flex; align-items: center; justify-content: center; }
-    .tinder-card { position: absolute; width: 260px; height: 320px; background: #fff; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; border: 1px solid rgba(0,0,0,0.05); transition: transform .4s, opacity .4s; z-index: 2; }
-    .tinder-card.swipe-left { transform: translateX(-150%) rotate(-20deg); opacity: 0; }
-    .tinder-card.swipe-right { transform: translateX(150%) rotate(20deg); opacity: 0; }
-    .tc-icon { font-size: 64px; margin-bottom: 20px; }
-    .tc-title { font-size: 20px; font-weight: 900; margin-bottom: 10px; }
-    .tc-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
-    .swipe-actions { display: flex; justify-content: center; gap: 30px; margin-top: 10px; }
-    .btn-round { width: 60px; height: 60px; border-radius: 50%; border: 0; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.1); background: #fff; }
-    .btn-no { color: var(--bad); border: 2px solid #eee; } .btn-yes { color: var(--good); border: 2px solid #eee; }
+/* Continue learning card */
+.continue-card {
+  margin: 0 16px;
+  background: linear-gradient(135deg, var(--accent) 0%, #ff8a65 100%);
+  border-radius: var(--r);
+  padding: 18px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(255,112,67,0.35);
+  transition: transform .15s;
+}
+.continue-card:active { transform: scale(0.98); }
+.continue-icon { font-size: 44px; }
+.continue-info { flex: 1; }
+.continue-tag { font-size: 10px; background: rgba(255,255,255,0.25); color: #fff; padding: 3px 10px; border-radius: 20px; font-weight: 800; display: inline-block; margin-bottom: 5px; }
+.continue-title { font-size: 17px; font-weight: 900; color: #fff; }
+.continue-sub { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 3px; }
+.continue-prog { height: 5px; background: rgba(255,255,255,0.3); border-radius: 3px; margin-top: 8px; }
+.continue-prog-bar { height: 100%; background: #fff; border-radius: 3px; transition: width .5s; }
+.continue-arrow { font-size: 20px; color: #fff; }
 
-    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 380px; overflow-y: auto; padding: 4px; }
-    .action-card { background: #fff; border-radius: 12px; border: 2px solid transparent; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 15px; text-align: center; }
-    .action-card.selected { border-color: var(--good); background-color: rgba(27, 127, 75, 0.05); }
-    .action-emoji { font-size: 40px; margin-bottom: 8px; }
-    .action-text { font-size: 13px; font-weight: bold; }
+/* Quick actions */
+.quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 0 16px;
+}
+.quick-card {
+  background: #fff;
+  border-radius: var(--r);
+  padding: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px var(--shadow);
+  transition: transform .15s;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.quick-card:active { transform: scale(0.97); }
+.quick-icon { font-size: 32px; }
+.quick-label { font-size: 13px; font-weight: 900; color: var(--brown); }
+.quick-desc { font-size: 11px; color: var(--muted); }
 
-    .room-container { position: relative; width: 100%; height: 300px; border-radius: 16px; margin-top: 10px; border: 4px solid #fff; background-image: url('https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800&auto=format&fit=crop'); background-size: cover; background-position: center; box-shadow: inset 0 0 40px rgba(0,0,0,.2); overflow: hidden; }
-    .prop { position: absolute; cursor: pointer; transition: transform 0.2s, filter 0.2s; z-index: 10; display: flex; flex-direction: column; align-items: center; }
-    .prop:hover { transform: scale(1.1); } .prop.found { filter: grayscale(1) opacity(0.5); transform: scale(0.9); }
-    .ac-unit { top: 20px; left: 30px; width: 80px; height: 35px; background: rgba(255,255,255,0.95); border-radius: 6px; border: 1px solid #ddd; display: flex; align-items: flex-end; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .ac-vent { width: 80%; height: 4px; background: #333; margin-bottom: 6px; border-radius: 2px; }
-    .dust-monster { bottom: 30%; left: 20%; width: 40px; height: 40px; background: rgba(85,85,85,0.8); border-radius: 50%; animation: float 3s infinite ease-in-out; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
-    .bibi-room { bottom: 20px; right: 40px; font-size: 60px; text-shadow: 0 0 10px rgba(255,255,255,0.8); }
+/* HP widget */
+.hp-card {
+  margin: 0 16px;
+  background: #fff;
+  border-radius: var(--r);
+  padding: 16px 18px;
+  box-shadow: 0 2px 10px var(--shadow);
+  display: flex; align-items: center; gap: 14px;
+}
+.hp-emoji { font-size: 44px; }
+.hp-info { flex: 1; }
+.hp-label { font-size: 11px; font-weight: 900; color: var(--muted); }
+.hp-value { font-size: 22px; font-weight: 900; color: var(--brown); }
+.hp-bar-wrap { height: 8px; background: #f0e8e0; border-radius: 4px; margin-top: 4px; }
+.hp-bar { height: 100%; background: linear-gradient(90deg, #ef5350, #ff8a65); border-radius: 4px; transition: width .5s; }
+.lv-info { text-align: right; }
+.lv-num { font-size: 22px; font-weight: 900; color: var(--accent2); }
+.lv-label { font-size: 10px; color: var(--muted); font-weight: 700; }
 
-    .leader-list { width: 100%; display: flex; flex-direction: column; gap: 8px; }
-    .leader-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 16px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-    .leader-item.me { border: 2px solid var(--accent); background: #fffdf5; }
-    .rank-num { font-weight: 900; color: var(--muted); width: 30px; text-align: center; }
-    .user-info { flex: 1; display: flex; align-items: center; gap: 10px; }
-    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-    .user-name { font-weight: 900; font-size: 14px; }
-    .user-exp { font-weight: bold; color: var(--good); }
-    .league-badge { text-align: center; margin-bottom: 15px; }
+/* Tips */
+.tip-scroll { display: flex; gap: 12px; padding: 0 16px; overflow-x: auto; scrollbar-width: none; }
+.tip-scroll::-webkit-scrollbar { display: none; }
+.tip-card {
+  flex-shrink: 0; width: 160px;
+  background: #fff;
+  border-radius: var(--r);
+  padding: 14px;
+  box-shadow: 0 2px 10px var(--shadow);
+}
+.tip-emoji { font-size: 28px; margin-bottom: 6px; }
+.tip-text { font-size: 12px; color: var(--brown); font-weight: 700; line-height: 1.5; }
 
-    .btn { background: var(--ink); color: #fff; width: 100%; padding: 14px; border-radius: 14px; border: 0; font-weight: 900; cursor: pointer; margin-top: 10px; }
-    .btn-choice { background: #fff; width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(0,0,0,.1); margin-top: 8px; text-align: left; cursor: pointer; }
-    
-    .hidden { display: none !important; }
-    .nick-input-area { display: flex; gap: 8px; margin-top: 10px; }
-    .nick-input { flex: 1; padding: 8px 12px; border: 2px solid var(--accent); border-radius: 12px; font-size: 14px; outline: none; }
-    .btn-confirm { background: var(--good); color: #fff; border: none; padding: 8px 14px; border-radius: 12px; font-weight: bold; cursor: pointer; }
-    
-    /* 彈窗 */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: .3s; }
-    .modal-overlay.show { opacity: 1; pointer-events: auto; }
-    .modal-box { background: #fff; width: 90%; max-width: 380px; padding: 24px; border-radius: 24px; text-align: center; }
-  </style>
+/* ─────────────────────────────
+   PAGE: MAP
+───────────────────────────── */
+.map-header {
+  background: linear-gradient(160deg, #1a6b3a 0%, #2d8a4e 100%);
+  padding: 20px 20px 50px;
+  position: relative;
+  overflow: hidden;
+}
+.map-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0; height: 40px;
+  background: var(--cream);
+  border-radius: 50% 50% 0 0 / 40px 40px 0 0;
+}
+.map-title { font-size: 22px; font-weight: 900; color: #fff; }
+.map-subtitle { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 3px; }
+.map-hero { position: absolute; right: 16px; bottom: 8px; font-size: 64px; }
+
+.chapter-wrap { padding: 10px 16px 20px; }
+.chapter-title {
+  font-size: 12px; font-weight: 900; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin: 20px 0 10px;
+}
+
+/* Level node */
+.level-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; position: relative; }
+.level-row::before {
+  content: '';
+  position: absolute;
+  left: 28px; top: 56px;
+  width: 4px; height: 20px;
+  background: #e0d5ca;
+  border-radius: 2px;
+}
+.level-row:last-child::before { display: none; }
+
+.level-btn {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  border: 4px solid transparent;
+  cursor: pointer;
+  transition: transform .15s;
+  flex-shrink: 0;
+  position: relative;
+}
+.level-btn:active { transform: scale(0.92); }
+.level-btn.done { background: var(--accent3); border-color: #43a047; box-shadow: 0 4px 12px rgba(102,187,106,0.4); }
+.level-btn.active { background: var(--accent); border-color: #e64a19; box-shadow: 0 4px 18px rgba(255,112,67,0.5); animation: nodePulse 2s infinite; }
+.level-btn.locked { background: #e0d5ca; border-color: #ccc; filter: grayscale(.5); cursor: not-allowed; }
+@keyframes nodePulse { 0%,100%{box-shadow:0 4px 18px rgba(255,112,67,0.5)} 50%{box-shadow:0 4px 28px rgba(255,112,67,0.8)} }
+.level-check { position: absolute; bottom: -2px; right: -2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+
+.level-info { flex: 1; background: #fff; border-radius: 14px; padding: 12px 14px; box-shadow: 0 2px 8px var(--shadow); cursor: pointer; }
+.level-info.locked-info { opacity: .6; cursor: not-allowed; }
+.level-name { font-size: 14px; font-weight: 900; color: var(--brown); }
+.level-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.level-stars { font-size: 14px; margin-top: 4px; }
+
+/* ─────────────────────────────
+   PAGE: LEARN (game view)
+───────────────────────────── */
+.learn-header {
+  background: #fff;
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  border-bottom: 1.5px solid rgba(0,0,0,0.06);
+  flex-shrink: 0;
+}
+.btn-back {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--warm1); border: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; cursor: pointer;
+}
+.learn-title { font-size: 15px; font-weight: 900; color: var(--brown); flex: 1; }
+.xp-badge { background: var(--accent2); color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 900; }
+
+.progress-bar-wrap { height: 8px; background: #f0e8e0; margin: 0; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 0 4px 4px 0; transition: width .4s ease; }
+
+/* char stage */
+.char-stage {
+  background: linear-gradient(135deg, rgba(255,243,224,0.8), rgba(255,255,255,0.9));
+  margin: 16px;
+  border-radius: var(--r);
+  padding: 16px;
+  position: relative;
+  border: 2px solid rgba(255,255,255,0.8);
+  box-shadow: 0 4px 20px var(--shadow);
+}
+.char-bibi { text-align: center; font-size: 80px; margin: 10px 0; animation: heroFloat 3s ease-in-out infinite; cursor: pointer; transition: transform .1s; }
+.char-bibi:active { transform: scale(0.9); }
+.mood-badge { position: absolute; bottom: 20px; right: 20px; background: #fff; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+/* bubble */
+.bubble-box {
+  margin: 0 16px;
+  background: #fff;
+  border-radius: var(--r);
+  border: 2px solid var(--warm2);
+  padding: 16px;
+  box-shadow: 0 4px 15px var(--shadow);
+  position: relative;
+}
+.bubble-box::before {
+  content: '';
+  position: absolute;
+  top: -10px; left: 30px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 10px solid var(--warm2);
+}
+.bubble-box::after {
+  content: '';
+  position: absolute;
+  top: -7px; left: 32px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 8px solid #fff;
+}
+.bubble-speaker { font-size: 11px; font-weight: 900; color: var(--brown3); margin-bottom: 6px; }
+.bubble-text { font-size: 14px; line-height: 1.65; color: var(--brown); white-space: pre-line; }
+.btn-next {
+  display: flex; align-items: center; gap: 6px;
+  margin-left: auto; margin-top: 10px;
+  background: var(--brown); color: #fff;
+  border: none; border-radius: 20px; padding: 7px 16px;
+  font-size: 12px; font-weight: 900; cursor: pointer;
+  animation: bounceRight 1s infinite;
+  font-family: 'Nunito', sans-serif;
+}
+@keyframes bounceRight { 0%,100%{transform:translateX(0)} 50%{transform:translateX(3px)} }
+
+/* nick input */
+.nick-row { display: flex; gap: 8px; margin-top: 10px; }
+.nick-input { flex: 1; padding: 9px 12px; border: 2px solid var(--warm2); border-radius: 12px; font-size: 14px; outline: none; font-family: 'Nunito', sans-serif; background: var(--warm1); }
+.nick-input:focus { border-color: var(--accent); }
+.btn-confirm { background: var(--accent3); color: #fff; border: none; padding: 9px 16px; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 13px; font-family: 'Nunito', sans-serif; }
+
+/* content area */
+.content-area { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+/* ── TINDER CARDS ── */
+.tinder-wrap { position: relative; height: 240px; display: flex; align-items: center; justify-content: center; }
+.tinder-card {
+  position: absolute;
+  width: 210px; min-height: 220px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 12px 30px var(--shadow);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 20px; text-align: center;
+  transition: transform .4s, opacity .4s;
+  z-index: 2;
+}
+.tinder-card.bg2 { z-index: 1; transform: scale(0.93) translateY(10px); background: #fffbf6; }
+.tinder-card.swipe-left { transform: translateX(-150%) rotate(-25deg) !important; opacity: 0; }
+.tinder-card.swipe-right { transform: translateX(150%) rotate(25deg) !important; opacity: 0; }
+.tc-emoji { font-size: 48px; margin-bottom: 12px; }
+.tc-title { font-size: 16px; font-weight: 900; color: var(--brown); margin-bottom: 6px; }
+.tc-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.swipe-hint { text-align: center; font-size: 11px; color: var(--muted); font-weight: 700; }
+.swipe-btns { display: flex; justify-content: center; gap: 24px; }
+.swipe-btn {
+  width: 52px; height: 52px; border-radius: 50%; border: 3px solid;
+  background: #fff; font-size: 22px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 4px 15px var(--shadow);
+  transition: transform .15s;
+}
+.swipe-btn:active { transform: scale(0.9); }
+.swipe-no { border-color: #ef5350; color: #ef5350; }
+.swipe-yes { border-color: var(--accent3); color: var(--accent3); }
+
+/* ── COMPARE ── */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.compare-card {
+  background: #fff;
+  border-radius: var(--r);
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  border: 3px solid transparent;
+  box-shadow: 0 2px 10px var(--shadow);
+  transition: all .2s;
+}
+.compare-card.selected { border-color: var(--accent); background: #fff8f0; transform: scale(1.03); }
+.cc-title { font-weight: 900; font-size: 15px; margin-bottom: 8px; }
+.cc-list { font-size: 12px; color: var(--muted); line-height: 1.8; }
+
+/* ── ACTION GRID ── */
+.action-list { display: flex; flex-direction: column; gap: 10px; }
+.action-item {
+  background: #fff;
+  border-radius: 14px;
+  border: 3px solid transparent;
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: all .15s;
+}
+.action-item.selected { border-color: var(--accent); background: #fff8f0; }
+.action-item-icon { font-size: 32px; width: 38px; text-align: center; }
+.action-item-text { font-size: 14px; font-weight: 900; color: var(--brown); }
+.action-item-desc { font-size: 11px; color: var(--muted); }
+
+/* ── SHIELD SECTION ── */
+.shield-center {
+  background: #fff;
+  border-radius: var(--r);
+  padding: 24px 20px;
+  text-align: center;
+  box-shadow: 0 2px 10px var(--shadow);
+}
+.shield-icon { font-size: 72px; margin-bottom: 10px; }
+.shield-title { font-size: 18px; font-weight: 900; color: var(--brown); margin-bottom: 10px; }
+.shield-desc { font-size: 13px; color: var(--muted); line-height: 1.7; text-align: left; }
+
+/* ── ROOM SCENE ── */
+.room-wrap {
+  position: relative;
+  height: 240px;
+  background: linear-gradient(160deg, #87ceeb 0%, #b0e0e6 40%, #c8e6c9 40%, #a5d6a7 100%);
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 3px solid #fff;
+}
+.room-floor { position: absolute; bottom: 0; left: 0; right: 0; height: 50px; background: linear-gradient(#d7ccc8, #bcaaa4); }
+.room-wall { position: absolute; bottom: 50px; left: 0; right: 0; top: 0; background: linear-gradient(160deg, #fff9f0 0%, #ffe0cc 100%); }
+.room-item { position: absolute; cursor: pointer; transition: all .2s; }
+.room-item:hover { transform: scale(1.1); }
+.room-item.found { opacity: .4; filter: grayscale(1); pointer-events: none; }
+.ri-label {
+  position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+  font-size: 10px; font-weight: 900; color: var(--brown); white-space: nowrap;
+  background: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 8px;
+}
+
+/* ── ACU STAGE ── */
+.acu-wrap {
+  background: #fff;
+  border-radius: var(--r);
+  padding: 16px;
+  box-shadow: 0 2px 10px var(--shadow);
+}
+.acu-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.acu-name { font-size: 18px; font-weight: 900; color: var(--brown); }
+.acu-count { font-size: 12px; font-weight: 800; color: var(--muted); background: var(--warm1); padding: 4px 10px; border-radius: 20px; }
+.acu-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; white-space: pre-line; }
+.acu-stage-box {
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  background: #fffcf8;
+  border-radius: 30px;
+  position: relative;
+  border: 4px solid var(--warm2);
+}
+.acu-stage-box svg { width: 100%; height: 100%; }
+.acu-pt {
+  position: absolute;
+  width: 34px; height: 34px;
+  background: rgba(255,87,87,0.35);
+  border: 2.5px solid #ff5757;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  transform: translate(-50%,-50%);
+  transition: transform .15s;
+  z-index: 10;
+}
+.acu-pt::after {
+  content: '';
+  position: absolute; inset: -5px;
+  border-radius: 50%;
+  border: 3px solid #ffb7c5;
+  animation: ripple 1.5s infinite;
+}
+@keyframes ripple { 0%{transform:scale(.8);opacity:1} 100%{transform:scale(1.6);opacity:0} }
+.acu-pt.pt-done { background: rgba(102,187,106,0.5); border-color: var(--accent3); }
+.acu-pt.pt-done::after { border-color: var(--accent3); }
+.hold-ring {
+  position: absolute; inset: -6px;
+  border-radius: 50%; border: 4px solid #f0f0f0;
+  border-top-color: var(--accent3); opacity: 0;
+}
+.acu-pt.pressing .hold-ring { opacity: 1; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.press-hint {
+  text-align: center; font-size: 12px; font-weight: 800;
+  color: var(--accent); margin-top: 10px;
+  padding: 8px; background: var(--warm1); border-radius: 10px;
+}
+
+/* ── DONE SCREEN ── */
+.done-screen {
+  background: #fff;
+  border-radius: var(--r);
+  padding: 30px 24px;
+  text-align: center;
+  box-shadow: 0 4px 20px var(--shadow);
+}
+.done-icon { font-size: 64px; margin-bottom: 10px; }
+.done-title { font-size: 22px; font-weight: 900; color: var(--accent3); margin-bottom: 6px; }
+.done-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+.xp-reward {
+  background: linear-gradient(135deg, var(--accent2), #ff8a00);
+  color: #fff; border-radius: 14px; padding: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-size: 18px; font-weight: 900; margin-bottom: 16px;
+}
+
+/* ─────────────────────────────
+   PAGE: PROFILE
+───────────────────────────── */
+.profile-header {
+  background: linear-gradient(160deg, #6a1b9a 0%, #9c27b0 100%);
+  padding: 30px 20px 60px;
+  text-align: center;
+  position: relative;
+}
+.profile-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0; height: 40px;
+  background: var(--cream);
+  border-radius: 50% 50% 0 0 / 40px 40px 0 0;
+}
+.profile-avatar { font-size: 64px; margin-bottom: 10px; }
+.profile-name { font-size: 22px; font-weight: 900; color: #fff; }
+.profile-tag { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+
+.stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px; padding: 12px 16px 0;
+}
+.stat-box {
+  background: #fff; border-radius: var(--r);
+  padding: 14px 10px; text-align: center;
+  box-shadow: 0 2px 10px var(--shadow);
+}
+.stat-val { font-size: 22px; font-weight: 900; color: var(--brown); }
+.stat-lbl { font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 2px; }
+
+.achieve-grid {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 10px; padding: 0 16px;
+}
+.achieve-item { text-align: center; }
+.achieve-badge {
+  width: 56px; height: 56px; border-radius: 50%;
+  margin: 0 auto 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  box-shadow: 0 3px 10px var(--shadow);
+}
+.achieve-badge.earned { background: var(--warm2); }
+.achieve-badge.locked { background: #eee; filter: grayscale(1); opacity: .5; }
+.achieve-name { font-size: 9px; font-weight: 900; color: var(--muted); }
+
+.profile-card {
+  margin: 12px 16px 0;
+  background: #fff;
+  border-radius: var(--r);
+  padding: 16px 18px;
+  box-shadow: 0 2px 10px var(--shadow);
+}
+.profile-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  cursor: pointer;
+}
+.profile-row:last-child { border-bottom: none; }
+.profile-row-left { display: flex; align-items: center; gap: 12px; }
+.profile-row-icon { font-size: 20px; }
+.profile-row-label { font-size: 14px; font-weight: 700; color: var(--brown); }
+.profile-row-arrow { color: #ccc; font-size: 14px; }
+
+/* ─────────────────────────────
+   LEADERBOARD
+───────────────────────────── */
+.leader-header {
+  background: linear-gradient(160deg, #e65100 0%, #ff6d00 100%);
+  padding: 20px 20px 50px;
+  text-align: center;
+  position: relative;
+}
+.leader-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0; height: 40px;
+  background: var(--cream);
+  border-radius: 50% 50% 0 0 / 40px 40px 0 0;
+}
+.league-badge-big { font-size: 52px; margin-bottom: 6px; }
+.league-name { font-size: 20px; font-weight: 900; color: #fff; }
+.league-sub { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 3px; }
+
+.leader-list { padding: 10px 16px; display: flex; flex-direction: column; gap: 10px; }
+.leader-row {
+  background: #fff; border-radius: 14px;
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.leader-row.is-me { border: 2.5px solid var(--accent); background: #fff8f0; }
+.leader-rank { width: 28px; text-align: center; font-size: 16px; font-weight: 900; color: var(--muted); }
+.leader-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--warm1); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.leader-name { flex: 1; font-size: 14px; font-weight: 900; color: var(--brown); }
+.leader-xp { font-size: 14px; font-weight: 900; color: var(--accent3); }
+
+/* ── UNIVERSAL BUTTONS ── */
+.btn-primary {
+  width: 100%; padding: 15px;
+  background: var(--brown);
+  color: #fff; border: none; border-radius: 14px;
+  font-size: 15px; font-weight: 900; cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  box-shadow: 0 4px 0 #3e2410;
+  transition: transform .1s, box-shadow .1s;
+}
+.btn-primary:active { transform: translateY(3px); box-shadow: 0 1px 0 #3e2410; }
+.btn-green { background: var(--accent3); box-shadow: 0 4px 0 #388e3c; }
+.btn-green:active { box-shadow: 0 1px 0 #388e3c; }
+.btn-orange { background: var(--accent); box-shadow: 0 4px 0 #bf360c; }
+.btn-orange:active { box-shadow: 0 1px 0 #bf360c; }
+
+/* ── MODAL ── */
+.modal-bg {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 1000;
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .25s;
+}
+.modal-bg.show { opacity: 1; pointer-events: auto; }
+.modal-sheet {
+  background: #fff;
+  width: 100%; max-width: 430px;
+  border-radius: 24px 24px 0 0;
+  padding: 20px 20px 36px;
+  transform: translateY(100%);
+  transition: transform .3s cubic-bezier(0.34,1.2,0.64,1);
+  text-align: center;
+}
+.modal-bg.show .modal-sheet { transform: translateY(0); }
+.modal-pill { width: 36px; height: 4px; background: #ddd; border-radius: 2px; margin: 0 auto 16px; }
+.modal-icon { font-size: 48px; margin-bottom: 10px; }
+.modal-title { font-size: 20px; font-weight: 900; color: var(--brown); margin-bottom: 8px; }
+.modal-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px);
+  background: var(--brown); color: #fff;
+  padding: 12px 20px; border-radius: 24px;
+  font-size: 14px; font-weight: 800; z-index: 2000;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transition: transform .35s cubic-bezier(0.34,1.3,0.64,1);
+  max-width: 300px; text-align: center;
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── WARMUP OVERLAY ── */
+.warmup-cover {
+  position: absolute; inset: 0;
+  background: rgba(30,10,0,0.92);
+  border-radius: var(--r);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer; z-index: 20;
+  backdrop-filter: blur(3px);
+  text-align: center;
+  padding: 20px;
+}
+.warmup-emoji { font-size: 64px; animation: shake 2s infinite; }
+@keyframes shake { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
+.warmup-text { color: #fff; font-weight: 900; font-size: 16px; margin-top: 12px; line-height: 1.5; }
+.warmup-count { font-size: 36px; font-weight: 900; color: var(--accent2); margin-top: 8px; }
+
+/* ── QUIZ ── */
+.quiz-q { font-size: 15px; font-weight: 700; color: var(--brown); line-height: 1.5; margin-bottom: 12px; }
+.quiz-choice {
+  background: #fff;
+  border: 2px solid rgba(0,0,0,0.07);
+  border-radius: 12px; padding: 13px 16px;
+  margin-bottom: 8px; cursor: pointer;
+  font-size: 13px; font-weight: 700; color: var(--brown);
+  text-align: left; width: 100%;
+  font-family: 'Nunito', sans-serif;
+  transition: all .15s;
+}
+.quiz-choice:hover { border-color: var(--accent); background: #fff8f0; }
+
+/* scrollbar polish */
+.page::-webkit-scrollbar { width: 4px; }
+.page::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 2px; }
+
+.hidden { display: none !important; }
+</style>
 </head>
 <body>
 
-<div class="wrap">
-  <div class="topbar">
-    <div class="brand">👃 鼻鼻大冒險</div>
-    <div class="row">
-      <button class="btnTiny" onclick="setNick()">修改暱稱</button>
-      <button class="btnTiny" onclick="resetAll()">重置</button>
+<div id="app">
+  <!-- STATUS BAR -->
+  <div class="statusbar">
+    <div class="status-left">
+      <div class="avatar-sm" id="topAvatar">🤧</div>
+      <div>
+        <div class="greeting">你好！</div>
+        <div class="username" id="topName">鼻鼻學員</div>
+      </div>
+    </div>
+    <div class="status-right">
+      <div class="pill-stat">🔥 <span id="topStreak">1</span></div>
+      <div class="pill-stat">⭐ <span id="topExp">0</span></div>
     </div>
   </div>
 
-  <div class="map-container" id="mapView">
-    <div class="path-line"></div>
-
-    <div class="level-node active" id="node-w1" onclick="openLevel('w1')">
-      <div class="level-icon">😷</div>
-      <div class="level-title">Week 1: 覺察</div>
+  <!-- ════════ PAGE: HOME ════════ -->
+  <div class="page active" id="page-home">
+    <div class="home-header">
+      <div class="home-title">鼻鼻大冒險 👃</div>
+      <div class="home-subtitle">每天一點點，鼻子越來越好！</div>
+      <div class="hero-emoji" id="homeHero">🤧</div>
     </div>
 
-    <div class="level-node locked" id="node-w2" onclick="openLevel('w2')">
-      <div class="level-icon">🔍</div>
-      <div class="level-title">Week 2: 線索</div>
+    <!-- streak -->
+    <div class="streak-card">
+      <div class="streak-fire">🔥</div>
+      <div class="streak-info">
+        <div><span class="streak-days" id="streakDays">1</span> <span style="font-size:13px;font-weight:700;color:var(--muted)">天連續學習</span></div>
+        <div class="streak-label">本週進度</div>
+        <div class="streak-dots" id="streakDots"></div>
+      </div>
     </div>
 
-    <div class="level-node locked" onclick="alert('Week 3 按摩技能\n敬請期待！💆')">
-      <div class="level-icon">💆</div>
-      <div class="level-title">Week 3: 實作</div>
+    <!-- continue -->
+    <div class="sec-head">
+      <div class="sec-title">繼續學習</div>
+    </div>
+    <div class="continue-card" id="continue-card" onclick="continueLearn()">
+      <div class="continue-icon" id="continue-icon">🌿</div>
+      <div class="continue-info">
+        <div class="continue-tag" id="continue-tag">Week 1</div>
+        <div class="continue-title" id="continue-title">防線啟動</div>
+        <div class="continue-sub" id="continue-sub">認識過敏・找出破洞</div>
+        <div class="continue-prog"><div class="continue-prog-bar" id="continue-prog-bar" style="width:0%"></div></div>
+      </div>
+      <div class="continue-arrow">▶</div>
     </div>
 
-    <div class="trophy-btn" onclick="openLevel('leader')">
-      🏆
+    <!-- status -->
+    <div class="sec-head"><div class="sec-title">鼻鼻狀態</div></div>
+    <div class="hp-card">
+      <div class="hp-emoji" id="homeHpEmoji">🤧</div>
+      <div class="hp-info">
+        <div class="hp-label">HP 體力值</div>
+        <div class="hp-value" id="homeHpVal">60</div>
+        <div class="hp-bar-wrap"><div class="hp-bar" id="homeHpBar" style="width:60%"></div></div>
+      </div>
+      <div class="lv-info">
+        <div class="lv-num" id="homeLvVal">1</div>
+        <div class="lv-label">等級</div>
+      </div>
+    </div>
+
+    <!-- quick actions -->
+    <div class="sec-head"><div class="sec-title">快速入口</div></div>
+    <div class="quick-grid">
+      <div class="quick-card" onclick="goTab('map')">
+        <div class="quick-icon">🗺️</div>
+        <div class="quick-label">課程地圖</div>
+        <div class="quick-desc">所有關卡</div>
+      </div>
+      <div class="quick-card" onclick="goTab('leader')">
+        <div class="quick-icon">🏆</div>
+        <div class="quick-label">排行榜</div>
+        <div class="quick-desc">與好友競賽</div>
+      </div>
+      <div class="quick-card" onclick="goTab('profile')">
+        <div class="quick-icon">🎖️</div>
+        <div class="quick-label">我的勳章</div>
+        <div class="quick-desc">查看成就</div>
+      </div>
+      <div class="quick-card" onclick="showTips()">
+        <div class="quick-icon">💡</div>
+        <div class="quick-label">今日小知識</div>
+        <div class="quick-desc">每日一學</div>
+      </div>
+    </div>
+
+    <!-- tips -->
+    <div class="sec-head"><div class="sec-title">護鼻小知識</div></div>
+    <div class="tip-scroll">
+      <div class="tip-card"><div class="tip-emoji">💧</div><div class="tip-text">每天多喝溫水，幫助鼻黏膜保持濕潤，減少刺激感</div></div>
+      <div class="tip-card"><div class="tip-emoji">😷</div><div class="tip-text">外出戴口罩，阻擋花粉、灰塵進入鼻腔</div></div>
+      <div class="tip-card"><div class="tip-emoji">🛏️</div><div class="tip-text">床單每週洗一次，減少塵蟎是對抗過敏的第一步！</div></div>
+      <div class="tip-card"><div class="tip-emoji">🧘</div><div class="tip-text">睡前輕輕按摩迎香穴，有助睡眠品質和鼻腔通暢</div></div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- ════════ PAGE: MAP ════════ -->
+  <div class="page" id="page-map">
+    <div class="map-header">
+      <div class="map-title">課程地圖 🗺️</div>
+      <div class="map-subtitle">解鎖所有關卡，成為護鼻大師！</div>
+      <div class="map-hero">🌿</div>
+    </div>
+    <div class="chapter-wrap">
+      <div class="chapter-title">第一章・認識過敏</div>
+      <div class="level-row" onclick="openLevel('w1')">
+        <div class="level-btn active" id="map-node-w1">🌿</div>
+        <div class="level-info" id="map-info-w1">
+          <div class="level-name">Week 1：防線啟動</div>
+          <div class="level-desc">認識過敏原因・找出體質類型</div>
+          <div class="level-stars" id="map-stars-w1">⭐⭐⭐</div>
+        </div>
+      </div>
+      <div class="level-row" id="map-row-w2" onclick="openLevel('w2')">
+        <div class="level-btn locked" id="map-node-w2">💆</div>
+        <div class="level-info locked-info" id="map-info-w2">
+          <div class="level-name">Week 2：舒緩實作</div>
+          <div class="level-desc">學習穴位按摩・建立好習慣</div>
+          <div class="level-stars">🔒 需完成 Week 1</div>
+        </div>
+      </div>
+      <div class="chapter-title">第二章・深入調理</div>
+      <div class="level-row">
+        <div class="level-btn locked">✨</div>
+        <div class="level-info locked-info">
+          <div class="level-name">Week 3：體質強化</div>
+          <div class="level-desc">飲食調整・運動護鼻</div>
+          <div class="level-stars">🔒 敬請期待</div>
+        </div>
+      </div>
+      <div class="level-row">
+        <div class="level-btn locked">🌙</div>
+        <div class="level-info locked-info">
+          <div class="level-name">Week 4：睡眠修復</div>
+          <div class="level-desc">改善睡眠・自律神經調節</div>
+          <div class="level-stars">🔒 敬請期待</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="game-view" id="gameView">
-    <div class="nav-header">
-      <button class="btn-back" onclick="closeLevel()">⬅</button>
-      <div class="view-title" id="viewTitle">關卡標題</div>
+  <!-- ════════ PAGE: LEARN ════════ -->
+  <div class="page" id="page-learn">
+    <div class="learn-header">
+      <button class="btn-back" onclick="closeLevelBack()">←</button>
+      <div class="learn-title" id="learn-title">關卡</div>
+      <div class="xp-badge" id="learn-xp">+50 XP</div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="learn-progress" style="width:10%"></div>
     </div>
 
-    <div class="charStage" id="charArea">
-      <div class="stats">
-        <div class="statBox"><div class="statName">HP</div><div class="statVal" id="hpVal">60</div><div class="bar"><div id="hpBar" style="width:60%"></div></div></div>
-        <div class="statBox"><div class="statName">LV</div><div class="statVal" id="lvVal">1</div><div class="bar"><div id="lvBar" style="width:0%"></div></div></div>
+    <!-- CHAR + BUBBLE -->
+    <div class="char-stage">
+      <div class="char-bibi" id="learnBibi" onclick="pokeBibi()">🤧</div>
+      <div class="mood-badge" id="learnMood">👋</div>
+      <!-- warmup cover -->
+      <div class="warmup-cover hidden" id="warmupCover" onclick="tapWarmup()">
+        <div class="warmup-emoji">👏</div>
+        <div class="warmup-text">按摩前先搓熱雙手！<br>請連續點擊螢幕搓手 🔥</div>
+        <div class="warmup-count" id="warmupCount">6</div>
       </div>
-      <div class="bibi-container" onclick="pokeBibi()">
-         <div class="bibi-emoji" id="mainBibi">🤧</div>
-         <div class="bibiMood" id="mood">👋</div>
-      </div>
-      <div class="bubble">
-        <div>
-           <div style="font-size:12px;color:var(--bg2);font-weight:900;margin-bottom:4px">🗨️ 鼻鼻</div>
-           <div class="bubbleText" id="bubbleText">......</div>
-           <div id="nickInputArea" class="nick-input-area hidden">
-              <input type="text" id="nickInput" class="nick-input" placeholder="輸入你的暱稱...">
-              <button class="btn-confirm" onclick="confirmNick()">確認</button>
-           </div>
-        </div>
-        <button class="btnNext hidden" id="btnNext" onclick="nextStory()">下一步 ▶</button>
+      <!-- tissue pile cover -->
+      <div class="warmup-cover hidden" id="tissueCover" onclick="clearTissue()" style="background:rgba(20,10,5,0.93)">
+        <div class="warmup-emoji" style="animation:none;font-size:56px">🧻</div>
+        <div class="warmup-text">啊呀...快救救我！<br>（點擊撥開衛生紙）</div>
       </div>
     </div>
 
-    <div id="content-w1" class="hidden">
-        <div id="w1-game-ui">
-           <div class="tinder-container" id="card-stage"></div>
-           <div class="swipe-actions">
-             <button class="btn-round btn-no" onclick="swipe('left')">❌</button>
-             <button class="btn-round btn-yes" onclick="swipe('right')">⭕</button>
-           </div>
-        </div>
-        <div class="hidden" id="w1-action-ui">
-           <div style="font-weight:900;margin-bottom:6px;color:var(--accent2)">⭐ 今天願意先嘗試的小行動？</div>
-           <div class="action-grid" id="action-stage"></div>
-           <button class="btn" style="background:linear-gradient(90deg, var(--good), #2ecc71);color:white;" onclick="submitActions()">決定好了！</button>
-        </div>
-        <div class="hidden" id="w1-done" style="text-align:center;padding:30px">
-          <div style="font-size:50px;margin-bottom:10px">✨</div>
-          <div style="font-weight:900;color:var(--good)">Week 1 完成！</div>
-          <p style="font-size:13px;color:#888;line-height:1.6">獲得 20 EXP。<br>謝謝你聽我說，也觀察了自己。</p>
-          <button class="btn" onclick="closeLevel()">回到地圖</button>
-        </div>
+    <div class="bubble-box" id="bubbleBox">
+      <div class="bubble-speaker">🗨️ 鼻鼻說</div>
+      <div class="bubble-text" id="bubbleText">......</div>
+      <div id="nickArea" class="nick-row hidden">
+        <input type="text" id="nickInput" class="nick-input" placeholder="輸入你的暱稱…">
+        <button class="btn-confirm" onclick="confirmNick()">✓</button>
+      </div>
+      <button class="btn-next hidden" id="btnNext" onclick="nextStory()">繼續 ▶</button>
     </div>
 
-    <div id="content-w2" class="hidden">
-        <div id="w2-content">
-           <div class="room-container">
-             <div class="ac-unit prop" id="prop-ac" onclick="findClue(1,this)" title="冷氣"><div class="ac-vent"></div></div>
-             <div class="dust-monster prop" id="prop-dust" onclick="findClue(2,this)" title="灰塵">🌫️</div>
-             <div class="bibi-room prop" id="prop-bibi" onclick="findClue(3,this)" title="鼻鼻">☯️</div>
-           </div>
-           <div class="hidden" id="w2-quiz-area" style="margin-top:20px">
-             <div style="font-weight:900;margin-bottom:10px;color:var(--bg2)">鼻鼻想問問你...</div>
-             <div id="w2q1">
-               <div style="font-size:14px;margin-bottom:6px">1. 聽完這些，你比較接近哪種感覺？</div>
-               <button class="btn-choice" onclick="answerQ('q1','原來不是每個人都一樣...','w2q1','w2q2')">原來不是每個人都一樣容易鼻子不舒服</button>
-               <button class="btn-choice" onclick="answerQ('q1','沒想過','w2q1','w2q2')">我以前沒有特別想過這件事</button>
-               <button class="btn-choice" onclick="answerQ('q1','不確定','w2q1','w2q2')">我現在還不太確定</button>
-             </div>
-             <div id="w2q2" class="hidden">
-               <div style="font-size:14px;margin-bottom:6px">2. 聽到「體質」這個說法，你會怎麼想？</div>
-               <button class="btn-choice" onclick="answerQ('q2','難懂','w2q2','w2q3')">好像有點難懂</button>
-               <button class="btn-choice" onclick="answerQ('q2','可解釋','w2q2','w2q3')">好像可以解釋一些狀況</button>
-               <button class="btn-choice" onclick="answerQ('q2','沒感覺','w2q2','w2q3')">暫時沒有什麼感覺</button>
-             </div>
-             <div id="w2q3" class="hidden">
-               <div style="font-size:14px;margin-bottom:6px">3. 最後... 你現在比較怎麼想？</div>
-               <button class="btn-choice" onclick="answerQ('q3','鼻子不同','w2q3','DONE')">原來每個人的鼻子真的不太一樣</button>
-               <button class="btn-choice" onclick="answerQ('q3','開始理解','w2q3','DONE')">好像開始理解，為什麼我會特別容易不舒服</button>
-               <button class="btn-choice" onclick="answerQ('q3','好奇','w2q3','DONE')">我還不太懂，但覺得有點好奇</button>
-             </div>
-           </div>
-           <div class="hidden" id="w2-done" style="text-align:center;padding:20px;color:var(--good);font-weight:900">Week 2 全數完成！</div>
+    <!-- CONTENT AREAS -->
+    <div class="content-area" id="contentArea">
+      <!-- W1 sections -->
+      <div id="w1-check" class="hidden">
+        <div style="text-align:center;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:4px">你最近有這些症狀嗎？</div>
+        <div style="text-align:center;font-size:11px;color:#bbb;margin-bottom:10px">❌ 沒有 ────── ⭕ 有</div>
+        <div class="tinder-wrap" id="tinderStage"></div>
+        <div class="swipe-hint">← 沒有 ・ 有 →</div>
+        <div class="swipe-btns">
+          <button class="swipe-btn swipe-no" onclick="swipe('left')">❌</button>
+          <button class="swipe-btn swipe-yes" onclick="swipe('right')">⭕</button>
         </div>
-    </div>
+      </div>
 
-    <div id="content-leader" class="hidden">
-       <div class="league-badge" id="badgeArea">
-         <div style="font-size:40px" id="badgeIcon">🥉</div>
-         <div style="font-weight:900;color:var(--accent)" id="badgeName">銅牌新秀</div>
-       </div>
-       <div id="leaderList" class="leader-list"></div>
+      <div id="w1-compare" class="hidden">
+        <div style="font-weight:900;font-size:14px;color:var(--brown);margin-bottom:10px">📋 60秒判斷：哪個是過敏症狀？</div>
+        <div class="compare-grid">
+          <div class="compare-card" onclick="selectCompare(this,'A')">
+            <div class="cc-title" style="color:var(--accent3)">卡片 A</div>
+            <div class="cc-list">清鼻水<br>眼睛癢<br>沒有發燒</div>
+          </div>
+          <div class="compare-card" onclick="selectCompare(this,'B')">
+            <div class="cc-title" style="color:var(--accent)">卡片 B</div>
+            <div class="cc-list">發燒<br>喉嚨痛<br>鼻涕變濃</div>
+          </div>
+        </div>
+        <button class="btn-primary btn-orange" id="btn-compare" onclick="confirmCompare()" style="margin-top:12px">請選一張卡片</button>
+      </div>
+
+      <div id="w1-shield" class="hidden">
+        <div class="shield-center">
+          <div class="shield-icon">🛡️</div>
+          <div class="shield-title">「防護罩」理論</div>
+          <div class="shield-desc">簡單說，就像身體的<b>「防護罩」</b>變弱了。<br><br>當防護罩守不住，冷風、灰塵一來，鼻子就會過度反應，發出警報！</div>
+        </div>
+        <button class="btn-primary" onclick="nextW1Step('type')">那我的防護罩哪裡破了？</button>
+      </div>
+
+      <div id="w1-type" class="hidden">
+        <div style="font-weight:900;font-size:14px;color:var(--muted);margin-bottom:8px">你的體質防線（可複選）</div>
+        <div class="action-list">
+          <div class="action-item" id="type-A" onclick="toggleType('type-A','A')">
+            <div class="action-item-icon">🌬️</div>
+            <div><div class="action-item-text">風吹就發作（肺氣弱）</div><div class="action-item-desc">一吹冷風，鼻子就癢</div></div>
+          </div>
+          <div class="action-item" id="type-B" onclick="toggleType('type-B','B')">
+            <div class="action-item-icon">🥘</div>
+            <div><div class="action-item-text">鼻塞＋腸胃（脾氣弱）</div><div class="action-item-desc">鼻塞重、脹氣、便便軟</div></div>
+          </div>
+          <div class="action-item" id="type-C" onclick="toggleType('type-C','C')">
+            <div class="action-item-icon">❄️</div>
+            <div><div class="action-item-text">反覆很久型（腎氣弱）</div><div class="action-item-desc">過敏多年、怕冷、手腳冷</div></div>
+          </div>
+        </div>
+        <button class="btn-primary btn-green" onclick="confirmType()" style="margin-top:4px">選好了，看對策！</button>
+      </div>
+
+      <div id="w1-room" class="hidden">
+        <div style="font-weight:900;font-size:14px;color:var(--brown);margin-bottom:10px;text-align:center">🧐 環境大搜查！點擊找出 3 個過敏源</div>
+        <div class="room-wrap" id="roomWrap">
+          <div class="room-wall"></div>
+          <div class="room-floor"></div>
+          <!-- items placed by JS -->
+        </div>
+      </div>
+
+      <div id="w1-done" class="hidden">
+        <div class="done-screen">
+          <div class="done-icon">✨</div>
+          <div class="done-title">第一章完成！</div>
+          <div class="done-sub">原來鼻子是防護罩破了。<br>下週學習怎麼修補它！</div>
+          <div class="xp-reward">⭐ +50 XP 解鎖獎勵！</div>
+          <button class="btn-primary btn-green" onclick="closeLevelBack()">解鎖 Week 2 🔓</button>
+        </div>
+      </div>
+
+      <!-- W2 sections -->
+      <div id="w2-acu" class="hidden">
+        <div class="acu-wrap">
+          <div class="acu-header">
+            <div class="acu-name" id="acuName">穴位</div>
+            <div class="acu-count" id="acuCount">1/4</div>
+          </div>
+          <div class="acu-desc" id="acuDesc"></div>
+          <div class="acu-stage-box" id="acuBox">
+            <svg id="svg-face" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="92" fill="#ffccbc" stroke="#4e342e" stroke-width="2.5"/>
+              <circle cx="55" cy="120" r="18" fill="#ffb7c5" opacity=".6"/>
+              <circle cx="145" cy="120" r="18" fill="#ffb7c5" opacity=".6"/>
+              <path d="M50,70 Q65,60 80,70 M120,70 Q135,60 150,70" fill="none" stroke="#4e342e" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M55,90 Q65,80 75,90 M125,90 Q135,80 145,90" fill="none" stroke="#4e342e" stroke-width="3" stroke-linecap="round"/>
+              <path d="M92,60 Q92,90 85,110" fill="none" stroke="#4e342e" stroke-width="2.5" opacity=".6" stroke-linecap="round"/>
+              <path d="M108,60 Q108,90 115,110" fill="none" stroke="#4e342e" stroke-width="2.5" opacity=".6" stroke-linecap="round"/>
+              <path d="M85,120 Q100,135 115,120" fill="none" stroke="#4e342e" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M75,115 Q65,120 78,130" fill="none" stroke="#4e342e" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M125,115 Q135,120 122,130" fill="none" stroke="#4e342e" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M80,150 Q100,165 120,150" fill="none" stroke="#4e342e" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <svg id="svg-hand" viewBox="0 0 200 200" class="hidden" style="position:absolute;inset:0;width:100%;height:100%">
+              <path d="M10,140 Q40,135 70,110 Q100,90 140,95 L180,110 Q195,115 190,130 Q185,145 160,140 L120,130 Q100,130 90,140 Q70,160 50,165 Q30,170 10,180" fill="#ffccbc" stroke="#4e342e" stroke-width="3"/>
+              <path d="M60,165 Q80,150 110,155 Q130,160 125,180 Q120,195 100,190 Q70,180 60,165" fill="#ffccbc" stroke="#4e342e" stroke-width="3"/>
+              <path d="M175,112 Q188,115 185,130 Q172,128 175,112" fill="#ffe0bd" stroke="#4e342e" stroke-width="2"/>
+            </svg>
+            <!-- ACU POINTS (positioned via CSS/JS) -->
+            <div class="acu-pt" id="pt-1"  style="top:62%;left:37%" onmousedown="startPress(this)" ontouchstart="startPress(this)" onmouseup="endPress()" ontouchend="endPress()"><div class="hold-ring"></div></div>
+            <div class="acu-pt" id="pt-1r" style="top:62%;left:63%" onmousedown="startPress(this)" ontouchstart="startPress(this)" onmouseup="endPress()" ontouchend="endPress()"><div class="hold-ring"></div></div>
+            <div class="acu-pt" id="pt-1b" style="top:52%;left:41%" onmousedown="startPress(this)" ontouchstart="startPress(this)" onmouseup="endPress()" ontouchend="endPress()"><div class="hold-ring"></div></div>
+            <div class="acu-pt" id="pt-1br" style="top:52%;left:59%" onmousedown="startPress(this)" ontouchstart="startPress(this)" onmouseup="endPress()" ontouchend="endPress()"><div class="hold-ring"></div></div>
+            <div class="acu-pt" id="pt-2"  style="top:38%;left:35%" onmousedown="startPress(this)" ontouchstart="startPress(this)" onmouseup="endPress()" ontouchend="endPress()"><div class="hold-ring"></div></div>
+            <div class="acu-pt" id="pt-2r" style="top:38%;left:65%" onmousedown="startPress(this)" ontouchstart="startPress(this)" onmouseup="endPress()" ontouchend="endPress()"><div class="hold-ring"></div></div>
+            <div class="acu-pt" id="pt-3"  style="top:15%;left:50%" onmousedown="startPress(this)" ontouchstart="startPress(this)" onmouseup="endPress()" ontouchend="endPress()"><div class="hold-ring"></div></div>
+            <div class="acu-pt" id="pt-4"  style="top:53%;left:55%" onmousedown="startPress(this)" ontouchstart="startPress(this)" onmouseup="endPress()" ontouchend="endPress()"><div class="hold-ring"></div></div>
+          </div>
+          <div class="press-hint" id="pressHint">請長按紅點 10 秒鐘 ⏳</div>
+        </div>
+      </div>
+
+      <div id="w2-summary" class="hidden">
+        <div class="done-screen" style="text-align:left;padding:20px">
+          <div style="text-align:center;font-size:44px;margin-bottom:10px">📜</div>
+          <div style="text-align:center;font-weight:900;font-size:17px;color:var(--brown);margin-bottom:14px">鼻鼻的私房筆記</div>
+          <div style="font-size:13px;color:var(--muted);line-height:2;">
+            <b>🌞 日常保養：</b>早起或睡前按，氣血更順。<br>
+            <b>🤧 過敏感冒：</b>多按「迎香、鼻通、上星」。<br>
+            <b>👀 讀書疲勞：</b>多按「攢竹、合谷」明目。
+          </div>
+          <div style="text-align:center;color:var(--accent3);font-weight:900;margin-top:14px">恭喜學會防護罩修補術！</div>
+        </div>
+        <button class="btn-primary btn-orange" onclick="nextW2Step('action')">我記住了！繼續</button>
+      </div>
+
+      <div id="w2-action" class="hidden">
+        <div style="font-weight:900;font-size:14px;color:var(--muted);margin-bottom:6px">除了按摩，你願意嘗試哪些小改變？</div>
+        <div style="font-size:11px;color:#bbb;margin-bottom:10px">可多選</div>
+        <div class="action-list" id="actionSelectGrid"></div>
+        <button class="btn-primary btn-green" onclick="submitActions()" style="margin-top:8px">我決定做這些改變！</button>
+      </div>
+
+      <div id="w2-quiz" class="hidden">
+        <div style="background:#fff;border-radius:var(--r);padding:18px;box-shadow:0 2px 10px var(--shadow)">
+          <div id="w2q1">
+            <div class="quiz-q">「你以前是否覺得——鼻子過敏是體質問題，只能忍？」</div>
+            <button class="quiz-choice" onclick="answerQ('q1','一直忍','w2q1','w2q2')">好像一直都是這樣想</button>
+            <button class="quiz-choice" onclick="answerQ('q1','習慣了','w2q1','w2q2')">沒特別想過，但好像習慣了</button>
+            <button class="quiz-choice" onclick="answerQ('q1','想改善','w2q1','w2q2')">我其實有想過可以改善</button>
+          </div>
+          <div id="w2q2" class="hidden">
+            <div class="quiz-q">「如果過敏與環境、體質有關，你會怎麼想？」</div>
+            <button class="quiz-choice" onclick="answerQ('q2','試試','w2q2','w2q3')">那可以試試看調整</button>
+            <button class="quiz-choice" onclick="answerQ('q2','有可能','w2q2','w2q3')">聽起來有可能</button>
+            <button class="quiz-choice" onclick="answerQ('q2','懷疑','w2q2','w2q3')">還不太相信</button>
+          </div>
+          <div id="w2q3" class="hidden">
+            <div class="quiz-q">「如果有方法可以讓鼻子慢慢穩定，你比較接近？」</div>
+            <button class="quiz-choice" onclick="answerQ('q3','想看效果','w2q3','DONE')">想看看是否真的有差</button>
+            <button class="quiz-choice" onclick="answerQ('q3','不要麻煩','w2q3','DONE')">只要不太麻煩就好</button>
+            <button class="quiz-choice" onclick="answerQ('q3','先觀察','w2q3','DONE')">先觀察看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="w2-done" class="hidden">
+        <div class="done-screen">
+          <div class="done-icon">🎉</div>
+          <div class="done-title">Week 2 完成！</div>
+          <div class="done-sub">你已學會怎麼照顧鼻子了！<br>記得常常練習喔。</div>
+          <div class="xp-reward">⭐ +50 XP 完成獎勵！</div>
+          <button class="btn-primary btn-green" onclick="closeLevelBack()">回到地圖</button>
+        </div>
+      </div>
+
+      <!-- LEADER in learn page (unused, kept for compatibility) -->
+    </div>
+  </div>
+
+  <!-- ════════ PAGE: LEADERBOARD ════════ -->
+  <div class="page" id="page-leader">
+    <div class="leader-header">
+      <div class="league-badge-big" id="leagueIcon">🥉</div>
+      <div class="league-name" id="leagueName">銅牌新秀</div>
+      <div class="league-sub">本週排名</div>
+    </div>
+    <div class="leader-list" id="leaderList"></div>
+  </div>
+
+  <!-- ════════ PAGE: PROFILE ════════ -->
+  <div class="page" id="page-profile">
+    <div class="profile-header">
+      <div class="profile-avatar">🤧</div>
+      <div class="profile-name" id="profileName">鼻鼻學員</div>
+      <div class="profile-tag" id="profileTag">等級 1 ・ 0 XP</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-val" id="p-days">1</div><div class="stat-lbl">連續天數</div></div>
+      <div class="stat-box"><div class="stat-val" id="p-xp">0</div><div class="stat-lbl">總 XP</div></div>
+      <div class="stat-box"><div class="stat-val" id="p-done">0</div><div class="stat-lbl">完成關卡</div></div>
+    </div>
+    <div class="sec-head"><div class="sec-title">成就勳章</div></div>
+    <div class="achieve-grid">
+      <div class="achieve-item">
+        <div class="achieve-badge earned" id="badge-start">🌱</div>
+        <div class="achieve-name">新手出發</div>
+      </div>
+      <div class="achieve-item">
+        <div class="achieve-badge" id="badge-w1">🛡️</div>
+        <div class="achieve-name">防護罩</div>
+      </div>
+      <div class="achieve-item">
+        <div class="achieve-badge" id="badge-w2">💆</div>
+        <div class="achieve-name">按摩達人</div>
+      </div>
+      <div class="achieve-item">
+        <div class="achieve-badge locked">🏆</div>
+        <div class="achieve-name">完課大師</div>
+      </div>
+    </div>
+    <div class="sec-head"><div class="sec-title">設定</div></div>
+    <div class="profile-card">
+      <div class="profile-row" onclick="setNick()">
+        <div class="profile-row-left">
+          <div class="profile-row-icon">✏️</div>
+          <div class="profile-row-label">修改暱稱</div>
+        </div>
+        <div class="profile-row-arrow">›</div>
+      </div>
+      <div class="profile-row" onclick="showTips()">
+        <div class="profile-row-left">
+          <div class="profile-row-icon">💡</div>
+          <div class="profile-row-label">護鼻小知識</div>
+        </div>
+        <div class="profile-row-arrow">›</div>
+      </div>
+      <div class="profile-row" onclick="resetAll()">
+        <div class="profile-row-left">
+          <div class="profile-row-icon">🔄</div>
+          <div class="profile-row-label">重置進度</div>
+        </div>
+        <div class="profile-row-arrow">›</div>
+      </div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tabbar">
+    <div class="tab active" id="tab-home" onclick="goTab('home')">
+      <div class="tab-icon">🏠</div>
+      <div class="tab-label">首頁</div>
+    </div>
+    <div class="tab" id="tab-map" onclick="goTab('map')">
+      <div class="tab-icon">🗺️</div>
+      <div class="tab-label">地圖</div>
+      <div class="tab-badge hidden" id="map-badge">1</div>
+    </div>
+    <div class="tab" id="tab-leader" onclick="goTab('leader')">
+      <div class="tab-icon">🏆</div>
+      <div class="tab-label">排行</div>
+    </div>
+    <div class="tab" id="tab-profile" onclick="goTab('profile')">
+      <div class="tab-icon">👤</div>
+      <div class="tab-label">我的</div>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal" onclick="closeModal()">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <div style="font-size:40px;margin-bottom:10px" id="m-icon"></div>
-    <div style="font-weight:900;font-size:18px;margin-bottom:10px" id="m-title"></div>
-    <div style="font-size:14px;color:#666;line-height:1.5" id="m-desc"></div>
-    <div style="background:#f4f4f5;padding:10px;border-radius:10px;margin-top:15px;text-align:left;font-size:13px">
-      <b>🗨️ 鼻鼻：</b><span id="m-reply"></span>
-    </div>
-    <button class="btn" onclick="closeModal()">收到了</button>
+<!-- MODAL (bottom sheet) -->
+<div class="modal-bg" id="modal" onclick="closeModal()">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-pill"></div>
+    <div class="modal-icon" id="m-icon"></div>
+    <div class="modal-title" id="m-title"></div>
+    <div class="modal-desc" id="m-desc"></div>
+    <button class="btn-primary" onclick="closeModal()">知道了！</button>
   </div>
 </div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <script>
-// ⚠️ 妳的網址
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWT_39e3ev68nMQhniLyBIGgkD-gqqBUGiWJ_6uAuAR7ILTwRKbPDTrXy3rcR_EMQbNw/exec"; 
-const DB_KEY = "bibi_final_v25_map"; 
+// ═══════════════════════════════
+//  STATE
+// ═══════════════════════════════
+const DB = "bibi_v3";
+let s = {};
+try { s = JSON.parse(localStorage.getItem(DB)||"{}"); } catch(e){}
+if(!s.hp) s = { hp:60, lv:1, exp:0, w1d:false, w2d:false, nick:"", streak:1, lastDay:today(), w2s:false };
 
-const W1_CARDS = [
-  { id: 1, i:"🤧", t:"連續打噴嚏", d:"最近你有這樣嗎？" },
-  { id: 2, i:"💧", t:"流清澈鼻水", d:"像水龍頭一樣停不下來？" },
-  { id: 3, i:"👃", t:"鼻子癢或鼻塞", d:"一直想揉鼻子？" },
-  { id: 4, i:"❄️", t:"怕冷氣/溫差", d:"遇到冷氣強的時候會不舒服嗎？" },
-  { id: 5, i:"🌫️", t:"灰塵/花粉", d:"打掃或換季時特別明顯？" },
-  { id: 6, i:"🌅", t:"早上起床", d:"剛醒來時最嚴重？" }
-];
+function today(){ return new Date().toDateString(); }
+function save(){ localStorage.setItem(DB, JSON.stringify(s)); refreshAllUI(); }
 
-const W1_ACTIONS = [
-  { t:"少吃冰的", img:"🧊" }, { t:"定期洗床單", img:"🛏️" }, { t:"規律服藥", img:"💊" }, { t:"出門戴口罩", img:"😷" },
-  { t:"少放絨毛娃娃", img:"🧸" }, { t:"作息固定", img:"⏰" }, { t:"保持運動", img:"🏃" }, { t:"起床穿外套", img:"🧥" }
-];
+// ═══════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════
+const TABS = ['home','map','leader','profile'];
+let currentTab = 'home';
+let currentLevel = '';
+let prevTab = 'home';
 
-const W2_STORY = [
-  { t: "小主人，上週你陪我注意了很多狀況，\n我一直把那些事情放在心上。", m: "😐" },
-  { t: "有時候我一進冷氣房就很不舒服，\n可是旁邊的人卻好像沒什麼感覺。", m: "🤧" },
-  { t: "遇到灰塵或花粉的時候也是，\n我會一直想打噴嚏，但別人卻還好好的。", m: "😣" },
-  { t: "所以我就在想，\n是不是每個人的鼻子，\n本來就不太一樣呢？", m: "🤔" },
-  { t: "我聽說，中醫會把這種\n『每個人對環境反應不一樣』的狀況，\n叫做『體質』。", m: "💡" },
-  { t: "不是說哪裡不好，\n只是每個人本來就不一樣而已。", m: "😊" }
-];
+function goTab(tab) {
+  TABS.forEach(t => {
+    document.getElementById(`page-${t}`).classList.toggle('active', t===tab);
+    document.getElementById(`tab-${t}`).classList.toggle('active', t===tab);
+  });
+  document.getElementById('page-learn').classList.remove('active');
+  currentTab = tab;
+  if(tab==='leader') renderLeader();
+  if(tab==='profile') renderProfile();
+  if(tab==='home') updateContinueCard();
+}
 
-const W2_CLUES = {
-  1: { t:"環境", d:"有些人對冷氣或溫差比較敏感。", r:"對耶，我一進冷氣房的時候，鼻子真的比較容易不舒服。", i:"❄️" },
-  2: { t:"過敏原", d:"有些人一接觸灰塵或花粉就會打噴嚏。", r:"有時候一碰到灰塵，我就會一直想打噴嚏。", i:"🌫️" },
-  3: { t:"中醫觀點", d:"中醫用『體質』形容每個人反應不太一樣。", r:"原來不是每個人都一樣，只是反應不太一樣而已。", i:"🧘" }
+function openLevel(lvl) {
+  if(lvl==='w2' && !s.w1d) { showModal('🔒','關卡鎖定','請先完成 Week 1 才能解鎖 Week 2 喔！'); return; }
+  prevTab = currentTab;
+  TABS.forEach(t => document.getElementById(`page-${t}`).classList.remove('active'));
+  document.getElementById('tab-' + prevTab)?.classList.remove('active');
+  document.getElementById('page-learn').classList.add('active');
+  currentLevel = lvl;
+  setupLearnPage(lvl);
+}
+
+function closeLevelBack() {
+  document.getElementById('page-learn').classList.remove('active');
+  goTab(prevTab);
+}
+
+// ═══════════════════════════════
+//  LEARN PAGE SETUP
+// ═══════════════════════════════
+let storyIdx = 0, storyType = '';
+let cardIdx = 0, cluesFound = 0;
+let selectedCompare = null;
+let acuStep = 0, pressTimer = null, pressProgress = 0, warmupCount = 0;
+let w1Data = { symptoms:[], type:[], actions:[] };
+let w2Answers = {};
+
+function setupLearnPage(lvl) {
+  // reset UI
+  ['w1-check','w1-compare','w1-shield','w1-type','w1-room','w1-done',
+   'w2-acu','w2-summary','w2-action','w2-quiz','w2-done'].forEach(id=>{
+     document.getElementById(id)?.classList.add('hidden');
+  });
+  document.getElementById('tissueCover').classList.add('hidden');
+  document.getElementById('warmupCover').classList.add('hidden');
+  document.getElementById('btnNext').classList.add('hidden');
+  document.getElementById('nickArea').classList.add('hidden');
+
+  if(lvl==='w1'){
+    document.getElementById('learn-title').innerText = 'Week 1：防線啟動';
+    document.getElementById('learn-xp').innerText = '+50 XP';
+    setProgress(5);
+    if(s.w1d){
+      document.getElementById('w1-done').classList.remove('hidden');
+      setBibi('😊'); setBubble('你已經完成了 Week 1！', '🎉'); return;
+    }
+    // show tissue pile
+    document.getElementById('tissueCover').classList.remove('hidden');
+    w1Data = { symptoms:[], type:[], actions:[] };
+    cardIdx = 0; cluesFound = 0;
+    setBibi('🤧'); setBubble('......','👋');
+  } else if(lvl==='w2'){
+    document.getElementById('learn-title').innerText = 'Week 2：舒緩實作';
+    document.getElementById('learn-xp').innerText = '+50 XP';
+    setProgress(5);
+    if(s.w2d){
+      document.getElementById('w2-done').classList.remove('hidden');
+      setBibi('😊'); setBubble('你已完成了 Week 2！', '🎉'); return;
+    }
+    if(!s.w2s) playStory('w2-intro');
+    else showWarmup();
+    w1Data.actions = [];
+    w2Answers = {};
+  }
+}
+
+// ═══════════════════════════════
+//  STORY ENGINE
+// ═══════════════════════════════
+const STORIES = {
+  'w1-intro': [
+    { t:"阿呀... 救命啊！謝謝你救了我！💨", m:"😄" },
+    { t:"我是鼻鼻，很高興認識你！\n請問救命恩人怎麼稱呼？", m:"👋", action:"askNick" }
+  ],
+  'w1-symptom': [
+    { t:"$n，最近我過得很慘...\n常常一連串打噴嚏，鼻子裡面很癢。", m:"🤧" },
+    { t:"有時候鼻子悶悶的，呼吸不順，\n早上起床特別明顯。", m:"😐" },
+    { t:"只要遇到灰塵、花粉，或冷氣很強，\n這些不舒服就會更明顯。", m:"🌡️" },
+    { t:"你可以陪我玩個小遊戲，\n確認一下你也有這些症狀嗎？", m:"🤔" }
+  ],
+  'w1-mid': [
+    { t:"原來不只你，很多人都有這樣的狀況。\n等等... 這麼多症狀...", m:"🤔" },
+    { t:"我們來確認一下，這到底是感冒還是過敏？", m:"🧐" }
+  ],
+  'w2-intro': [
+    { t:"小主人，上週我們找到了防護罩破洞的原因。\n這週要來學「修補」的方法！", m:"✨" },
+    { t:"我會教你幾個神奇的穴道，按了鼻子會很舒服喔！", m:"💆" }
+  ]
 };
 
-let s = {};
-try { s = JSON.parse(localStorage.getItem(DB_KEY)||"{}"); } catch(e) { s = {}; }
-if(!s.hp) s = { hp:60, lv:1, exp:0, streak:0, w1s:false, w1d:false, w2s:false, w2d:false, nick:"" };
-
-function save(){ localStorage.setItem(DB_KEY, JSON.stringify(s)); updateMapStatus(); }
-
-let storyIdx = 0;
-let curStory = null;
-let cardIdx = 0;
-let cluesFound = 0;
-let selectedActions = new Set();
-let w2Answers = { q1:"", q2:"", q3:"" };
-
-function updateMapStatus(){
-  const n1 = document.getElementById("node-w1");
-  const n2 = document.getElementById("node-w2");
-  
-  if(s.w1d) { 
-    n1.classList.add("done"); n1.classList.remove("active");
-    n2.classList.remove("locked"); 
-    if(!s.w2d) n2.classList.add("active");
-    else n2.classList.add("done");
-  }
-}
-
-function openLevel(level){
-  if(level === 'w2' && !s.w1d) { alert("請先完成 Week 1 喔！🔒"); return; }
-  
-  document.getElementById("mapView").classList.add("hidden");
-  document.getElementById("gameView").classList.add("show");
-  
-  // Hide all contents first
-  document.getElementById("content-w1").classList.add("hidden");
-  document.getElementById("content-w2").classList.add("hidden");
-  document.getElementById("content-leader").classList.add("hidden");
-  document.getElementById("charArea").classList.remove("hidden"); // 預設顯示角色
-
-  if(level === 'w1'){
-    document.getElementById("viewTitle").innerText = "Week 1: 症狀覺察";
-    document.getElementById("content-w1").classList.remove("hidden");
-    if(!s.w1s && !s.w1d) { playStory('w1'); renderCard(); } 
-    else if(s.w1s && !s.w1d) { renderCard(); }
-    else if(s.w1d) { document.getElementById("w1-done").classList.remove("hidden"); document.getElementById("w1-game-ui").classList.add("hidden"); }
-  } 
-  else if(level === 'w2'){
-    document.getElementById("viewTitle").innerText = "Week 2: 尋找線索";
-    document.getElementById("content-w2").classList.remove("hidden");
-    if(!s.w2s && !s.w2d) playStory('w2');
-    else if(s.w2d) { document.getElementById("w2-done").classList.remove("hidden"); document.getElementById("w2-content").classList.add("hidden"); }
-  }
-  else if(level === 'leader'){
-    document.getElementById("viewTitle").innerText = "🏆 排行榜";
-    document.getElementById("content-leader").classList.remove("hidden");
-    document.getElementById("charArea").classList.add("hidden"); // 排行榜不顯示角色
-    renderLeader();
-  }
-  
-  renderStats();
-}
-
-function closeLevel(){
-  document.getElementById("gameView").classList.remove("show");
-  document.getElementById("mapView").classList.remove("hidden");
-  updateMapStatus();
-}
-
-// 故事與遊戲邏輯
-function playStory(type){
-  curStory = type; storyIdx = 0;
-  document.getElementById("btnNext").classList.remove("hidden");
+function playStory(type) {
+  storyIdx = 0; storyType = type;
+  document.getElementById('btnNext').classList.remove('hidden');
   renderStoryFrame();
 }
 
-function renderStoryFrame(){
-  const list = curStory==='w1' ? getW1Story() : W2_STORY;
+function renderStoryFrame() {
+  const list = STORIES[storyType];
+  if(!list) return;
   const item = list[storyIdx];
-  if(curStory === 'w1' && item.action === 'askNick' && !s.nick) {
-     document.getElementById("bubbleText").innerText = item.t;
-     document.getElementById("nickInputArea").classList.remove("hidden");
-     document.getElementById("btnNext").classList.add("hidden");
-     return;
+  if(!item) { nextStory(); return; }
+  const n = s.nick || '小主人';
+  const text = item.t.replace(/\$n/g, n);
+  setBubble(text, item.m || '👋');
+  if(item.action === 'askNick') {
+    document.getElementById('nickArea').classList.remove('hidden');
+    document.getElementById('btnNext').classList.add('hidden');
   }
-  document.getElementById("bubbleText").innerText = item.t;
-  document.getElementById("mood").innerText = item.m;
 }
 
-function getW1Story() {
-  const n = s.nick || "小主人";
-  return [
-    { t: "嗨！小主人你好，我是鼻鼻！(揮手)", m: "👋", action: "greet" },
-    { t: "請問小主人你叫什麼名字呢？", m: "🤔", action: "askNick" },
-    { t: `${n}你好！\n其實... 我常常因為『過敏』覺得好難受。\n`, m: "😣" },
-    { t: "最近我常常一連串地打噴嚏，\n鼻子裡面也很癢，還一直流清清的鼻水。\n", m: "🤧" },
-    { t: "有時候鼻子會悶悶的，\n呼吸不太順，早上起床時特別明顯。\n", m: "😐" },
-    { t: "我發現只要遇到灰塵、花粉，\n或冷氣開很強、溫差變大的時候，\n這些不舒服好像就會更明顯。\n", m: "🌡️" },
-    { t: "我也不確定為什麼會這樣...\n你可以陪我玩個小遊戲，\n確認一下我們什麼時候比較容易不舒服嗎？\n", m: "🥺" }
-  ];
-}
-
-function confirmNick(){
-  const input = document.getElementById("nickInput");
-  const val = input.value.trim();
-  if(!val) return alert("請輸入一個暱稱喔！");
-  s.nick = val; save();
-  document.getElementById("nickInputArea").classList.add("hidden");
-  document.getElementById("btnNext").classList.remove("hidden");
-  document.getElementById("bubbleText").innerText = `很高興認識你，${val}！`;
-}
-
-function nextStory(){
-  const list = curStory==='w1' ? getW1Story() : W2_STORY;
+function nextStory() {
+  const list = STORIES[storyType];
   storyIdx++;
-  if(storyIdx >= list.length){
-    document.getElementById("btnNext").classList.add("hidden");
-    if(curStory === 'w1') {
-       s.w1s = true; 
-       document.getElementById("bubbleText").innerText = "我們開始吧！請按下面的 O 或 X 。";
-       renderCard();
-    }
-    if(curStory === 'w2') {
-       s.w2s = true;
-       document.getElementById("bubbleText").innerText = "請幫我找出這 3 個線索。";
-    }
-    save(); curStory = null;
-  } else { renderStoryFrame(); }
+  if(!list || storyIdx >= list.length) {
+    document.getElementById('btnNext').classList.add('hidden');
+    if(storyType === 'w1-intro') playStory('w1-symptom');
+    else if(storyType === 'w1-symptom') { document.getElementById('w1-check').classList.remove('hidden'); renderCard(); setProgress(20); }
+    else if(storyType === 'w1-mid') nextW1Step('compare');
+    else if(storyType === 'w2-intro') { s.w2s=true; save(); showWarmup(); }
+    return;
+  }
+  renderStoryFrame();
 }
 
-function renderCard(){
-  const box = document.getElementById("card-stage"); box.innerHTML = "";
-  if(cardIdx >= W1_CARDS.length) { showActionSelect(); return; }
+function confirmNick() {
+  const val = document.getElementById('nickInput').value.trim();
+  if(!val) return showToast('請輸入暱稱！');
+  s.nick = val; save();
+  document.getElementById('nickArea').classList.add('hidden');
+  playStory('w1-symptom');
+}
+
+// ═══════════════════════════════
+//  W1 LOGIC
+// ═══════════════════════════════
+const W1_CARDS = [
+  {i:"🤧", t:"早上一直打噴嚏", d:"衛生紙包餛飩？"},
+  {i:"🥶", t:"冷氣房特別不舒服", d:"一進去就鼻塞"},
+  {i:"😤", t:"鼻塞到很煩", d:"呼吸都不順暢"},
+  {i:"😷", t:"常被說感冒？", d:"其實你根本沒感冒"}
+];
+
+function renderCard() {
+  const stage = document.getElementById('tinderStage');
+  stage.innerHTML = '';
+  if(cardIdx >= W1_CARDS.length) {
+    document.getElementById('w1-check').classList.add('hidden');
+    playStory('w1-mid'); return;
+  }
   const c = W1_CARDS[cardIdx];
-  const div = document.createElement("div"); div.className = "tinder-card"; div.id = "active-card";
-  div.innerHTML = `<div class="tc-icon">${c.i}</div><div class="tc-title">${c.t}</div><div class="tc-desc">${c.d}</div>`;
-  box.appendChild(div);
+  // back card
+  if(cardIdx+1 < W1_CARDS.length) {
+    const back = document.createElement('div');
+    back.className = 'tinder-card bg2';
+    const nb = W1_CARDS[cardIdx+1];
+    back.innerHTML = `<div class="tc-emoji">${nb.i}</div><div class="tc-title">${nb.t}</div>`;
+    stage.appendChild(back);
+  }
+  // front card
+  const div = document.createElement('div');
+  div.className = 'tinder-card'; div.id = 'active-card';
+  div.innerHTML = `<div class="tc-emoji">${c.i}</div><div class="tc-title">${c.t}</div><div class="tc-desc">${c.d}</div>`;
+  stage.appendChild(div);
 }
 
-function swipe(dir){
-  const card = document.getElementById("active-card"); if(!card) return;
+function swipe(dir) {
+  const card = document.getElementById('active-card'); if(!card) return;
   card.classList.add(dir==='left'?'swipe-left':'swipe-right');
-  setTimeout(()=>{ cardIdx++; renderCard(); }, 400);
+  if(dir==='right') w1Data.symptoms.push(W1_CARDS[cardIdx].t);
+  setTimeout(()=>{ cardIdx++; renderCard(); }, 420);
 }
 
-function showActionSelect() {
-  document.getElementById("w1-game-ui").classList.add("hidden");
-  document.getElementById("w1-action-ui").classList.remove("hidden");
-  const grid = document.getElementById("action-stage");
-  grid.innerHTML = W1_ACTIONS.map((a, i) => `
-    <div class="action-card" id="act-${i}" onclick="toggleAction(${i})">
-      <div class="action-emoji">${a.img}</div><div class="action-text">${a.t}</div>
-    </div>`).join("");
-  document.getElementById("bubbleText").innerText = "這些都是很好的嘗試，你可以選一個，也可以選很多個！";
+function nextW1Step(step) {
+  ['w1-check','w1-compare','w1-shield','w1-type','w1-room'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  if(step==='compare') { document.getElementById('w1-compare').classList.remove('hidden'); setProgress(40); }
+  else if(step==='shield') { document.getElementById('w1-shield').classList.remove('hidden'); setProgress(55); setBubble('既然不是感冒，那為什麼鼻子會失控呢？','🤔'); }
+  else if(step==='type') { document.getElementById('w1-type').classList.remove('hidden'); setProgress(65); setBubble('每個人防護罩破洞的地方不一樣。\n下面哪幾種跟你比較像？','🔍'); }
+  else if(step==='room') { document.getElementById('w1-room').classList.remove('hidden'); setProgress(80); setBubble('環境大搜查！\n幫我找出 3 個讓鼻子不舒服的兇手！','🕵️'); buildRoom(); }
 }
 
-function toggleAction(i) {
-  const el = document.getElementById(`act-${i}`);
-  if(selectedActions.has(i)) { selectedActions.delete(i); el.classList.remove("selected"); } 
-  else { selectedActions.add(i); el.classList.add("selected"); }
+function selectCompare(el, type) {
+  document.querySelectorAll('.compare-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected'); selectedCompare = type;
+  document.getElementById('btn-compare').innerText = `確認選卡片 ${type}`;
 }
 
-function submitActions() {
-  if(selectedActions.size === 0) { alert("請至少選一個試試看喔！"); return; }
-  const choiceNames = Array.from(selectedActions).map(i => W1_ACTIONS[i].t).join(", ");
-  
-  // 文字修改：更有延續感
-  document.getElementById("bubbleText").innerText = "Week 1 順利完成！🎉\n謝謝你陪我一起練習。\n\n準備好我們就要進入下週（Week 2）了嗎？";
-  document.getElementById("mood").innerText = "😍";
-  
-  setTimeout(() => { finishW1(choiceNames); }, 2000);
+function confirmCompare() {
+  if(!selectedCompare) return showToast('請先選一張卡片！');
+  if(selectedCompare==='B') {
+    showModal('🤔','再想想！','卡片 B 有發燒喔！過敏通常不會發燒。再選一次看看？');
+    return;
+  }
+  showModal('🎉','答對了！','卡片 A 才是過敏症狀！\n過敏通常是清水鼻涕、眼睛癢，不會發燒。');
+  setTimeout(()=>nextW1Step('shield'), 500);
 }
 
-function finishW1(choiceNames){
-  if(s.w1d) return;
-  s.w1d = true; s.exp+=20; s.hp+=10; save();
-  sendData("W1", { action: choiceNames, w2_done: "No" });
-  document.getElementById("w1-action-ui").classList.add("hidden");
-  document.getElementById("w1-done").classList.remove("hidden");
-  renderStats();
+function toggleType(id, type) {
+  const el = document.getElementById(id);
+  if(w1Data.type.includes(type)) { w1Data.type=w1Data.type.filter(t=>t!==type); el.classList.remove('selected'); }
+  else { if(w1Data.type.length>=2) return showToast('最多選 2 個喔！'); w1Data.type.push(type); el.classList.add('selected'); }
 }
 
-function findClue(id, el){
-  if(el.classList.contains("found")) return;
-  const c = W2_CLUES[id];
-  document.getElementById("m-icon").innerText = c.i;
-  document.getElementById("m-title").innerText = c.t;
-  document.getElementById("m-desc").innerText = c.d;
-  document.getElementById("m-reply").innerText = c.r;
-  document.getElementById("modal").classList.add("show");
-  document.getElementById("bubbleText").innerText = c.r;
-  el.classList.add("found"); cluesFound++;
-  if(cluesFound >= 3){
+function confirmType() {
+  if(w1Data.type.length===0) return showToast('請至少選一種！');
+  let adv='';
+  if(w1Data.type.includes('A')) adv+='🌬️ 風吹型：保暖＋迎香穴\n';
+  if(w1Data.type.includes('B')) adv+='🥘 腸胃型：少吃冰＋足三里\n';
+  if(w1Data.type.includes('C')) adv+='❄️ 怕冷型：規律睡眠＋保暖';
+  showModal('💡','你的體質祕技！', adv);
+  setTimeout(()=>nextW1Step('room'), 400);
+}
+
+const CLUES = {
+  1:{i:'❄️',t:'冷暖溫差',d:'一進冷氣房溫度突然降低，鼻子受不了刺激，就開始抗議了！'},
+  2:{i:'🌫️',t:'灰塵&花粉',d:'灰塵和花粉是最常見的過敏原！難怪每次大掃除或花粉季，噴嚏打不停。'},
+  3:{i:'🧘',t:'體質是關鍵',d:'因為體質不同，症狀也不同。找到自己的體質類型，才能對症下藥！'}
+};
+
+function buildRoom() {
+  const wrap = document.getElementById('roomWrap');
+  // Clear old items except bg divs
+  wrap.querySelectorAll('.room-item').forEach(e=>e.remove());
+
+  // AC unit
+  const ac = document.createElement('div');
+  ac.className = 'room-item'; ac.id = 'ri-1';
+  ac.style.cssText = 'top:15px;left:20px;font-size:42px;';
+  ac.innerHTML = '❄️<div class="ri-label">冷氣</div>';
+  ac.onclick = ()=>findClue(1, ac);
+  wrap.appendChild(ac);
+
+  // Dust
+  const dust = document.createElement('div');
+  dust.className = 'room-item'; dust.id = 'ri-2';
+  dust.style.cssText = 'bottom:60px;left:25%;font-size:36px;';
+  dust.innerHTML = '🌫️<div class="ri-label">灰塵</div>';
+  dust.onclick = ()=>findClue(2, dust);
+  wrap.appendChild(dust);
+
+  // Bibi
+  const bibi = document.createElement('div');
+  bibi.className = 'room-item'; bibi.id = 'ri-3';
+  bibi.style.cssText = 'bottom:55px;right:20px;font-size:48px;';
+  bibi.innerHTML = '🧘<div class="ri-label">體質</div>';
+  bibi.onclick = ()=>findClue(3, bibi);
+  wrap.appendChild(bibi);
+}
+
+function findClue(id, el) {
+  if(el.classList.contains('found')) return;
+  el.classList.add('found');
+  cluesFound++;
+  const c = CLUES[id];
+  showModal(c.i, c.t, c.d);
+  if(cluesFound >= 3) setTimeout(finishW1, 1600);
+}
+
+function finishW1() {
+  s.w1d=true; s.exp+=50; s.lv=Math.max(s.lv, 2); save();
+  sendData({ w1_done:'Yes', w1_symptoms:w1Data.symptoms.join(', '), w1_type:w1Data.type.join('+'), exp:s.exp });
+  document.getElementById('w1-room').classList.add('hidden');
+  document.getElementById('w1-done').classList.remove('hidden');
+  setProgress(100);
+  setBibi('😊'); setBubble('Week 1 完成！\n原來是防護罩破了，下週來修補它！','🎉');
+  showToast('🎉 +50 XP！Week 1 完成！');
+}
+
+// ═══════════════════════════════
+//  WARMUP
+// ═══════════════════════════════
+function showWarmup() {
+  warmupCount = 6;
+  document.getElementById('warmupCover').classList.remove('hidden');
+  document.getElementById('warmupCount').innerText = warmupCount;
+  setBubble('按摩前要先搓熱雙手，效果才好！','🙌');
+}
+
+function tapWarmup() {
+  warmupCount--;
+  document.getElementById('warmupCount').innerText = warmupCount;
+  const emoji = document.querySelector('#warmupCover .warmup-emoji');
+  emoji.style.transform = `scale(${1 + (6-warmupCount)*0.08})`;
+  if(warmupCount <= 0) {
+    document.getElementById('warmupCover').classList.add('hidden');
+    showToast('🔥 手熱好了！開始按摩！');
+    startAcuGame();
+  }
+}
+
+// ═══════════════════════════════
+//  ACU GAME
+// ═══════════════════════════════
+const ACU_STEPS = [
+  { n:'1. 迎香 & 鼻通', d:'📍 鼻翼旁凹陷 (迎香) & 法令紋上端 (鼻通)\n✨ 強力通鼻，緩解鼻塞流鼻水', ids:['pt-1','pt-1r','pt-1b','pt-1br'], type:'face' },
+  { n:'2. 攢竹', d:'📍 眉頭內側邊緣凹陷處\n✨ 明目舒壓，緩解頭痛眼痠', ids:['pt-2','pt-2r'], type:'face' },
+  { n:'3. 上星', d:'📍 髮際線正中央，往上一拇指寬\n✨ 清腦通竅，舒緩鼻炎不適', ids:['pt-3'], type:'face' },
+  { n:'4. 合谷', d:'📍 手背虎口，肌肉隆起最高點\n✨ 止痛要穴，增強免疫力', ids:['pt-4'], type:'hand' }
+];
+
+const PT_NAMES = {
+  'pt-1':'迎香穴','pt-1r':'迎香穴','pt-1b':'鼻通穴','pt-1br':'鼻通穴',
+  'pt-2':'攢竹穴','pt-2r':'攢竹穴','pt-3':'上星穴','pt-4':'合谷穴'
+};
+
+function startAcuGame() { acuStep=0; updateAcuUI(); document.getElementById('w2-acu').classList.remove('hidden'); }
+
+function updateAcuUI() {
+  const st = ACU_STEPS[acuStep];
+  document.getElementById('acuName').innerText = st.n;
+  document.getElementById('acuDesc').innerText = st.d;
+  document.getElementById('acuCount').innerText = `${acuStep+1}/${ACU_STEPS.length}`;
+  const face = document.getElementById('svg-face');
+  const hand = document.getElementById('svg-hand');
+  if(st.type==='hand'){ face.classList.add('hidden'); hand.classList.remove('hidden'); }
+  else { face.classList.remove('hidden'); hand.classList.add('hidden'); }
+  document.querySelectorAll('.acu-pt').forEach(el=>{ el.style.display='none'; el.classList.remove('pt-done','pressing'); el.dataset.opened=''; });
+  st.ids.forEach(id=>{ const el=document.getElementById(id); if(el){ el.style.display='block'; }});
+  document.getElementById('pressHint').innerText = '請長按紅點 10 秒鐘 ⏳';
+  document.getElementById('pressHint').style.color = 'var(--accent)';
+  setProgress(10 + acuStep*22);
+  setBubble(`現在來學：${st.n}\n長按紅點，感受穴位！`, '💆');
+}
+
+function startPress(el) {
+  if(el.classList.contains('pt-done')) return;
+  if(el.id==='pt-4' && !el.dataset.opened) {
+    el.dataset.opened='true';
+    showModal('🖐️','合谷穴定位秘訣','📍 在手背虎口處，第二掌骨中點邊緣。\n💡 按壓時會有酸、脹、麻感才對喔！\n\n✅ 這是強力通鼻、止痛的要穴。');
+    return;
+  }
+  el.classList.add('pressing');
+  pressProgress = 0;
+  pressTimer = setInterval(()=>{
+    pressProgress += 8;
+    if(pressProgress >= 100) {
+      endPress();
+      el.classList.remove('pressing');
+      el.classList.add('pt-done');
+      showToast(`✅ ${PT_NAMES[el.id]} 按好了！`);
+      checkStepComplete();
+    }
+  }, 100);
+}
+
+function endPress() {
+  clearInterval(pressTimer);
+  document.querySelectorAll('.acu-pt').forEach(el=>el.classList.remove('pressing'));
+}
+
+function checkStepComplete() {
+  const st = ACU_STEPS[acuStep];
+  const allDone = st.ids.every(id=>document.getElementById(id)?.classList.contains('pt-done'));
+  if(allDone) {
+    document.getElementById('pressHint').innerText = '太棒了！穴位通了！✨';
+    document.getElementById('pressHint').style.color = 'var(--accent3)';
     setTimeout(()=>{
-       document.getElementById("w2-quiz-area").classList.remove("hidden");
-       document.getElementById("w2-quiz-area").scrollIntoView({behavior:"smooth"});
-       document.getElementById("bubbleText").innerText = "好像真的有不同的可能，我想再聽聽你的想法。";
+      acuStep++;
+      if(acuStep >= ACU_STEPS.length) {
+        document.getElementById('w2-acu').classList.add('hidden');
+        document.getElementById('w2-summary').classList.remove('hidden');
+        setProgress(70); setBubble('做得好！這些祕訣都要記起來喔！','✨');
+      } else { updateAcuUI(); }
     }, 1000);
   }
 }
 
-function answerQ(qid, ansText, hideId, showId){
-   w2Answers[qid] = ansText;
-   if(showId === 'DONE'){ finishW2(); } 
-   else { document.getElementById(hideId).classList.add("hidden"); document.getElementById(showId).classList.remove("hidden"); }
+function nextW2Step(step) {
+  document.getElementById('w2-summary').classList.add('hidden');
+  if(step==='action') {
+    document.getElementById('w2-action').classList.remove('hidden');
+    setProgress(80);
+    setBubble('學會按摩了！\n再挑幾個願意做的小改變吧！','🌟');
+    renderActionGrid();
+  }
 }
 
-function finishW2(){
-  if(s.w2d) return;
-  s.w2d = true; s.exp+=30; s.hp=100; s.lv++; save();
-  sendData("W2", { w2_done: "Yes", q1_ans: w2Answers.q1, q2_ans: w2Answers.q2, q3_ans: w2Answers.q3 });
-  alert("Week 2 完成！");
-  document.getElementById("bubbleText").innerText = "謝謝你陪我一起想這些事情。";
-  document.getElementById("w2-done").classList.remove("hidden");
-  document.getElementById("w2-quiz-area").classList.add("hidden");
-  renderStats();
-}
-
-function renderStats(){
-  document.getElementById("hpVal").innerText = s.hp;
-  document.getElementById("hpBar").style.width = s.hp + "%";
-  document.getElementById("lvVal").innerText = s.lv;
-  document.getElementById("lvBar").style.width = ((s.exp%50)*2) + "%";
-}
-
-function renderLeader(){
-  const myName = s.nick || "我"; const myExp = s.exp;
-  let rankName = "🥉 銅牌新秀"; let rankIcon = "🥉"; let rankColor = "#cd7f32";
-  if(myExp >= 50) { rankName = "🥈 銀牌高手"; rankIcon = "🥈"; rankColor = "#7f8c8d"; }
-  if(myExp >= 100) { rankName = "💎 鑽石大師"; rankIcon = "💎"; rankColor = "#3498db"; }
-  
-  document.getElementById("badgeIcon").innerText = rankIcon;
-  document.getElementById("badgeName").innerText = rankName;
-  document.getElementById("badgeName").style.color = rankColor;
-
-  const fakeUsers = [
-    { n: "小傑", e: myExp + 15, a: "👦" }, { n: "阿豪", e: myExp + 5, a: "😎" },
-    { n: "Yumi", e: Math.max(0, myExp - 10), a: "👧" }, { n: "小美", e: Math.max(0, myExp - 25), a: "👱‍♀️" }
+function renderActionGrid() {
+  const opts = [
+    {t:'少吃冰的',i:'🧊',d:'減少寒性刺激'},
+    {t:'定期洗床單',i:'🛏️',d:'每週一次清塵蟎'},
+    {t:'規律服藥',i:'💊',d:'遵從醫囑'},
+    {t:'出門戴口罩',i:'😷',d:'阻擋過敏原'},
+    {t:'少放絨毛娃娃',i:'🧸',d:'減少灰塵堆積'},
+    {t:'作息固定',i:'⏰',d:'良好睡眠品質'},
+    {t:'保持運動',i:'🏃',d:'提升免疫力'},
+    {t:'起床穿外套',i:'🧥',d:'避免晨間溫差'}
   ];
-  const myList = [...fakeUsers, { n: myName, e: myExp, a: "😊", me: true }];
-  myList.sort((a,b) => b.e - a.e);
-  
-  document.getElementById("leaderList").innerHTML = myList.map((u, i) => `
-    <div class="leader-item ${u.me ? 'me' : ''}">
-      <div class="rank-num">${i+1}</div>
-      <div class="user-info"><div class="user-avatar">${u.a}</div><div class="user-name">${u.n}</div></div>
-      <div class="user-exp">${u.e} EXP</div>
-    </div>`).join("");
+  document.getElementById('actionSelectGrid').innerHTML = opts.map((a,i)=>`
+    <div class="action-item" id="act-${i}" onclick="toggleAction(${i}, '${a.t}')">
+      <div class="action-item-icon">${a.i}</div>
+      <div><div class="action-item-text">${a.t}</div><div class="action-item-desc">${a.d}</div></div>
+    </div>`).join('');
 }
 
-function sendData(type, payload) {
-  const finalData = Object.assign({}, { nick: s.nick, exp: s.exp }, payload);
-  fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(finalData), headers: {'Content-Type': 'application/json'} });
+function toggleAction(i, name) {
+  const el = document.getElementById(`act-${i}`);
+  if(w1Data.actions.includes(name)) { w1Data.actions=w1Data.actions.filter(x=>x!==name); el.classList.remove('selected'); }
+  else { w1Data.actions.push(name); el.classList.add('selected'); }
 }
 
-function closeModal(){ document.getElementById("modal").classList.remove("show"); }
-function pokeBibi(){ document.getElementById("bubbleText").innerText = "今天也要加油喔！"; }
-function setNick(){ const n=prompt("修改暱稱", s.nick); if(n){s.nick=n;save();} }
-function resetAll(){ localStorage.removeItem(DB_KEY); location.reload(); }
+function submitActions() {
+  if(w1Data.actions.length===0) return showToast('請至少選一個喔！');
+  document.getElementById('w2-action').classList.add('hidden');
+  document.getElementById('w2-quiz').classList.remove('hidden');
+  setProgress(88);
+  setBubble('最後，鼻鼻想問問你幾個問題…','🤔');
+}
 
-updateMapStatus();
-renderStats();
+function answerQ(qid, ans, hideId, showId) {
+  w2Answers[qid]=ans;
+  document.getElementById(hideId).classList.add('hidden');
+  if(showId==='DONE') finishW2();
+  else document.getElementById(showId).classList.remove('hidden');
+}
+
+function finishW2() {
+  s.w2d=true; s.exp+=50; s.lv=Math.max(s.lv,3); save();
+  sendData({ w1_done:'Yes', w1_symptoms:w1Data.symptoms.join(', '), w1_type:w1Data.type.join('+'), w2_done:'Yes', w2_actions:w1Data.actions.join(','), q1_ans:w2Answers.q1, q2_ans:w2Answers.q2, q3_ans:w2Answers.q3, exp:s.exp });
+  document.getElementById('w2-quiz').classList.add('hidden');
+  document.getElementById('w2-done').classList.remove('hidden');
+  setProgress(100);
+  setBibi('😊'); setBubble('Week 2 完成！你真的很棒！', '🎉');
+  showToast('🎉 +50 XP！Week 2 完成！');
+}
+
+// ═══════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════
+function setBibi(emoji) {
+  document.getElementById('learnBibi').innerText = emoji;
+  document.getElementById('homeHero').innerText = emoji;
+  document.getElementById('homeHpEmoji').innerText = emoji;
+  document.getElementById('topAvatar').innerText = emoji;
+}
+function setBubble(text, mood='👋') {
+  document.getElementById('bubbleText').innerText = text;
+  document.getElementById('learnMood').innerText = mood;
+}
+function setProgress(pct) { document.getElementById('learn-progress').style.width = pct+'%'; }
+function pokeBibi() {
+  const msgs = ['今天也要加油喔！', '鼻子謝謝你！', '按摩很有效的喔！', '我們一起努力！'];
+  document.getElementById('bubbleText').innerText = msgs[Math.floor(Math.random()*msgs.length)];
+}
+function clearTissue() {
+  document.getElementById('tissueCover').classList.add('hidden');
+  if(!s.nick) playStory('w1-intro'); else playStory('w1-symptom');
+}
+
+function showModal(icon, title, desc) {
+  document.getElementById('m-icon').innerText = icon;
+  document.getElementById('m-title').innerText = title;
+  document.getElementById('m-desc').innerText = desc;
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+function showToast(msg, dur=2500) {
+  const t = document.getElementById('toast');
+  t.innerText = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+function showTips() {
+  const tips = [
+    ['💧','多喝溫水','保持鼻黏膜濕潤，每天至少 1500ml 溫水，有效減少刺激感。'],
+    ['🛏️','洗床單','塵蟎是最常見的室內過敏原，每週用熱水（55°C以上）洗一次床單。'],
+    ['😷','外出戴口罩','花粉季和大掃除時戴口罩，能有效阻擋過敏原進入鼻腔。'],
+    ['🧘','睡前按摩','每天睡前按摩迎香穴和鼻通穴各1-2分鐘，有助通鼻安眠。']
+  ];
+  const t = tips[Math.floor(Math.random()*tips.length)];
+  showModal(t[0], t[1], t[2]);
+}
+
+// ═══════════════════════════════
+//  UI REFRESH
+// ═══════════════════════════════
+function refreshAllUI() {
+  const bibi = s.exp>=100 ? '😊' : s.exp>=50 ? '🙂' : '🤧';
+  setBibi(bibi);
+  document.getElementById('topName').innerText = s.nick || '鼻鼻學員';
+  document.getElementById('topStreak').innerText = s.streak;
+  document.getElementById('topExp').innerText = s.exp;
+  document.getElementById('homeHpVal').innerText = s.hp;
+  document.getElementById('homeHpBar').style.width = s.hp+'%';
+  document.getElementById('homeLvVal').innerText = s.lv;
+  document.getElementById('streakDays').innerText = s.streak;
+
+  // streak dots
+  const dotsEl = document.getElementById('streakDots');
+  const days = ['一','二','三','四','五','六','日'];
+  const todayIdx = new Date().getDay();
+  dotsEl.innerHTML = days.map((d,i)=>{
+    const cls = i < todayIdx ? 'streak-dot done' : i===todayIdx ? 'streak-dot today' : 'streak-dot';
+    return `<div class="${cls}">${i<todayIdx?'✓':d}</div>`;
+  }).join('');
+
+  // map nodes
+  if(s.w1d) {
+    document.getElementById('map-node-w1').className = 'level-btn done';
+    document.getElementById('map-stars-w1').innerText = '✅ 完成';
+    document.getElementById('map-node-w2').className = 'level-btn active';
+    document.getElementById('map-info-w2').classList.remove('locked-info');
+    document.getElementById('map-info-w2').querySelector('.level-stars').innerText = '⭐⭐⭐';
+    document.getElementById('map-badge').classList.add('hidden');
+  }
+  if(s.w2d) { document.getElementById('map-node-w2').className = 'level-btn done'; }
+  updateContinueCard();
+}
+
+function updateContinueCard() {
+  if(s.w2d) {
+    document.getElementById('continue-icon').innerText='🏆';
+    document.getElementById('continue-tag').innerText='全部完成';
+    document.getElementById('continue-title').innerText='課程完成！';
+    document.getElementById('continue-sub').innerText='等待更多 Week 上線中…';
+    document.getElementById('continue-prog-bar').style.width='100%';
+  } else if(s.w1d) {
+    document.getElementById('continue-icon').innerText='💆';
+    document.getElementById('continue-tag').innerText='Week 2';
+    document.getElementById('continue-title').innerText='舒緩實作';
+    document.getElementById('continue-sub').innerText='學習穴位按摩・建立好習慣';
+    document.getElementById('continue-prog-bar').style.width='50%';
+  } else {
+    document.getElementById('continue-icon').innerText='🌿';
+    document.getElementById('continue-tag').innerText='Week 1';
+    document.getElementById('continue-title').innerText='防線啟動';
+    document.getElementById('continue-sub').innerText='認識過敏・找出體質類型';
+    document.getElementById('continue-prog-bar').style.width='5%';
+  }
+}
+
+function continueLearn() {
+  if(s.w2d) { showToast('✨ 所有課程完成！等待更多週數上線中'); return; }
+  openLevel(s.w1d ? 'w2' : 'w1');
+}
+
+function renderLeader() {
+  const me = s.exp;
+  let icon='🥉', name='銅牌新秀';
+  if(me>=100){icon='💎'; name='鑽石大師';}
+  else if(me>=50){icon='🥈'; name='銀牌高手';}
+  document.getElementById('leagueIcon').innerText=icon;
+  document.getElementById('leagueName').innerText=name;
+
+  const rows = [
+    {n:'小傑',e:me+20,a:'👦'},{n:'阿豪',e:me+8,a:'😎'},
+    {n:s.nick||'我',e:me,a:'🤧',me:true},
+    {n:'Yumi',e:Math.max(0,me-15),a:'👧'},{n:'小明',e:Math.max(0,me-25),a:'🧑'}
+  ].sort((a,b)=>b.e-a.e);
+
+  document.getElementById('leaderList').innerHTML = rows.map((u,i)=>`
+    <div class="leader-row ${u.me?'is-me':''}">
+      <div class="leader-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
+      <div class="leader-avatar">${u.a}</div>
+      <div class="leader-name">${u.n}${u.me?' (我)':''}</div>
+      <div class="leader-xp">${u.e} XP</div>
+    </div>`).join('');
+}
+
+function renderProfile() {
+  document.getElementById('profileName').innerText = s.nick||'鼻鼻學員';
+  document.getElementById('profileTag').innerText = `等級 ${s.lv} ・ ${s.exp} XP`;
+  document.getElementById('p-days').innerText = s.streak;
+  document.getElementById('p-xp').innerText = s.exp;
+  document.getElementById('p-done').innerText = (s.w1d?1:0)+(s.w2d?1:0);
+  if(s.w1d) document.getElementById('badge-w1').classList.add('earned');
+  if(s.w2d) document.getElementById('badge-w2').classList.add('earned');
+}
+
+function setNick() {
+  const n = prompt('修改暱稱', s.nick||'');
+  if(n){ s.nick=n; save(); showToast('暱稱已更新！'); }
+}
+function resetAll() {
+  if(!confirm('確定要重置所有進度嗎？')) return;
+  localStorage.removeItem(DB); location.reload();
+}
+
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPLUnXLtLT09rM7jcjFQugfLdh90PHB1b6wjUzRBkB_BX5ni66kv__aUXagqTjP0eLKQ/exec";
+function sendData(payload) {
+  try { fetch(GOOGLE_SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(Object.assign({nick:s.nick,exp:s.exp},payload)),headers:{'Content-Type':'application/json'}}); } catch(e){}
+}
+
+// ── INIT ──
+refreshAllUI();
 </script>
 </body>
 </html>
