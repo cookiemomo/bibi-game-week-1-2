@@ -2,7 +2,10 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#5d3a1a">
 <title>鼻鼻大冒險</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -33,8 +36,8 @@ body {
   overflow-x: hidden;
   user-select: none;
 }
-#app { display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
-.page { display: none; flex: 1; overflow-y: auto; background: var(--cream); }
+#app { display: flex; flex-direction: column; height: 100dvh; overflow: hidden; padding-top: env(safe-area-inset-top); }
+.page { display: none; flex: 1; min-height: 0; overflow-y: auto; background: var(--cream); }
 .page.active { display: block; animation: pageIn .25s ease; }
 @keyframes pageIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 
@@ -51,7 +54,7 @@ body {
 .status-right { display: flex; align-items: center; gap: 10px; }
 .pill-stat { background: rgba(255,255,255,0.15); border-radius: 20px; padding: 5px 12px; display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 800; }
 
-.tabbar { background: #fff; border-top: 1.5px solid rgba(0,0,0,0.06); display: flex; flex-shrink: 0; box-shadow: 0 -4px 20px rgba(0,0,0,0.06); }
+.tabbar { background: #fff; border-top: 1.5px solid rgba(0,0,0,0.06); display: flex; flex-shrink: 0; box-shadow: 0 -4px 20px rgba(0,0,0,0.06); padding-bottom: env(safe-area-inset-bottom); }
 .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 4px 12px; cursor: pointer; gap: 4px; position: relative; transition: all .15s; }
 .tab-icon { font-size: 22px; transition: transform .2s; }
 .tab-label { font-size: 10px; font-weight: 800; color: #bbb; transition: color .15s; }
@@ -137,7 +140,6 @@ body {
 .level-btn.active { background: var(--accent); border-color: #e64a19; box-shadow: 0 4px 18px rgba(255,112,67,0.5); animation: nodePulse 2s infinite; }
 .level-btn.locked { background: #e0d5ca; border-color: #ccc; filter: grayscale(.5); cursor: not-allowed; }
 @keyframes nodePulse { 0%,100%{box-shadow:0 4px 18px rgba(255,112,67,0.5)} 50%{box-shadow:0 4px 28px rgba(255,112,67,0.8)} }
-.level-check { position: absolute; bottom: -2px; right: -2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; }
 .level-info { flex: 1; background: #fff; border-radius: 14px; padding: 12px 14px; box-shadow: 0 2px 8px var(--shadow); cursor: pointer; }
 .level-info.locked-info { opacity: .6; cursor: not-allowed; }
 .level-name { font-size: 14px; font-weight: 900; color: var(--brown); }
@@ -166,7 +168,7 @@ body {
 @keyframes bounceRight { 0%,100%{transform:translateX(0)} 50%{transform:translateX(3px)} }
 
 .nick-row { display: flex; gap: 8px; margin-top: 10px; }
-.nick-input { flex: 1; padding: 9px 12px; border: 2px solid var(--warm2); border-radius: 12px; font-size: 14px; outline: none; font-family: 'Nunito', sans-serif; background: var(--warm1); }
+.nick-input { flex: 1; padding: 9px 12px; border: 2px solid var(--warm2); border-radius: 12px; font-size: 16px; outline: none; font-family: 'Nunito', sans-serif; background: var(--warm1); }
 .nick-input:focus { border-color: var(--accent); }
 .btn-confirm { background: var(--accent3); color: #fff; border: none; padding: 9px 16px; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 13px; font-family: 'Nunito', sans-serif; }
 
@@ -623,7 +625,76 @@ body {
 .w3-info-icon { font-size: 32px; margin-bottom: 6px; }
 .w3-info-title { font-size: 16px; font-weight: 900; color: var(--brown); margin-bottom: 8px; }
 .w3-info-body { font-size: 13px; color: var(--muted); line-height: 1.75; }
-
+/* ══════ 滑桿樣式 ══════ */
+.slider-card {
+  background: #fff;
+  border-radius: var(--r);
+  padding: 20px 18px;
+  box-shadow: 0 4px 16px var(--shadow);
+  margin-bottom: 12px;
+  border: 1.5px solid var(--warm2);
+}
+.slider-question {
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--brown);
+  margin-bottom: 16px;
+  text-align: center;
+}
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 800;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+.symptom-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--accent3), var(--accent2), var(--accent));
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+.symptom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--brown);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: transform .15s;
+}
+.symptom-slider::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+}
+.slider-feedback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--warm1);
+  border-radius: 14px;
+  padding: 10px 16px;
+}
+.slider-emoji {
+  font-size: 28px;
+  transition: all .2s;
+}
+.slider-label-text {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--brown);
+  transition: all .2s;
+}
 .w3-q-card {
   background: linear-gradient(135deg, #fff8f0, #fff);
   border-radius: var(--r);
@@ -993,11 +1064,11 @@ body {
 
 /* 遊戲結束面板 */
 .game-over-panel {
-  position: absolute; inset: 0; border-radius: calc(var(--r) - 3px);
-  background: rgba(255,255,255,0.95);
+  border-radius: var(--r);
+  background: #fff;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 10px; z-index: 20; padding: 24px;
-  backdrop-filter: blur(4px);
+  gap: 10px; padding: 24px;
+  box-shadow: 0 4px 20px var(--shadow);
 }
 .go-title { font-size: 22px; font-weight: 900; color: var(--accent3); }
 .go-score { font-size: 16px; font-weight: 700; color: var(--muted); }
@@ -1101,7 +1172,6 @@ body {
   text-transform: uppercase;
 }
 .practice-title { font-size: 17px; font-weight: 900; margin-bottom: 4px; }
-.practice-sub { font-size: 12px; opacity: .85; }
 .practice-sub span { font-weight: 900; font-size: 15px; }
 
 #w9PoseCanvasPractice {
@@ -1267,9 +1337,134 @@ body {
 
 .page::-webkit-scrollbar { width: 4px; }
 .page::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 2px; }
-.hidden { display: none !important; }
+
+.tnss-btn {
+  background: #f8f8f8;
+  border: 2.5px solid #eee;
+  border-radius: 14px;
+  padding: 12px 6px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all .15s;
+}
+.tnss-btn:active { transform: scale(0.93); }
+.tnss-btn.selected { border-color: var(--accent); background: #fff8f0; }  .hidden { display: none !important; }
+/* 勳章解鎖彈窗 */
+.badge-modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  z-index: 3000; display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+.badge-modal-bg.show { opacity: 1; pointer-events: auto; }
+.badge-modal-box {
+  background: linear-gradient(135deg, #3a1f6e, #7c3aed);
+  border-radius: 28px; padding: 36px 28px;
+  text-align: center; max-width: 280px; width: 85%;
+  transform: scale(0.5); transition: transform .4s cubic-bezier(0.34,1.5,0.64,1);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.badge-modal-bg.show .badge-modal-box { transform: scale(1); }
+.badge-unlock-emoji {
+  font-size: 80px; margin-bottom: 10px;
+  animation: badgeSpin .6s ease;
+  display: block;
+}
+@keyframes badgeSpin {
+  0%   { transform: rotate(-20deg) scale(0.5); opacity:0; }
+  60%  { transform: rotate(10deg)  scale(1.2); opacity:1; }
+  100% { transform: rotate(0deg)   scale(1);   opacity:1; }
+}
+.badge-unlock-title { font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 900; letter-spacing: 2px; margin-bottom: 8px; }
+.badge-unlock-name { font-size: 24px; font-weight: 900; color: #fff; margin-bottom: 8px; }
+.badge-unlock-desc { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.6; margin-bottom: 20px; }
+.badge-stars { font-size: 22px; margin-bottom: 16px; animation: starPop .8s ease; }
+@keyframes starPop { 0%{opacity:0;transform:scale(0)} 80%{transform:scale(1.2)} 100%{opacity:1;transform:scale(1)} }
+
+/* 完課認證 */
+.cert-modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  z-index: 4000; display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .3s;
+  padding: 16px;
+}
+.cert-modal-bg.show { opacity: 1; pointer-events: auto; }
+.cert-box {
+  background: linear-gradient(160deg, #3a1f6e 0%, #1a6b3a 100%);
+  border-radius: 24px; padding: 28px 22px;
+  text-align: center; width: 100%; max-width: 360px;
+  border: 3px solid rgba(255,255,255,0.25);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  transform: scale(0.85); transition: transform .4s cubic-bezier(0.34,1.4,0.64,1);
+}
+.cert-modal-bg.show .cert-box { transform: scale(1); }
+.cert-seal { font-size: 64px; margin-bottom: 6px; animation: sealPop .6s ease; }
+@keyframes sealPop { 0%{transform:scale(0) rotate(-20deg);opacity:0} 70%{transform:scale(1.15) rotate(5deg)} 100%{transform:scale(1) rotate(0)} }
+.cert-label { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 900; letter-spacing: 3px; margin-bottom: 6px; }
+.cert-title { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+.cert-name { font-size: 28px; font-weight: 900; color: #ffd700; margin: 8px 0; text-shadow: 0 2px 10px rgba(255,215,0,0.4); }
+.cert-divider { height: 1px; background: rgba(255,255,255,0.2); margin: 12px 0; }
+.cert-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 12px 0; }
+.cert-stat { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 10px 6px; }
+.cert-stat-val { font-size: 20px; font-weight: 900; color: #ffd700; }
+.cert-stat-lbl { font-size: 9px; color: rgba(255,255,255,0.7); font-weight: 800; margin-top: 2px; }
+.cert-gift-box {
+  background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.15));
+  border: 2px solid rgba(255,215,0,0.4);
+  border-radius: 16px; padding: 14px 16px;
+  margin: 14px 0 10px;
+  display: flex; align-items: center; gap: 12px;
+}
+.cert-gift-icon { font-size: 36px; flex-shrink: 0; }
+.cert-gift-text { text-align: left; }
+.cert-gift-title { font-size: 13px; font-weight: 900; color: #ffd700; margin-bottom: 3px; }
+.cert-gift-desc { font-size: 11px; color: rgba(255,255,255,0.75); line-height: 1.5; }
+.cert-date { font-size: 10px; color: rgba(255,255,255,0.45); margin: 8px 0 14px; }
+.cert-qr { background: #fff; border-radius: 12px; padding: 10px; display: inline-block; margin-bottom: 14px; }
+
+/* ══ W7 拖拉遊戲 ══ */
+#w7Ghost{position:fixed;pointer-events:none;z-index:9999;display:none;flex-direction:column;align-items:center;gap:4px;transform:rotate(-5deg);opacity:.92;}
+#w7Ghost.visible{display:flex;}
+.g-scene{font-size:28px;}
+.g-text{font-size:11px;font-weight:900;color:var(--brown);background:#fff;padding:3px 10px;border-radius:10px;}
+.w7-game-stage{position:relative;background:linear-gradient(180deg,#e3f2fd 0%,#f0f7ff 60%,#e8f5e9 100%);border-radius:var(--r);min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;border:3px solid var(--warm2);box-shadow:0 4px 20px var(--shadow);margin-bottom:10px;padding:14px;}
+.w7-stage-floor{position:absolute;bottom:0;left:0;right:0;height:22px;background:linear-gradient(#d4a96a,#c4956a);border-radius:0 0 calc(var(--r) - 3px) calc(var(--r) - 3px);}
+.w7-hp-row{position:absolute;top:10px;left:10px;right:10px;display:flex;align-items:center;gap:8px;font-size:11px;}
+.w7-hp-lbl{font-weight:900;color:var(--muted);flex-shrink:0;}
+.w7-hp-bg{flex:1;height:8px;background:rgba(0,0,0,.1);border-radius:4px;}
+.w7-hp-fill{height:100%;border-radius:4px;transition:width .3s,background .3s;background:linear-gradient(90deg,#ef5350,#ff8a65);}
+.w7-hp-num{font-size:13px;font-weight:900;color:#ef5350;flex-shrink:0;width:28px;text-align:right;}
+.w7-bibi-char{font-size:64px;cursor:pointer;animation:heroFloat 3s ease-in-out infinite;filter:drop-shadow(0 4px 10px rgba(0,0,0,.15));margin-top:20px;transition:transform .15s;position:relative;z-index:2;}
+.w7-bibi-char:active{transform:scale(.88);}
+.w7-speech{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.95);border:1.5px solid var(--warm2);border-radius:12px;padding:6px 14px;font-size:11px;font-weight:900;color:var(--brown);white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.1);opacity:0;pointer-events:none;transition:opacity .3s;z-index:3;}
+.w7-speech.show{opacity:1;}
+.w7-action-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;z-index:10;pointer-events:none;opacity:0;transition:opacity .2s;border-radius:calc(var(--r) - 3px);}
+.w7-action-overlay.show{opacity:1;}
+.w7-action-anim{font-size:52px;}
+.w7-action-label{font-size:14px;font-weight:900;color:#fff;padding:6px 16px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.2);text-align:center;}
+.w7-drop-zone{border:3px dashed var(--accent3);border-radius:var(--r);padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:900;color:var(--accent3);background:#f0fff4;margin-bottom:8px;transition:all .2s;}
+.w7-drop-zone.over{background:#c8f7d8;border-color:#2e7d32;transform:scale(1.02);}
+@keyframes correctFlash{0%,100%{background:#f0fff4}50%{background:#a5d6a7}}
+@keyframes wrongFlash{0%,100%{background:#f0fff4}50%{background:#ffcdd2}}
+.w7-drop-zone.correct-flash{animation:correctFlash .5s;}
+.w7-drop-zone.wrong-flash{animation:wrongFlash .5s;}
+.w7-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.w7-drag-card{background:#fff;border:2.5px solid var(--warm2);border-radius:14px;padding:12px 10px 10px;cursor:grab;text-align:center;box-shadow:0 2px 8px var(--shadow);transition:transform .15s,box-shadow .15s;position:relative;user-select:none;-webkit-user-select:none;touch-action:none;}
+.w7-drag-card:active{transform:scale(.95);cursor:grabbing;}
+.w7-drag-card.used{opacity:.4;filter:grayscale(.6);cursor:not-allowed;}
+.w7-drag-card.dragging{opacity:.3;transform:scale(.92);}
+.w7-drag-card.correct-glow{border-color:var(--accent3);box-shadow:0 0 0 3px rgba(102,187,106,.4);}
+.w7-drag-card.wrong-glow{border-color:#ef5350;box-shadow:0 0 0 3px rgba(239,83,80,.35);}
+.w7-dc-key{position:absolute;top:7px;left:7px;width:20px;height:20px;border-radius:50%;background:var(--warm2);font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;color:var(--brown3);}
+.w7-dc-scene{font-size:28px;margin:10px 0 4px;}
+.w7-dc-text{font-size:11px;font-weight:900;color:var(--brown);line-height:1.4;}
+.w7-consequence{display:none;font-size:9px;font-weight:900;color:#ef5350;background:#fff5f5;border-radius:6px;padding:3px 6px;margin-top:6px;line-height:1.4;}
+.w7-good-tag{display:none;font-size:9px;font-weight:900;color:var(--accent3);background:#f0fff4;border-radius:6px;padding:3px 6px;margin-top:6px;}
+
 </style>
-</head>
+
 <body>
 
 <div id="app">
@@ -1327,6 +1522,27 @@ body {
         <div class="lv-label">等級</div>
       </div>
     </div>
+   <!-- 倒數計時卡片 -->
+<div style="margin:0 16px 0;" id="countdown-card">
+  <div style="background:linear-gradient(135deg,#1a6b3a,#2d8a4e);
+    border-radius:var(--r);padding:14px 18px;
+    display:flex;align-items:center;gap:14px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.15);">
+    <div style="font-size:36px" id="cd-icon">📅</div>
+    <div style="flex:1">
+      <div style="font-size:11px;color:rgba(255,255,255,0.7);font-weight:900">學習進度</div>
+      <div style="font-size:15px;font-weight:900;color:#fff;margin-top:2px" id="cd-msg">計算中...</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:3px" id="cd-sub"></div>
+    </div>
+    <div onclick="showLearningHistory()"
+      style="background:rgba(255,255,255,0.2);color:#fff;
+      padding:6px 12px;border-radius:20px;
+      font-size:11px;font-weight:900;cursor:pointer">
+      查看紀錄
+    </div>
+  </div>
+</div>
+<div style="height:8px"></div>
     <div class="sec-head"><div class="sec-title">快速入口</div></div>
     <div class="quick-grid">
       <div class="quick-card" onclick="goTab('map')"><div class="quick-icon">🗺️</div><div class="quick-label">課程地圖</div><div class="quick-desc">所有關卡</div></div>
@@ -1400,7 +1616,7 @@ body {
         <div class="level-info locked-info" id="map-info-w8">
           <div class="level-name">Week 6：飲食選擇</div>
           <div class="level-desc">接物遊戲・好食物大作戰</div>
-          <div class="level-stars" id="map-stars-w8">🔒 需完成 Week 7</div>
+          <div class="level-stars" id="map-stars-w8">🔒 需完成 Week 5</div>
         </div>
       </div>
       <div class="level-row" id="map-row-w9" onclick="openLevel('w9')">
@@ -1408,7 +1624,7 @@ body {
         <div class="level-info locked-info" id="map-info-w9">
           <div class="level-name">Week 7：運動體驗</div>
           <div class="level-desc">方塊互動遊戲・運動大挑戰</div>
-          <div class="level-stars" id="map-stars-w9">🔒 需完成 Week 8</div>
+          <div class="level-stars" id="map-stars-w9">🔒 需完成 Week 6</div>
         </div>
       </div>
     </div>
@@ -1449,17 +1665,73 @@ body {
 
     <!-- CONTENT AREAS -->
     <div class="content-area" id="contentArea">
-      <!-- W1 -->
-      <div id="w1-check" class="hidden">
-        <div style="text-align:center;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:4px">你最近有這些症狀嗎？</div>
-        <div style="text-align:center;font-size:11px;color:#bbb;margin-bottom:10px">❌ 沒有 ────── ⭕ 有</div>
-        <div class="tinder-wrap" id="tinderStage"></div>
-        <div class="swipe-hint">← 沒有 ・ 有 →</div>
-        <div class="swipe-btns">
-          <button class="swipe-btn swipe-no" onclick="swipe('left')">❌</button>
-          <button class="swipe-btn swipe-yes" onclick="swipe('right')">⭕</button>
-        </div>
+     <!-- W1 TNSS 說明 -->
+<div id="w1-tnss-intro" class="hidden">
+  <div style="background:#fff;border-radius:var(--r);padding:20px 18px;box-shadow:0 2px 10px var(--shadow);">
+    <div style="text-align:center;font-size:36px;margin-bottom:8px">📋</div>
+    <div style="font-weight:900;font-size:16px;color:var(--brown);text-align:center;margin-bottom:14px">
+      鼻過敏嚴重度評估（TNSS）
+    </div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.8">
+      接下來會評估 <b style="color:var(--brown)">3 個症狀</b>，<br>
+      每項用 <b>0–3 分</b> 描述你的狀況：
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:10px;background:#f8f8f8;border-radius:12px;padding:10px 14px">
+        <span style="font-size:18px;min-width:28px;text-align:center">⚪</span>
+        <div><b style="color:#888">0 分・無症狀</b><div style="font-size:11px;color:#bbb">完全沒有</div></div>
       </div>
+      <div style="display:flex;align-items:center;gap:10px;background:#f0fff4;border-radius:12px;padding:10px 14px">
+        <span style="font-size:18px;min-width:28px;text-align:center">🟢</span>
+        <div><b style="color:var(--accent3)">1 分・輕度</b><div style="font-size:11px;color:var(--muted)">有症狀，但不影響日常生活</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;background:#fff8f0;border-radius:12px;padding:10px 14px">
+        <span style="font-size:18px;min-width:28px;text-align:center">🟡</span>
+        <div><b style="color:var(--accent2)">2 分・中度</b><div style="font-size:11px;color:var(--muted)">部分影響日常生活或睡眠</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;background:#fff5f5;border-radius:12px;padding:10px 14px">
+        <span style="font-size:18px;min-width:28px;text-align:center">🔴</span>
+        <div><b style="color:#ef5350">3 分・重度</b><div style="font-size:11px;color:var(--muted)">嚴重影響日常生活或睡眠</div></div>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:12px;color:#bbb;margin-bottom:12px">總分最高 12 分，分數越高過敏越嚴重</div>
+    <button class="btn-primary btn-orange" onclick="startTnssCards()">開始評估 →</button>
+  </div>
+</div>
+ <!-- W1 -->
+     <div id="w1-check" class="hidden">
+  <div style="text-align:center;font-size:13px;font-weight:800;color:var(--muted);margin-bottom:4px"
+       id="tnssProgress">第 1 / 4 項症狀</div>
+  <div id="tnssCard" style="background:#fff;border-radius:var(--r);padding:24px 18px;
+       box-shadow:0 6px 24px var(--shadow);text-align:center;margin-bottom:10px">
+    <div id="tnssCardEmoji" style="font-size:56px;margin-bottom:10px">🤧</div>
+    <div id="tnssCardTitle" style="font-size:18px;font-weight:900;color:var(--brown);margin-bottom:4px">打噴嚏</div>
+    <div id="tnssCardDesc" style="font-size:12px;color:var(--muted);margin-bottom:20px">一打就是好幾次</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <button class="tnss-btn" data-score="0" onclick="scoreCard(0)">
+        <span style="font-size:20px">⚪</span>
+        <div style="font-size:11px;font-weight:900;color:#999;margin-top:4px">0</div>
+        <div style="font-size:9px;color:#bbb">無症狀</div>
+      </button>
+      <button class="tnss-btn" data-score="1" onclick="scoreCard(1)">
+        <span style="font-size:20px">🟢</span>
+        <div style="font-size:11px;font-weight:900;color:var(--accent3);margin-top:4px">1</div>
+        <div style="font-size:9px;color:var(--muted)">輕度</div>
+      </button>
+      <button class="tnss-btn" data-score="2" onclick="scoreCard(2)">
+        <span style="font-size:20px">🟡</span>
+        <div style="font-size:11px;font-weight:900;color:var(--accent2);margin-top:4px">2</div>
+        <div style="font-size:9px;color:var(--muted)">中度</div>
+      </button>
+      <button class="tnss-btn" data-score="3" onclick="scoreCard(3)">
+        <span style="font-size:20px">🔴</span>
+        <div style="font-size:11px;font-weight:900;color:#ef5350;margin-top:4px">3</div>
+        <div style="font-size:9px;color:#ef5350">重度</div>
+      </button>
+    </div>
+  </div>
+  <div id="tnssDoneList" style="display:flex;flex-direction:column;gap:6px"></div>
+</div>
       <div id="w1-compare" class="hidden">
         <div style="font-weight:900;font-size:14px;color:var(--brown);margin-bottom:10px">📋 60秒判斷：哪個是過敏症狀？</div>
         <div class="compare-grid">
@@ -1478,7 +1750,7 @@ body {
         <div class="shield-center">
           <div class="shield-icon">🛡️</div>
           <div class="shield-title">「防護罩」理論</div>
-          <div class="shield-desc">簡單說，就像身體的<b>「防護罩」</b>變弱了。<br><br>當防護罩守不住，冷風、灰塵一來，鼻子就會過度反應，發出警報！</div>
+          <div class="shield-desc">簡單說，就像身體的<b>「防護罩」</b>變弱了。<br><br>當防護罩守不住，冷風、灰塵一來，鼻子就會過度反應，發出警報！<br><br>👉 每個人的防護罩強弱不同，這和你的身體狀態有關（中醫稱為體質）。</div>
         </div>
         <button class="btn-primary" onclick="nextW1Step('type')">那我的防護罩哪裡破了？</button>
       </div>
@@ -1655,76 +1927,84 @@ body {
       <!-- W3 — 環境影響 -->
 
       <!-- Step 1: 溫差 -->
-      <div id="w3-s1" class="hidden">
-        <div class="w3-info-card">
-          <div class="w3-info-icon">🌡️</div>
-          <div class="w3-info-title">溫差變化</div>
-          <div class="w3-info-body">當天氣突然變冷，或從冷氣房走到戶外時，鼻子的黏膜會受到刺激。有些人對這種「溫差變化」特別敏感，可能會出現打噴嚏、流鼻水或鼻子癢的情況。</div>
-        </div>
-        <div class="w3-q-card">
-          <div class="w3-q-title">👉 你有沒有發現自己在這些情況比較容易不舒服？</div>
-          <div class="w3-choices" id="s1-choices">
-            <div class="w3-choice" onclick="pickW3('s1','A',this)"><span class="w3-c-key">A</span>早上起床或天氣變冷</div>
-            <div class="w3-choice" onclick="pickW3('s1','B',this)"><span class="w3-c-key">B</span>進出冷氣房</div>
-            <div class="w3-choice" onclick="pickW3('s1','C',this)"><span class="w3-c-key">C</span>都會</div>
-            <div class="w3-choice" onclick="pickW3('s1','D',this)"><span class="w3-c-key">D</span>沒特別感覺</div>
-          </div>
-        </div>
-      </div>
+<div id="w3-s1" class="hidden">
+  <div class="w3-info-card">
+    <div class="w3-info-icon">🌡️</div>
+    <div class="w3-info-title">溫差變化</div>
+    <div class="w3-info-body">早上起床或進出冷氣房時，鼻子的黏膜會受到刺激，有些人特別敏感。</div>
+  </div>
+  <div class="slider-card">
+    <div class="slider-question">🌡️ 溫差變化影響你多少？</div>
+    <div class="slider-labels"><span>完全沒感覺</span><span>超級嚴重</span></div>
+    <input type="range" class="symptom-slider" id="sl-1" min="0" max="100" value="50"
+      oninput="updateSlider('sl-1','sl-label-1','sl-emoji-1')">
+    <div class="slider-feedback">
+      <span class="slider-emoji" id="sl-emoji-1">😐</span>
+      <span class="slider-label-text" id="sl-label-1">普通</span>
+    </div>
+  </div>
+  <button class="btn-primary btn-orange" onclick="confirmSlider('s1','sl-1')">確認 →</button>
+</div>
 
-      <!-- Step 2: 濕度 -->
-      <div id="w3-s2" class="hidden">
-        <div class="w3-info-card" style="--w3c:#4fc3f7">
-          <div class="w3-info-icon">💧</div>
-          <div class="w3-info-title">環境濕度</div>
-          <div class="w3-info-body">空氣的濕度其實也會影響鼻子。當環境太潮濕時，塵蟎或黴菌比較容易滋生；但如果空氣太乾燥，也可能讓鼻腔變得乾癢、敏感。</div>
-        </div>
-        <div class="w3-q-card">
-          <div class="w3-q-title">👉 你覺得哪種環境比較容易讓鼻子不舒服？</div>
-          <div class="w3-choices" id="s2-choices">
-            <div class="w3-choice" onclick="pickW3('s2','A',this)"><span class="w3-c-key">A</span>潮濕悶悶的房間</div>
-            <div class="w3-choice" onclick="pickW3('s2','B',this)"><span class="w3-c-key">B</span>很乾、有點刺刺的空氣</div>
-            <div class="w3-choice" onclick="pickW3('s2','C',this)"><span class="w3-c-key">C</span>兩種都有可能</div>
-            <div class="w3-choice" onclick="pickW3('s2','D',this)"><span class="w3-c-key">D</span>不確定</div>
-          </div>
-        </div>
-      </div>
+<!-- Step 2: 濕度 -->
+<div id="w3-s2" class="hidden">
+  <div class="w3-info-card" style="--w3c:#4fc3f7">
+    <div class="w3-info-icon">💧</div>
+    <div class="w3-info-title">環境濕度</div>
+    <div class="w3-info-body">太潮濕容易滋生塵蟎，太乾燥則讓鼻腔變得乾癢，兩種都可能讓鼻子不舒服。</div>
+  </div>
+  <div class="slider-card">
+    <div class="slider-question">💧 濕度環境影響你多少？</div>
+    <div class="slider-labels"><span>完全沒感覺</span><span>超級嚴重</span></div>
+    <input type="range" class="symptom-slider" id="sl-2" min="0" max="100" value="50"
+      oninput="updateSlider('sl-2','sl-label-2','sl-emoji-2')">
+    <div class="slider-feedback">
+      <span class="slider-emoji" id="sl-emoji-2">😐</span>
+      <span class="slider-label-text" id="sl-label-2">普通</span>
+    </div>
+  </div>
+  <button class="btn-primary btn-orange" onclick="confirmSlider('s2','sl-2')">確認 →</button>
+</div>
 
-      <!-- Step 3: 花粉 -->
-      <div id="w3-s3" class="hidden">
-        <div class="w3-info-card" style="--w3c:#aed581">
-          <div class="w3-info-icon">🌼</div>
-          <div class="w3-info-title">花粉與「帶回家的過敏原」</div>
-          <div class="w3-info-body">有些過敏原（例如花粉）主要在戶外，但它們不會只停在外面。可能附著在衣服、頭髮或書包上，被帶進室內，讓人在家裡也出現過敏症狀。</div>
-        </div>
-        <div class="w3-q-card">
-          <div class="w3-q-title">👉 你覺得哪個情境最容易接觸到這些過敏原？</div>
-          <div class="w3-choices" id="s3-choices">
-            <div class="w3-choice" onclick="pickW3('s3','A',this)"><span class="w3-c-key">A</span>在戶外活動時</div>
-            <div class="w3-choice" onclick="pickW3('s3','B',this)"><span class="w3-c-key">B</span>剛從外面回到家</div>
-            <div class="w3-choice" onclick="pickW3('s3','C',this)"><span class="w3-c-key">C</span>坐在自己的床上或沙發</div>
-            <div class="w3-choice" onclick="pickW3('s3','D',this)"><span class="w3-c-key">D</span>都有可能</div>
-          </div>
-        </div>
-      </div>
+<!-- Step 3: 花粉 -->
+<div id="w3-s3" class="hidden">
+  <div class="w3-info-card" style="--w3c:#aed581">
+    <div class="w3-info-icon">🌼</div>
+    <div class="w3-info-title">花粉與戶外過敏原</div>
+    <div class="w3-info-body">花粉過敏是過敏性鼻炎常見的原因之一。當人體接觸到花粉、灰塵或空氣中的微小顆粒時，免疫系統可能會產生過度反應。這些過敏原很容易附著在衣服、頭髮或皮膚上，被帶回室內。👉 當吸入後，會刺激鼻腔黏膜，出現打噴嚏、流鼻水或鼻子癢等症狀。</div>
+  </div>
+  <div class="slider-card">
+    <div class="slider-question">🌼 花粉／戶外影響你多少？</div>
+    <div class="slider-labels"><span>完全沒感覺</span><span>超級嚴重</span></div>
+    <input type="range" class="symptom-slider" id="sl-3" min="0" max="100" value="50"
+      oninput="updateSlider('sl-3','sl-label-3','sl-emoji-3')">
+    <div class="slider-feedback">
+      <span class="slider-emoji" id="sl-emoji-3">😐</span>
+      <span class="slider-label-text" id="sl-label-3">普通</span>
+    </div>
+  </div>
+  <button class="btn-primary btn-orange" onclick="confirmSlider('s3','sl-3')">確認 →</button>
+</div>
 
-      <!-- Step 4: 室內 -->
-      <div id="w3-s4" class="hidden">
-        <div class="w3-info-card" style="--w3c:#ffb74d">
-          <div class="w3-info-icon">🏠</div>
-          <div class="w3-info-title">室內過敏原（灰塵、塵蟎）</div>
-          <div class="w3-info-body">室內環境中，其實也可能存在許多看不見的過敏原，例如灰塵或塵蟎。特別是在床、地毯或久未清潔的空間中，這些因素都可能影響鼻子的狀況。</div>
-        </div>
-        <div class="w3-q-card">
-          <div class="w3-q-title">👉 你覺得哪個地方最可能影響鼻子？</div>
-          <div class="w3-choices" id="s4-choices">
-            <div class="w3-choice" onclick="pickW3('s4','A',this)"><span class="w3-c-key">A</span>床或枕頭</div>
-            <div class="w3-choice" onclick="pickW3('s4','B',this)"><span class="w3-c-key">B</span>地板或地毯</div>
-            <div class="w3-choice" onclick="pickW3('s4','C',this)"><span class="w3-c-key">C</span>書桌或角落</div>
-            <div class="w3-choice" onclick="pickW3('s4','D',this)"><span class="w3-c-key">D</span>以上都有可能</div>
-          </div>
-        </div>
-      </div>
+<!-- Step 4: 室內 -->
+<div id="w3-s4" class="hidden">
+  <div class="w3-info-card" style="--w3c:#ffb74d">
+    <div class="w3-info-icon">🏠</div>
+    <div class="w3-info-title">室內過敏原（灰塵、塵蟎）</div>
+    <div class="w3-info-body">床、地毯、久未清潔的角落，都可能藏有大量塵蟎和灰塵。</div>
+  </div>
+  <div class="slider-card">
+    <div class="slider-question">🏠 室內環境影響你多少？</div>
+    <div class="slider-labels"><span>完全沒感覺</span><span>超級嚴重</span></div>
+    <input type="range" class="symptom-slider" id="sl-4" min="0" max="100" value="50"
+      oninput="updateSlider('sl-4','sl-label-4','sl-emoji-4')">
+    <div class="slider-feedback">
+      <span class="slider-emoji" id="sl-emoji-4">😐</span>
+      <span class="slider-label-text" id="sl-label-4">普通</span>
+    </div>
+  </div>
+  <button class="btn-primary btn-orange" onclick="confirmSlider('s4','sl-4')">確認 →</button>
+</div>
 
       <!-- Step 5: 整合任務 -->
       <div id="w3-s5" class="hidden">
@@ -1744,7 +2024,7 @@ body {
           </div>
           <div class="w3-check-item" id="ck-3" onclick="toggleW3Check('ck-3','從外面回來')">
             <div class="w3-check-box" id="ckb-3">☐</div>
-            <div class="w3-check-label">🌼 從外面回來</div>
+            <div class="w3-check-label">🌼 花粉與戶外過敏原</div>
           </div>
           <div class="w3-check-item" id="ck-4" onclick="toggleW3Check('ck-4','在房間裡')">
             <div class="w3-check-box" id="ckb-4">☐</div>
@@ -1844,34 +2124,41 @@ body {
         </div>
         <button class="btn-primary" id="w7DialogBtn" onclick="nextW7Dialog()" style="margin-top:10px">繼續 ▶</button>
       </div>
-
-      <div id="w7-scenario" class="hidden">
-        <div class="scenario-card">
-          <div class="scenario-header">
-            <span class="scenario-icon">🌅</span>
-            <span class="scenario-title">早上起床覺得有點冷…</span>
-          </div>
-          <div class="scenario-scene">
-            <div class="scenario-emoji">🛏️❄️</div>
-            <div class="scenario-desc">你剛醒來，感覺房間有點涼。<br>你會怎麼做？</div>
-          </div>
+     <div id="w7-scenario" class="hidden">
+        <div id="w7Ghost"><div class="g-scene" id="w7GhostScene"></div><div class="g-text" id="w7GhostText"></div></div>
+        <div class="w7-game-stage" id="w7Stage">
+          <div style="position:absolute;top:12px;right:14px;font-size:48px;opacity:.1;">🌤️</div>
+          <div style="position:absolute;top:14px;left:12px;font-size:28px;opacity:.1;">❄️</div>
+          <div class="w7-hp-row"><span class="w7-hp-lbl">HP</span><div class="w7-hp-bg"><div class="w7-hp-fill" id="w7HpFill" style="width:82%"></div></div><span class="w7-hp-num" id="w7HpNum">82</span></div>
+          <span class="w7-bibi-char" id="w7BibiChar" onclick="w7PokeBibi()">🤧</span>
+          <div class="w7-speech" id="w7Speech">把正確的行為拖過來！</div>
+          <div class="w7-action-overlay" id="w7Overlay"><div class="w7-action-anim" id="w7OverlayAnim"></div><div class="w7-action-label" id="w7OverlayLabel"></div></div>
+          <div class="w7-stage-floor"></div>
         </div>
-        <div class="scenario-choices" id="w7Choices">
-          <div class="sc-choice" id="sc-A" onclick="pickScenario('A')">
-            <div class="sc-key">A</div>
-            <div class="sc-text">直接跳下床去洗澡</div>
+        <div class="w7-drop-zone" id="w7DropZone" ondragover="w7OnDragOver(event)" ondragleave="w7OnDragLeave(event)" ondrop="w7OnDrop(event)">
+          <span style="font-size:24px">👆</span><span>把行為拖到這裡，或拖到鼻鼻身上！</span>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:var(--brown);opacity:.7;text-align:center;margin-bottom:6px">⬆️ 選一個行為拖上去</div>
+        <div class="w7-cards-grid">
+          <div class="w7-drag-card" id="w7card-A" draggable="true" data-key="A" data-scene="🚿❄️" data-text="直接跳下床洗澡" data-correct="0" data-consequence="鼻黏膜遭冷空氣猛擊，連環噴嚏爆發！" data-fb="❌ 直接衝去洗澡！冷空氣直接衝進鼻子，馬上開始連環噴嚏、流鼻水⋯⋯😰" onmousedown="w7StartDrag(event,'A')" ontouchstart="w7StartDrag(event,'A')">
+            <div class="w7-dc-key">A</div><div class="w7-dc-scene">🚿❄️</div><div class="w7-dc-text">直接跳下床<br>去洗澡</div>
+            <div class="w7-consequence" id="w7con-A">⚠️ 鼻黏膜遭冷空氣猛擊，連環噴嚏爆發！</div>
+            <div class="w7-good-tag" id="w7good-A">✅ 護鼻好習慣！</div>
           </div>
-          <div class="sc-choice best" id="sc-B" onclick="pickScenario('B')">
-            <div class="sc-key">B</div>
-            <div class="sc-text">在被窩裡穿好衣服，坐 2–3 分鐘再起床</div>
+          <div class="w7-drag-card" id="w7card-B" draggable="true" data-key="B" data-scene="🧥🛏️" data-text="被窩穿衣坐2-3分鐘" data-correct="1" data-consequence="" data-fb="✅ 完美！副交感神經平穩切換，鼻黏膜完全得到保護！鼻鼻今天超舒適 😊" onmousedown="w7StartDrag(event,'B')" ontouchstart="w7StartDrag(event,'B')">
+            <div class="w7-dc-key">B</div><div class="w7-dc-scene">🧥🛏️</div><div class="w7-dc-text">被窩穿衣服<br>坐 2–3 分鐘</div>
+            <div class="w7-consequence" id="w7con-B"></div>
+            <div class="w7-good-tag" id="w7good-B">✅ 護鼻好習慣！</div>
           </div>
-          <div class="sc-choice" id="sc-C" onclick="pickScenario('C')">
-            <div class="sc-key">C</div>
-            <div class="sc-text">打開窗戶讓冷風吹進來</div>
+          <div class="w7-drag-card" id="w7card-C" draggable="true" data-key="C" data-scene="🌬️🪟" data-text="打開窗讓冷風吹進來" data-correct="0" data-consequence="冷風灌入！過敏在30秒內爆發！" data-fb="❌ 太危險！剛起床防禦力最低，冷風直接灌入鼻腔，30秒內過敏立刻發作！🌪️" onmousedown="w7StartDrag(event,'C')" ontouchstart="w7StartDrag(event,'C')">
+            <div class="w7-dc-key">C</div><div class="w7-dc-scene">🌬️🪟</div><div class="w7-dc-text">打開窗讓<br>冷風吹進來</div>
+            <div class="w7-consequence" id="w7con-C">⚠️ 冷風灌入！過敏在30秒內爆發！</div>
+            <div class="w7-good-tag" id="w7good-C">✅ 護鼻好習慣！</div>
           </div>
-          <div class="sc-choice" id="sc-D" onclick="pickScenario('D')">
-            <div class="sc-key">D</div>
-            <div class="sc-text">繼續躺著滑手機</div>
+          <div class="w7-drag-card" id="w7card-D" draggable="true" data-key="D" data-scene="📱😴" data-text="繼續再被窩裡躺著滑手機" data-correct="0" data-consequence="藍光讓大腦興奮，起床時更脆弱！" data-fb="❌雖然還在床上，但一直滑手機會讓大腦和自律神經更興奮；接著又突然起身、接觸冷空氣，鼻子就更容易開始打噴嚏、流鼻水、鼻塞喔！！📱" onmousedown="w7StartDrag(event,'D')" ontouchstart="w7StartDrag(event,'D')">
+            <div class="w7-dc-key">D</div><div class="w7-dc-scene">📱😴</div><div class="w7-dc-text">繼續躺著<br>滑手機</div>
+            <div class="w7-consequence" id="w7con-D">⚠️ 藍光讓大腦興奮，起床時更脆弱！</div>
+            <div class="w7-good-tag" id="w7good-D">✅ 護鼻好習慣！</div>
           </div>
         </div>
         <div id="w7FeedbackBox" class="feedback-box hidden"></div>
@@ -2016,7 +2303,70 @@ body {
         </div>
         <button class="btn-primary" id="w9DialogBtn" onclick="nextW9Dialog()" style="margin-top:10px">繼續 ▶</button>
       </div>
+<!-- W9 運動習慣問卷 -->
+<div id="w9-habit-survey" class="hidden">
+  <div style="background:linear-gradient(135deg,#e3f2fd,#fff);border-radius:var(--r);
+    padding:20px 18px;box-shadow:0 4px 16px var(--shadow);border:2px solid var(--warm2);">
+    
+    <!-- 鼻鼻毛毛對話區 -->
+    <div style="display:flex;align-items:flex-end;gap:10px;margin-bottom:16px;">
+      <div style="text-align:center;">
+        <div style="font-size:48px;animation:heroFloat 3s ease-in-out infinite">🤧</div>
+        <div style="font-size:10px;font-weight:900;color:var(--muted);margin-top:4px">鼻鼻</div>
+      </div>
+      <div style="flex:1;background:#fff;border-radius:14px;padding:12px 14px;
+        font-size:13px;font-weight:700;color:var(--brown);line-height:1.6;
+        box-shadow:0 2px 10px var(--shadow);border:1.5px solid var(--warm2);">
+        毛毛，我想先問問你——<br>
+        你平常有在運動的習慣嗎？🏃
+      </div>
+    </div>
 
+   <!-- 選項 -->
+    <!-- 選項 -->
+    <div style="display:flex;flex-direction:column;gap:8px;" id="w9HabitChoices">
+      <div class="w3-choice" onclick="pickW9Habit('有','每週3次以上',this)">
+        <span class="w3-c-key">A</span>
+        <div>
+          <div style="font-weight:900">💪 有！每週運動 3 次以上</div>
+          <div style="font-size:11px;color:var(--muted)">慢跑、游泳、健身等</div>
+        </div>
+      </div>
+      <div class="w3-choice" onclick="pickW9Habit('偶爾','偶爾運動',this)">
+        <span class="w3-c-key">B</span>
+        <div>
+          <div style="font-weight:900">🚶 偶爾，但不太規律</div>
+          <div style="font-size:11px;color:var(--muted)">有心情才動一動</div>
+        </div>
+      </div>
+      <div class="w3-choice" onclick="pickW9Habit('沒有','幾乎不運動',this)">
+        <span class="w3-c-key">C</span>
+        <div>
+          <div style="font-weight:900">😅 幾乎沒有運動習慣</div>
+          <div style="font-size:11px;color:var(--muted)">日常就是走路上下學</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 毛毛回應區（答完才出現）-->
+    <div id="w9HabitResponse" class="hidden" style="margin-top:14px;">
+      <div style="display:flex;align-items:flex-end;gap:10px;flex-direction:row-reverse;">
+        <div style="text-align:center;">
+          <div style="font-size:48px;animation:heroFloat 3s ease-in-out infinite">👦</div>
+          <div style="font-size:10px;font-weight:900;color:var(--muted);margin-top:4px">毛毛</div>
+        </div>
+        <div id="w9HabitResponseText" style="flex:1;background:#f0fff4;border-radius:14px;
+          padding:12px 14px;font-size:13px;font-weight:700;color:var(--brown);
+          line-height:1.65;box-shadow:0 2px 10px var(--shadow);
+          border:1.5px solid var(--accent3);">
+        </div>
+      </div>
+      <button class="btn-primary btn-green" onclick="startW9Game()" style="margin-top:14px">
+        🎮 開始運動方塊遊戲！
+      </button>
+    </div>
+  </div>
+</div>
       <div id="w9-game" class="hidden">
         <!-- 遊戲 HUD -->
         <div class="block-header">
@@ -2149,7 +2499,7 @@ body {
         <div class="task-list" id="w9TaskList">
           <div class="task-item" id="w9t-1" onclick="toggleTask('w9t-1','每週3次以上輕度運動')">
             <div class="task-check" id="w9tc-1">○</div>
-            <div><div class="task-name">🚶 每週 3 次以上輕度運動</div><div class="task-tip">散步、瑜伽、伸展都算</div></div>
+            <div><div class="task-name">🚶 這週你有沒有至少2天，連續運動10分鐘以上</div><div class="task-tip">打籃球、跳繩、羽球、跑步</div></div>
           </div>
           <div class="task-item" id="w9t-2" onclick="toggleTask('w9t-2','運動前做暖身伸展')">
             <div class="task-check" id="w9tc-2">○</div>
@@ -2219,6 +2569,14 @@ body {
     <div class="profile-card">
       <div class="profile-row" onclick="setNick()"><div class="profile-row-left"><div class="profile-row-icon">✏️</div><div class="profile-row-label">修改暱稱</div></div><div class="profile-row-arrow">›</div></div>
       <div class="profile-row" onclick="showTips()"><div class="profile-row-left"><div class="profile-row-icon">💡</div><div class="profile-row-label">護鼻小知識</div></div><div class="profile-row-arrow">›</div></div>
+      <div class="profile-row" onclick="showLearningHistory()"><div class="profile-row-left"><div class="profile-row-icon">📊</div><div class="profile-row-label">學習歷程紀錄</div></div><div class="profile-row-arrow">›</div></div>
+      <div class="profile-row" onclick="showCertificate()">
+  <div class="profile-row-left">
+    <div class="profile-row-icon">🏆</div>
+    <div class="profile-row-label">完課認證・領取禮物</div>
+  </div>
+  <div class="profile-row-arrow">›</div>
+</div>
       <div class="profile-row" onclick="resetAll()"><div class="profile-row-left"><div class="profile-row-icon">🔄</div><div class="profile-row-label">重置進度</div></div><div class="profile-row-arrow">›</div></div>
     </div>
     <div style="height:20px"></div>
@@ -2243,16 +2601,250 @@ body {
   </div>
 </div>
 <div class="toast" id="toast"></div>
-
+<div class="badge-modal-bg" id="badgeModal" onclick="closeBadgeModal()">
+  <div class="badge-modal-box" onclick="event.stopPropagation()">
+    <div class="badge-unlock-title">🎉 解鎖新成就！</div>
+    <span class="badge-unlock-emoji" id="bm-emoji">🛡️</span>
+    <div class="badge-stars">⭐⭐⭐</div>
+    <div class="badge-unlock-name" id="bm-name">防護罩</div>
+    <div class="badge-unlock-desc" id="bm-desc">完成 Week 1</div>
+    <button class="btn-primary" style="background:rgba(255,255,255,0.2);box-shadow:none;border:2px solid rgba(255,255,255,0.4)" onclick="closeBadgeModal()">太棒了！✨</button>
+  </div>
+</div>
+<!-- 完課認證彈窗 -->
+<div class="cert-modal-bg" id="certModal">
+  <div class="cert-box">
+    <div class="cert-seal">🏆</div>
+    <div class="cert-label">COMPLETION CERTIFICATE</div>
+    <div class="cert-title">鼻鼻大冒險・完課認證</div>
+    <div class="cert-name" id="cert-name">學員</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.7)">已完成全部七週課程</div>
+    <div class="cert-divider"></div>
+    <div class="cert-stats">
+      <div class="cert-stat"><div class="cert-stat-val" id="cert-xp">0</div><div class="cert-stat-lbl">總 XP</div></div>
+      <div class="cert-stat"><div class="cert-stat-val">7</div><div class="cert-stat-lbl">完成關卡</div></div>
+      <div class="cert-stat"><div class="cert-stat-val" id="cert-days">0</div><div class="cert-stat-lbl">學習天數</div></div>
+    </div>
+    <div class="cert-gift-box">
+      <div class="cert-gift-icon">🎁</div>
+      <div class="cert-gift-text">
+        <div class="cert-gift-title">🎉 恭喜！您可以領取禮物</div>
+        <div class="cert-gift-desc">請將此畫面出示給研究員<br>即可領取感謝禮物 😊</div>
+      </div>
+    </div>
+    <div class="cert-date" id="cert-date"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" style="background:rgba(255,255,255,0.15);box-shadow:none;border:1.5px solid rgba(255,255,255,0.3);font-size:13px" onclick="closeCertModal()">關閉</button>
+      <button class="btn-primary btn-orange" style="font-size:13px" onclick="showCertFull()">🔍 放大顯示</button>
+    </div>
+  </div>
+</div>  
 <script>
 // ═══ STATE ═══
-const DB = "bibi_v5";
+const DB = "bibi_v6";
 let s = {};
 try { s = JSON.parse(localStorage.getItem(DB)||"{}"); } catch(e){}
-if(!s.hp) s = { hp:60, lv:1, exp:0, w1d:false, w2d:false, w3d:false, w4d:false, w7d:false, w8d:false, w9d:false, nick:"", streak:1, lastDay:today(), w2s:false };
+if(!s.hp) s = {
+  hp:60, lv:1, exp:0,
+  w1d:false, w2d:false, w3d:false, w4d:false,
+  w7d:false, w8d:false, w9d:false,
+  nick:"", streak:1, lastDay:today(), w2s:false,
+  // ── 新增時間追蹤 ──
+  firstPlayDate: null,
+  notifyEnabled: false,
+  timestamps: {
+    w1_start:null, w1_done:null,
+    w2_start:null, w2_done:null,
+    w3_start:null, w3_done:null,
+    w4_start:null, w4_done:null,
+    w7_start:null, w7_done:null,
+    w8_start:null, w8_done:null,
+    w9_start:null, w9_done:null,
+  },
+  sessionLogs: []
+};
+// 補齊舊資料缺少的欄位
+if(!s.timestamps) s.timestamps = {
+  w1_start:null, w1_done:null,
+  w2_start:null, w2_done:null,
+  w3_start:null, w3_done:null,
+  w4_start:null, w4_done:null,
+  w7_start:null, w7_done:null,
+  w8_start:null, w8_done:null,
+  w9_start:null, w9_done:null,
+};
+if(!s.sessionLogs) s.sessionLogs = [];
 function today(){ return new Date().toDateString(); }
 function save(){ localStorage.setItem(DB, JSON.stringify(s)); refreshAllUI(); }
+// ══════════════════════════════════
+//  時間追蹤系統
+// ══════════════════════════════════
 
+// 距離第一次開啟幾天
+function getDaysSinceStart() {
+  if(!s.firstPlayDate) return 0;
+  const start = new Date(s.firstPlayDate);
+  const now = new Date();
+  return Math.floor((now - start) / (1000 * 60 * 60 * 24));
+}
+
+// 取得好看的日期字串
+function formatDate(isoString) {
+  if(!isoString) return '尚未記錄';
+  const d = new Date(isoString);
+  return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// 章節是否解鎖（依天數）
+function isChapterUnlocked(chapter) {
+  // 測試模式：改成分鐘（正式上線改回天）
+  const TEST_MODE = true ; // ← 改成 true 可以快速測試
+  const unit = TEST_MODE
+    ? (Date.now() - new Date(s.firstPlayDate||Date.now())) / 60000  // 分鐘
+    : getDaysSinceStart(); // 天數
+
+  if(chapter === 1) return true;
+  if(chapter === 2) return unit >= (TEST_MODE ? 2 : 14);
+  if(chapter === 3) return unit >= (TEST_MODE ? 5 : 28);
+  return false;
+}
+
+// 章節是否逾期
+function isChapterExpired(chapter) {
+  const days = getDaysSinceStart();
+  if(chapter === 1) return days > 14;
+  if(chapter === 2) return days > 28;
+  if(chapter === 3) return days > 42;
+  return false;
+}
+
+// 取得章節狀態
+function getChapterStatus(chapter) {
+  if(!isChapterUnlocked(chapter)) return 'locked';
+  if(isChapterExpired(chapter))   return 'expired';
+  return 'available';
+}
+
+// 記錄動作
+function logAction(action) {
+  const entry = {
+    date: new Date().toISOString(),
+    day: getDaysSinceStart(),
+    action: action
+  };
+  s.sessionLogs.push(entry);
+  if(s.sessionLogs.length > 200) {
+    s.sessionLogs = s.sessionLogs.slice(-200);
+  }
+  save();
+}
+
+// 記錄關卡開始
+function logLevelStart(lvl) {
+  if(!s.timestamps[lvl + '_start']) {
+    s.timestamps[lvl + '_start'] = new Date().toISOString();
+    logAction('start_' + lvl);
+  }
+}
+
+// 記錄關卡完成
+function logLevelDone(lvl) {
+  s.timestamps[lvl + '_done'] = new Date().toISOString();
+  logAction('done_' + lvl);
+}
+
+// 第一次開啟初始化
+function initFirstPlay() {
+  if(!s.firstPlayDate) {
+    s.firstPlayDate = new Date().toISOString();
+    save();
+    logAction('first_open');
+    // 詢問是否開啟通知
+    setTimeout(() => askNotificationPermission(), 2000);
+  } else {
+    logAction('open_app');
+    scheduleReminders();
+  }
+}
+
+// 詢問通知權限
+function askNotificationPermission() {
+  if(!('Notification' in window)) return;
+  if(s.notifyEnabled) return;
+  showModal('🔔', '開啟學習提醒？',
+    '讓鼻鼻定時提醒你回來練習，\n養成好習慣更容易！\n\n（點擊「知道了」後會跳出系統詢問）'
+  );
+  // 覆蓋關閉按鈕行為
+  const origClose = window.closeModal;
+  window.closeModal = async function() {
+    document.getElementById('modal').classList.remove('show');
+    window.closeModal = origClose;
+    try {
+      const perm = await Notification.requestPermission();
+      if(perm === 'granted') {
+        s.notifyEnabled = true; save();
+        showToast('✅ 通知已開啟！');
+        sendNotification('👃 鼻鼻大冒險開始！', '歡迎加入！每天一點點，鼻子越來越好！');
+      }
+    } catch(e) {}
+  };
+}
+
+// 發送通知
+function sendNotification(title, body) {
+  if(Notification.permission !== 'granted') return;
+  new Notification(title, { body, icon: '👃' });
+}
+
+// 排程提醒（每次開啟 APP 時呼叫）
+function scheduleReminders() {
+  const days = getDaysSinceStart();
+
+  // 第二章解鎖提醒
+  if(days >= 14 && !s.w3d && !s.notifiedCh2) {
+    s.notifiedCh2 = true; save();
+    sendNotification('🎉 第二章解鎖了！', '環境調整秘訣等你來學，快回來看看！');
+  }
+
+  // 第三章解鎖提醒
+  if(days >= 28 && !s.w7d && !s.notifiedCh3) {
+    s.notifiedCh3 = true; save();
+    sendNotification('🏃 第三章解鎖了！', '行為實踐章節開放！保暖、飲食、運動三大秘訣！');
+  }
+
+  // 超過 3 天沒開啟
+  if(s.sessionLogs.length > 0) {
+    const last = new Date(s.sessionLogs[s.sessionLogs.length-1].date);
+    const daysSinceLast = (Date.now() - last) / (1000*60*60*24);
+    if(daysSinceLast >= 3) {
+      sendNotification('🤧 鼻鼻好想你！', `已經 ${Math.floor(daysSinceLast)} 天沒練習了，快回來！`);
+    }
+  }
+}
+
+// 顯示學習歷程
+function showLearningHistory() {
+  const days = getDaysSinceStart();
+  const ts = s.timestamps;
+  let msg = `📅 開始日期：${formatDate(s.firstPlayDate)}\n`;
+  msg += `⏱️ 已進行第 ${days} 天\n\n`;
+  msg += `━━━━━━━━━━━━━━\n`;
+  if(ts.w1_start) msg += `W1 開始：${formatDate(ts.w1_start)}\n`;
+  if(ts.w1_done)  msg += `W1 完成：${formatDate(ts.w1_done)}\n`;
+  if(ts.w2_start) msg += `W2 開始：${formatDate(ts.w2_start)}\n`;
+  if(ts.w2_done)  msg += `W2 完成：${formatDate(ts.w2_done)}\n`;
+  if(ts.w3_start) msg += `W3 開始：${formatDate(ts.w3_start)}\n`;
+  if(ts.w3_done)  msg += `W3 完成：${formatDate(ts.w3_done)}\n`;
+  if(ts.w4_start) msg += `W4 開始：${formatDate(ts.w4_start)}\n`;
+  if(ts.w4_done)  msg += `W4 完成：${formatDate(ts.w4_done)}\n`;
+  if(ts.w7_start) msg += `W5 開始：${formatDate(ts.w7_start)}\n`;
+  if(ts.w7_done)  msg += `W5 完成：${formatDate(ts.w7_done)}\n`;
+  if(ts.w8_start) msg += `W6 開始：${formatDate(ts.w8_start)}\n`;
+  if(ts.w8_done)  msg += `W6 完成：${formatDate(ts.w8_done)}\n`;
+  if(ts.w9_start) msg += `W7 開始：${formatDate(ts.w9_start)}\n`;
+  if(ts.w9_done)  msg += `W7 完成：${formatDate(ts.w9_done)}\n`;
+  showModal('📊', '我的學習歷程', msg);
+}
 // ═══ NAVIGATION ═══
 const TABS = ['home','map','leader','profile'];
 let currentTab = 'home';
@@ -2260,8 +2852,11 @@ let currentLevel = '';
 let prevTab = 'home';
 
 function goTab(tab) {
+  // 先把所有頁面 scroll 重置
   TABS.forEach(t => {
-    document.getElementById(`page-${t}`).classList.toggle('active', t===tab);
+    const page = document.getElementById(`page-${t}`);
+    page.scrollTop = 0;  // ← 切換前先重置
+    page.classList.toggle('active', t===tab);
     document.getElementById(`tab-${t}`).classList.toggle('active', t===tab);
   });
   document.getElementById('page-learn').classList.remove('active');
@@ -2269,17 +2864,61 @@ function goTab(tab) {
   if(tab==='leader') renderLeader();
   if(tab==='profile') renderProfile();
   if(tab==='home') updateContinueCard();
+
+  // 渲染完後再重置一次（用 requestAnimationFrame 確保時機正確）
+  requestAnimationFrame(() => {
+    const activePage = document.getElementById(`page-${tab}`);
+    if(activePage) activePage.scrollTop = 0;
+  });
 }
 
 function openLevel(lvl) {
+  // 章節對應表
+  const chapterMap = {
+    'w1':1, 'w2':1,
+    'w3':2, 'w4':2,
+    'w7':3, 'w8':3, 'w9':3
+  };
+  const unlockDay = { 2:14, 3:28 };
+  const chapter = chapterMap[lvl];
+  const status = getChapterStatus(chapter);
+  const days = getDaysSinceStart();
+
+  // 時間鎖檢查
+  if(status === 'locked') {
+    const needed = unlockDay[chapter];
+    const left = needed - days;
+    showModal('⏳','還沒到時間！',
+      `第 ${chapter} 章還需要 ${left} 天才能解鎖\n\n` +
+      `📅 開放日：開始後第 ${needed} 天\n` +
+      `📆 目前是第 ${days} 天\n\n` +
+      `💪 繼續保持每天的好習慣！`
+    );
+    return;
+  }
+
+  // 逾期提醒（還是讓玩）
+  if(status === 'expired') {
+    showModal('⚠️','任務逾期了',
+      '這個章節建議完成時間已過，\n但你還是可以繼續完成它！\n\n繼續加油 💪'
+    );
+  }
+
+  // 原本的完成前置檢查
   if(lvl==='w2' && !s.w1d) { showModal('🔒','關卡鎖定','請先完成 Week 1 才能解鎖 Week 2 喔！'); return; }
   if(lvl==='w3' && !s.w2d) { showModal('🔒','關卡鎖定','請先完成 Week 2 才能解鎖 Week 3 喔！'); return; }
   if(lvl==='w4' && !s.w3d) { showModal('🔒','關卡鎖定','請先完成 Week 3 才能解鎖 Week 4 喔！'); return; }
   if(lvl==='w7' && !s.w4d) { showModal('🔒','關卡鎖定','請先完成 Week 4 才能解鎖 Week 5 喔！'); return; }
-  if(lvl==='w8' && !s.w7d) { showModal('🔒','關卡鎖定','請先完成 Week 5 才能解鎖 Week 6 喔！'); return; }
-  if(lvl==='w9' && !s.w8d) { showModal('🔒','關卡鎖定','請先完成 Week 6 才能解鎖 Week 7 喔！'); return; }
+if(lvl==='w8' && !s.w7d) { showModal('🔒','關卡鎖定','請先完成 Week 5 才能解鎖 Week 6 喔！'); return; }
+if(lvl==='w9' && !s.w8d) { showModal('🔒','關卡鎖定','請先完成 Week 6 才能解鎖 Week 7 喔！'); return; }
+
+  // 記錄開始時間
+  logLevelStart(lvl);
+
   prevTab = currentTab;
-  TABS.forEach(t => document.getElementById(`page-${t}`).classList.remove('active'));
+  TABS.forEach(t => {
+    document.getElementById(`page-${t}`).classList.remove('active');
+  });
   document.getElementById('tab-' + prevTab)?.classList.remove('active');
   document.getElementById('page-learn').classList.add('active');
   currentLevel = lvl;
@@ -2298,7 +2937,7 @@ let selectedCompare = null;
 let acuStep = 0, pressTimer = null, pressProgress = 0, warmupCount = 0;
 let w1Data = { symptoms:[], type:[], actions:[] };
 let w2Answers = {}, w3Data = { answers:{}, triggers:[] }, w4Data = { sleep:'', habits:[] };
-
+let w7ScenarioPicked = false;
 function setupLearnPage(lvl) {
   const allSections = ['w1-check','w1-compare','w1-shield','w1-type','w1-room','w1-done',
    'w2-acu','w2-summary','w2-action','w2-quiz','w2-done',
@@ -2306,7 +2945,7 @@ function setupLearnPage(lvl) {
    'w4-sleep','w4-rhythm','w4-habits','w4-quiz','w4-done',
    'w7-dialog','w7-scenario','w7-tasks','w7-done',
    'w8-dialog','w8-game','w8-tasks','w8-done',
-   'w9-dialog','w9-game','w9-feedback','w9-tasks','w9-done'];
+   'w9-dialog','w9-habit-survey','w9-game','w9-feedback','w9-tasks','w9-done'];
   allSections.forEach(id=>document.getElementById(id)?.classList.add('hidden'));
   document.getElementById('tissueCover').classList.add('hidden');
   document.getElementById('warmupCover').classList.add('hidden');
@@ -2361,7 +3000,7 @@ function setupLearnPage(lvl) {
     document.getElementById('learn-xp').innerText = '+50 XP';
     setProgress(5);
     if(s.w9d){ document.getElementById('w9-done').classList.remove('hidden'); setBibi('😊'); setBubble('你已完成了 Week 7！', '🎉'); return; }
-    setBibi('🤧'); wTaskData = []; w9FeedChoice = '';
+    setBibi('🤧'); wTaskData = []; w9FeedChoice = ''; w9HabitAnswer = '';
     playStory('w9-intro');
   }
 }
@@ -2388,23 +3027,26 @@ const STORIES = {
   ],
   'w3-intro': [
     { t:"$n！歡迎來到 Week 3！\n上週按摩做得很棒，鼻子有好一點嗎？", m:"✨" },
-    { t:"這週我們來聊一個很多人沒注意到的事——\n「環境」真的會影響鼻子嗎？", m:"🤔" },
+    { t:"這週我們來聊一個很多人沒注意到的事\n「環境」真的會影響鼻子嗎？", m:"🤔" },
     { t:"答案是：絕對會！\n我來帶你一一認識這些環境因素～", m:"🌡️" }
   ],
   'w4-intro': [
-    { t:"$n，你越來越厲害了！\n這是最後一關——睡眠修復！", m:"🌙" },
+    { t:"$n，你越來越厲害了！\n這關是——睡眠與鼻子的小祕密！！", m:"🌙" },
     { t:"你知道嗎？超過 7 成的過敏患者\n睡眠品質都不太好。", m:"😴" },
     { t:"好好睡覺，可以讓自律神經恢復平衡，\n讓鼻子在夜間自我修復！", m:"✨" }
   ],
   'w7-intro': [
-    { t:"$n，歡迎來到 Week 5！\n今天毛毛要跟你一起上場！", m:"✨", who:"鼻鼻" },
-    { t:"嗨！我是毛毛！\n我也有鼻子過敏的問題耶！", m:"👦", who:"毛毛" },
-    { t:"早上起床是最容易\n讓鼻子發作的時刻！", m:"🌅", who:"毛毛" },
-    { t:"清晨時，身體的副交感神經\n還沒完全切換，突然接觸冷空氣\n鼻黏膜很容易受到刺激！", m:"🤔", who:"鼻鼻" },
-    { t:"讓我們一起來挑戰：\n「如果你是毛毛，你會怎麼做？」", m:"🎮", who:"鼻鼻" }
-  ],
+    { t:"$n，歡迎來到 Week 5！\n今天有新夥伴要一起加入！", m:"✨", who:"鼻鼻"},
+    { t:"嗨！我是毛毛～\n我也常常有鼻子過敏的困擾 🤧", m:"👦", who:"毛毛"},
+    { t:"最近早上起床的時候，我一直打噴嚏...", m:"🌅", who:"鼻鼻"},
+    { t:"沒錯！很多人剛起床時，鼻子都會特別敏感", m:"🙂", who:"毛毛"},
+    { t:"你知道為甚麼嗎?", m:"👦", who:"毛毛" }, 
+    { t:"不知道?", m:"🤔", who:"鼻鼻" }, 
+    { t:"因為鼻子的血管對溫度變化比較敏感，\n所以在早上或季節轉換時，更容易出現連續打噴嚏、流鼻水的情況", m:"🤔", who:"毛毛" },
+    { t:"那如果是你，會怎麼做呢？一起來試試看吧！", m:"🎮", who:"鼻鼻"}
+],
   'w8-intro': [
-    { t:"如果用中醫的角度來看喔——\n很多過敏性鼻炎的人，身體比較偏「虛」一點。", m:"👦", who:"毛毛" },
+    { t:"如果用中醫的角度來看——\n很多過敏性鼻炎的人，身體比較偏「虛」一點。", m:"👦", who:"毛毛" },
     { t:"虛？是什麼意思啊 🤔", m:"🤧", who:"鼻鼻" },
     { t:"可以想像成——身體的調節能力比較弱一點。\n吃太多「偏冷」或「太刺激」的東西，就比較容易出現反應！", m:"👦", who:"毛毛" },
     { t:"那有哪幾種食物要注意？", m:"🤧", who:"鼻鼻" },
@@ -2421,15 +3063,17 @@ const STORIES = {
     { t:"對！適度運動可以促進腎上腺素分泌，讓鼻黏膜血管收縮，呼吸更順！", m:"✨", who:"毛毛" },
     { t:"原來運動還可以幫助鼻子變通暢喔", m:"😳", who:"鼻鼻" }, 
     { t:"不過運動後真的好熱，需要吹電扇🌬️", m:"😅", who:"鼻鼻" },
-    { t:"啊呀!不行啦~鼻鼻\n像你運動完流很多汗\n👉 如果沒有擦乾\n👉又直接吹風或進冷氣房\n身體受寒著涼，這會讓過敏的症狀變得更加嚴重❗", m:"😅", who:"毛毛" },
+    { t:"啊呀!不行啦~鼻鼻\n像你運動完流很多汗\n👉 如果沒有擦乾\n👉又直接吹風或進冷氣房，身體受寒著涼，這會讓過敏的症狀變得更加嚴重❗", m:"😅", who:"毛毛" },
     { t:"對耶，上次就是這樣結果鼻子過敏就發作了... 😅", m:"😅", who:"鼻鼻" },
     { t:"👉 運動「怎麼結束」其實很重要\n如果沒有注意，反而可能讓鼻子過敏症狀更嚴重喔", m:"😅", who:"毛毛" },
+    { t:"這麼嚴重😱", m:"😱", who:"鼻鼻" },
     { t:"💧 1. 流汗後要擦乾，不要馬上吹冷風\n👉 為什麼？\n運動後身體是熱的，如果還沒擦乾汗就吹風或進冷氣房，身體會「一下變冷」，鼻子容易開始：打噴嚏、流鼻水、鼻塞\n👉 簡單記：流汗 → 先擦乾 → 再吹冷氣", m:"😅", who:"毛毛" },
-    { t:"🧊 2. 運動後不要馬上喝冰飲\n👉 為什麼？\n過敏性鼻炎患者在運動後以及病情不穩定時，應嚴格避免食用冰冷飲料及食物，並建議多喝溫開水。有些人會：鼻子變更敏感、鼻水變多\n👉 建議：先喝溫水或常溫水會比較穩定", m:"😅", who:"毛毛" },
+    { t:"🧊 2. 運動後不要馬上喝冰飲\n👉 為什麼？\n過敏性鼻炎患者在運動後以及病情不穩定時，應嚴格避免食用冰冷飲料及食物，並建議多喝溫開水。有些人會：鼻子變更敏感、鼻水變多\n👉 建議：先喝溫水或常溫水", m:"😅", who:"毛毛" },
     { t:"🌫️ 3. 留意運動的環境\n👉 為什麼？\n有些地方灰塵多或不夠乾淨，運動時呼吸變快，反而更容易吸進去\n👉 可能出現：鼻子癢、打噴嚏、鼻子過敏變明顯\n👉 小提醒：選擇乾淨、通風的地方比較好喔", m:"😅", who:"毛毛" },
     { t:"🏃 4. 運動不是越激烈越好\n👉 為什麼？\n避免在乾冷季節從事過度劇烈的運動：若處於氣候乾冷的季節，應避免進行劇烈運動，且激烈運動的時間不要超過五分鐘，以免大量乾冷空氣進出刺激呼吸道\n👉 建議：適度活動（微流汗即可）", m:"😅", who:"毛毛" },
     { t:"天啊😱，有這麼多事我需要注意的", m:"😱", who:"鼻鼻" },
-    { t:"沒錯的!讓我們這週來挑戰運動方塊遊戲！\n擊中好習慣，閃開壞習慣！", m:"🎮", who:"毛毛" }
+    { t:"沒錯的!讓我們這週來挑戰運動方塊遊戲！\n擊中好習慣，閃開壞習慣！", m:"🎮", who:"毛毛" },
+    { t:"對了～我想先問你一個問題...", m:"🤔", who:"鼻鼻" }
   ]
 };
 
@@ -2453,7 +3097,17 @@ function playStory(type) {
 // W7/W8/W9 "繼續" buttons
 function nextW7Dialog() { storyIdx++; if(storyIdx >= STORIES['w7-intro'].length){ document.getElementById('w7-dialog').classList.add('hidden'); document.getElementById('page-learn').classList.remove('dialog-mode'); startW7Scenario(); } else { renderDualDialog('w7-intro'); } }
 function nextW8Dialog() { storyIdx++; if(storyIdx >= STORIES['w8-intro'].length){ document.getElementById('w8-dialog').classList.add('hidden'); document.getElementById('page-learn').classList.remove('dialog-mode'); startW8Game(); } else { renderDualDialog('w8-intro'); } }
-function nextW9Dialog() { storyIdx++; if(storyIdx >= STORIES['w9-intro'].length){ document.getElementById('w9-dialog').classList.add('hidden'); document.getElementById('page-learn').classList.remove('dialog-mode'); startW9Game(); } else { renderDualDialog('w9-intro'); } }
+function nextW9Dialog() {
+  storyIdx++;
+  if(storyIdx >= STORIES['w9-intro'].length){
+    // 對話結束 → 先顯示運動習慣問卷，再進遊戲
+    document.getElementById('w9-dialog').classList.add('hidden');
+    document.getElementById('page-learn').classList.remove('dialog-mode');
+    showW9HabitSurvey();
+  } else {
+    renderDualDialog('w9-intro');
+  }
+}
 
 function renderDualDialog(type) {
   const list = STORIES[type]; if(!list) return;
@@ -2518,7 +3172,9 @@ function nextStory() {
   if(!list || storyIdx >= list.length) {
     document.getElementById('btnNext').classList.add('hidden');
     if(storyType === 'w1-intro') playStory('w1-symptom');
-    else if(storyType === 'w1-symptom') { document.getElementById('w1-check').classList.remove('hidden'); renderCard(); setProgress(20); }
+    else if(storyType === 'w1-symptom') {
+  showTnssIntro();
+}
     else if(storyType === 'w1-mid') nextW1Step('compare');
     else if(storyType === 'w2-intro') { s.w2s=true; save(); showWarmup(); }
     else if(storyType === 'w3-intro') { showW3Step(1); }
@@ -2538,39 +3194,105 @@ function confirmNick() {
 
 // ═══ W1 LOGIC ═══
 const W1_CARDS = [
-  {i:"🤧", t:"早上一直打噴嚏", d:"衛生紙包餛飩？"},
-  {i:"🥶", t:"冷氣房特別不舒服", d:"一進去就鼻塞"},
-  {i:"😤", t:"鼻塞到很煩", d:"呼吸都不順暢"},
-  {i:"😷", t:"常被說感冒？", d:"其實你根本沒感冒"}
+  { i:"😤", t:"鼻塞", d:"呼吸不順，尤其睡覺時更明顯", cat:"congestion" },
+  { i:"🤧", t:"搔癢／噴嚏", d:"鼻子癢、連續打噴嚏，眼睛有時也會癢", cat:"sneeze_itch" },
+  { i:"😵‍💫", t:"流鼻水", d:"清水樣鼻涕，紙巾用不完",cat:"rhinorrhea"  }
 ];
 
-function renderCard() {
-  const stage = document.getElementById('tinderStage'); stage.innerHTML = '';
-  if(cardIdx >= W1_CARDS.length) { document.getElementById('w1-check').classList.add('hidden'); playStory('w1-mid'); return; }
-  const c = W1_CARDS[cardIdx];
-  if(cardIdx+1 < W1_CARDS.length) {
-    const back = document.createElement('div'); back.className = 'tinder-card bg2';
-    const nb = W1_CARDS[cardIdx+1];
-    back.innerHTML = `<div class="tc-emoji">${nb.i}</div><div class="tc-title">${nb.t}</div>`;
-    stage.appendChild(back);
-  }
-  const div = document.createElement('div'); div.className = 'tinder-card'; div.id = 'active-card';
-  div.innerHTML = `<div class="tc-emoji">${c.i}</div><div class="tc-title">${c.t}</div><div class="tc-desc">${c.d}</div>`;
-  stage.appendChild(div);
+let w1TnssScores = {};
+let w1TnssIdx = 0;
+
+const TNSS_SCORE_LABELS = ['⚪ 無症狀', '🟢 輕度', '🟡 中度', '🔴 重度'];
+const TNSS_SCORE_COLORS = ['#aaa', 'var(--accent3)', 'var(--accent2)', '#ef5350'];
+
+function showTnssIntro() {
+  document.getElementById('w1-tnss-intro').classList.remove('hidden');
+  setBubble('先了解症狀評分方式，\n這樣才能知道你的過敏有多嚴重！', '📋');
+  setProgress(18);
 }
 
-function swipe(dir) {
-  const card = document.getElementById('active-card'); if(!card) return;
-  card.classList.add(dir==='left'?'swipe-left':'swipe-right');
-  if(dir==='right') w1Data.symptoms.push(W1_CARDS[cardIdx].t);
-  setTimeout(()=>{ cardIdx++; renderCard(); }, 420);
+function startTnssCards() {
+  w1TnssIdx = 0; w1TnssScores = {};
+  document.getElementById('w1-tnss-intro').classList.add('hidden');
+  document.getElementById('w1-check').classList.remove('hidden');
+  document.getElementById('tnssDoneList').innerHTML = '';
+  renderTnssCard();
+}
+
+function renderTnssCard() {
+  const c = W1_CARDS[w1TnssIdx];
+  document.getElementById('tnssProgress').innerText = `第 ${w1TnssIdx + 1} / ${W1_CARDS.length} 項症狀`;
+  document.getElementById('tnssCardEmoji').innerText = c.i;
+  document.getElementById('tnssCardTitle').innerText = c.t;
+  document.getElementById('tnssCardDesc').innerText = c.d;
+  document.querySelectorAll('.tnss-btn').forEach(b => b.classList.remove('selected'));
+  setProgress(20 + w1TnssIdx * 8);
+  setBubble(`第 ${w1TnssIdx + 1} 項：${c.t}\n你的情況最接近幾分？`, '🤔');
+}
+
+function scoreCard(score) {
+  document.querySelectorAll('.tnss-btn').forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.score) === score);
+  });
+  const c = W1_CARDS[w1TnssIdx];
+  w1TnssScores[c.cat] = score;
+
+  const doneList = document.getElementById('tnssDoneList');
+  const item = document.createElement('div');
+  item.style.cssText = `display:flex;align-items:center;justify-content:space-between;
+    background:#fff;border-radius:12px;padding:10px 14px;
+    border:2px solid ${TNSS_SCORE_COLORS[score]};box-shadow:0 2px 8px var(--shadow);`;
+  item.innerHTML = `
+    <span style="font-size:16px">${c.i}</span>
+    <span style="font-size:13px;font-weight:900;color:var(--brown);flex:1;margin:0 10px">${c.t}</span>
+    <span style="font-size:12px;font-weight:900;color:${TNSS_SCORE_COLORS[score]}">${TNSS_SCORE_LABELS[score]}</span>
+    <span style="font-size:15px;font-weight:900;color:${TNSS_SCORE_COLORS[score]};margin-left:8px">${score}分</span>
+  `;
+  doneList.appendChild(item);
+
+  setTimeout(() => {
+    w1TnssIdx++;
+    if(w1TnssIdx >= W1_CARDS.length) showTnssResult();
+    else renderTnssCard();
+  }, 500);
+}
+
+function showTnssResult() {
+  document.getElementById('w1-check').classList.add('hidden');
+  const total = Object.values(w1TnssScores).reduce((a,b)=>a+b, 0);
+  let level, emoji, advice;
+  if(total <= 2)      { level='輕度過敏'; emoji='🙂'; advice='症狀相對輕微，維持日常保養即可！'; }
+  else if(total <= 5) { level='中度過敏'; emoji='😐'; advice='已有些影響生活，建議積極調整環境與習慣。'; }
+  else                { level='重度過敏'; emoji='🤧'; advice='症狀較嚴重，建議尋求醫師協助評估。'; }
+
+  w1Data.tnssTotal = total;
+  w1Data.tnssLevel = level;
+  s.tnssScore = total;
+  s.tnssLevel = level;
+
+  setBubble(`你的 TNSS 總分是 ${total}/9\n屬於「${level}」`, emoji);
+  showModal(emoji, `TNSS 評估結果：${level}`,
+    `📊 總分：${total} / 9 分\n\n` +
+    `鼻　　塞：${w1TnssScores.congestion} 分\n` +
+    `搔癢/噴嚏：${w1TnssScores.sneeze_itch} 分\n` +
+    `流　鼻　涕：${w1TnssScores.rhinorrhea} 分\n\n` +
+    `💡 ${advice}`
+  );
+
+  const origClose = window.closeModal;
+  window.closeModal = function() {
+    document.getElementById('modal').classList.remove('show');
+    window.closeModal = origClose;
+    playStory('w1-mid');
+  };
+  setProgress(45);
 }
 
 function nextW1Step(step) {
   ['w1-check','w1-compare','w1-shield','w1-type','w1-room'].forEach(id=>document.getElementById(id).classList.add('hidden'));
   if(step==='compare') { document.getElementById('w1-compare').classList.remove('hidden'); setProgress(40); }
   else if(step==='shield') { document.getElementById('w1-shield').classList.remove('hidden'); setProgress(55); setBubble('既然不是感冒，那為什麼鼻子會失控呢？','🤔'); }
-  else if(step==='type') { document.getElementById('w1-type').classList.remove('hidden'); setProgress(65); setBubble('每個人防護罩破洞的地方不一樣。\n下面哪幾種跟你比較像？','🔍'); }
+  else if(step==='type') { document.getElementById('w1-type').classList.remove('hidden'); setProgress(65); setBubble('每個人的鼻子「防護罩」不太一樣，有些人比較容易被溫差影響，有些人則對灰塵或空氣變化特別敏感。\n下列哪幾種情況比較像你？（可複選）','🔍'); }
   else if(step==='room') { document.getElementById('w1-room').classList.remove('hidden'); setProgress(80); setBubble('環境大搜查！\n幫我找出 3 個讓鼻子不舒服的兇手！','🕵️'); buildRoom(); }
 }
 
@@ -2682,15 +3404,24 @@ function findClue(id, el) {
 }
 
 function finishW1() {
-  s.w1d=true; s.exp+=50; s.lv=Math.max(s.lv, 2); s.hp=Math.min(100, s.hp+10); save();
-  sendData({ w1_done:'Yes', w1_symptoms:w1Data.symptoms.join(', '), w1_type:w1Data.type.join('+'), exp:s.exp });
-  document.getElementById('w1-room').classList.add('hidden');
+  s.w1d=true; s.exp+=50; s.lv=Math.max(s.lv, 2); s.hp=Math.min(100, s.hp+10);
+  logLevelDone('w1');
+  save();
+  sendData({ 
+  w1_done: 'Yes', 
+  w1_type: w1Data.type.join('+'),
+  tnss_sneeze: w1TnssScores.sneeze_itch || 0,
+  tnss_congestion: w1TnssScores.congestion || 0,
+  tnss_rhinorrhea: w1TnssScores.rhinorrhea || 0,
+  exp: s.exp 
+});
+ document.getElementById('w1-room').classList.add('hidden');
   document.getElementById('w1-done').classList.remove('hidden');
   setProgress(100); setBibi('😊');
   setBubble('Week 1 完成！\n原來是防護罩破了，下週來修補它！','🎉');
   showToast('🎉 +50 XP！Week 1 完成！');
+  showBadgeUnlock('🛡️', '防護罩', '完成 Week 1・認識過敏防護罩理論');
 }
-
 // ═══ WARMUP ═══
 function showWarmup() {
   warmupCount = 6;
@@ -2820,12 +3551,15 @@ function answerQ(qid, ans, hideId, showId) {
 }
 
 function finishW2() {
-  s.w2d=true; s.exp+=50; s.lv=Math.max(s.lv,3); s.hp=Math.min(100,s.hp+10); save();
+  s.w2d=true; s.exp+=50; s.lv=Math.max(s.lv,3); s.hp=Math.min(100,s.hp+10);
+  logLevelDone('w2');
+  save();
   sendData({ w2_done:'Yes', w2_actions:w1Data.actions.join(','), q1_ans:w2Answers.q1, q2_ans:w2Answers.q2, q3_ans:w2Answers.q3, exp:s.exp });
   document.getElementById('w2-quiz').classList.add('hidden');
   document.getElementById('w2-done').classList.remove('hidden');
   setProgress(100); setBibi('😊'); setBubble('Week 2 完成！你真的很棒！', '🎉');
   showToast('🎉 +50 XP！Week 2 完成！');
+  showBadgeUnlock('💆', '按摩達人', '完成 Week 2・學會四大穴位按摩');
 }
 
 // ═══ W3 LOGIC — 環境影響 ═══
@@ -2837,7 +3571,63 @@ const W3_STEPS = {
   5: { bubble:'最後，回想一下你自己的狀況…', mood:'🎯', progress:88 },
 };
 let w3CurrentStep = 1;
+// 滑桿即時更新
+function updateSlider(sliderId, labelId, emojiId) {
+  const val = parseInt(document.getElementById(sliderId).value);
+  const el = document.getElementById(labelId);
+  const em = document.getElementById(emojiId);
 
+  if(val <= 20) {
+    el.innerText = '完全沒感覺';
+    em.innerText = '😊';
+    el.style.color = '#4caf50';
+  } else if(val <= 40) {
+    el.innerText = '有一點點';
+    em.innerText = '🙂';
+    el.style.color = '#8bc34a';
+  } else if(val <= 60) {
+    el.innerText = '普通';
+    em.innerText = '😐';
+    el.style.color = 'var(--accent2)';
+  } else if(val <= 80) {
+    el.innerText = '蠻嚴重的';
+    em.innerText = '😤';
+    el.style.color = 'var(--accent)';
+  } else {
+    el.innerText = '超級嚴重！';
+    em.innerText = '🤧';
+    el.style.color = '#ef5350';
+  }
+}
+
+// 確認滑桿並進入下一步
+function confirmSlider(stepId, sliderId) {
+  const val = parseInt(document.getElementById(sliderId).value);
+  const stepNum = parseInt(stepId.replace('s', ''));
+
+  // 把分數轉成等級存起來
+  let grade = '';
+  if(val <= 20) grade = 'D';
+  else if(val <= 40) grade = 'C';
+  else if(val <= 60) grade = 'B';
+  else if(val <= 80) grade = 'A';
+  else grade = 'S';
+
+  w3Data.answers[stepId] = grade;
+  w3Data.sliderValues = w3Data.sliderValues || {};
+  w3Data.sliderValues[stepId] = val;
+
+  // 給回饋 toast
+  if(val >= 70) showToast('⚠️ 這個對你影響很大！要特別注意！');
+  else if(val <= 25) showToast('👍 這個對你影響不大，繼續保持！');
+
+  // 前往下一步
+  if(stepNum < 4) {
+    showW3Step(stepNum + 1);
+  } else {
+    showW3Step(5);
+  }
+}
 function showW3Step(step) {
   // hide all w3 steps
   [1,2,3,4,5,6].forEach(i => {
@@ -2895,12 +3685,16 @@ function submitW3S5() {
     's3': { A:'戶外活動', B:'剛回到家', C:'在床上沙發', D:'花粉到處都有' },
     's4': { A:'床或枕頭', B:'地板地毯', C:'書桌角落', D:'室內全部' },
   };
-  let summaryLines = [];
-  const ans = w3Data.answers;
-  if(ans.s1) summaryLines.push(`🌡️ 溫差：${stepLabels.s1[ans.s1]}`);
-  if(ans.s2) summaryLines.push(`💧 濕度：${stepLabels.s2[ans.s2]}`);
-  if(ans.s3) summaryLines.push(`🌼 花粉：${stepLabels.s3[ans.s3]}`);
-  if(ans.s4) summaryLines.push(`🏠 室內：${stepLabels.s4[ans.s4]}`);
+ let summaryLines = [];
+const sv = w3Data.sliderValues || {};
+const getBar = (v) => {
+  const filled = Math.round(v / 10);
+  return '█'.repeat(filled) + '░'.repeat(10 - filled) + ` ${v}%`;
+};
+if(sv.s1 !== undefined) summaryLines.push(`🌡️ 溫差：${getBar(sv.s1)}`);
+if(sv.s2 !== undefined) summaryLines.push(`💧 濕度：${getBar(sv.s2)}`);
+if(sv.s3 !== undefined) summaryLines.push(`🌼 花粉：${getBar(sv.s3)}`);
+if(sv.s4 !== undefined) summaryLines.push(`🏠 室內：${getBar(sv.s4)}`);
   if(w3Data.triggers.length > 0) summaryLines.push(`🎯 你的觸發情境：${w3Data.triggers.join('、')}`);
 
   document.getElementById('w3-summary-text').innerText =
@@ -2913,7 +3707,9 @@ function submitW3S5() {
 }
 
 function finishW3() {
-  s.w3d=true; s.exp+=50; s.lv=Math.max(s.lv,4); s.hp=Math.min(100,s.hp+15); save();
+  s.w3d=true; s.exp+=50; s.lv=Math.max(s.lv,4); s.hp=Math.min(100,s.hp+15);
+  logLevelDone('w3');
+  save();
   const ans = w3Data.answers;
   sendData({ w3_done:'Yes', w3_s1:ans.s1, w3_s2:ans.s2, w3_s3:ans.s3, w3_s4:ans.s4, w3_triggers:w3Data.triggers.join(','), exp:s.exp });
   document.getElementById('w3-s6').classList.add('hidden');
@@ -2921,6 +3717,7 @@ function finishW3() {
   setProgress(100); setBibi('😊');
   setBubble('Week 3 完成！\n原來環境一直在影響鼻子！', '🎉');
   showToast('🎉 +50 XP！Week 3 完成！');
+  showBadgeUnlock('🥗', '養生達人', '完成 Week 3・了解環境與鼻子的關係');
 }
 
 // ═══ W4 LOGIC ═══
@@ -2943,11 +3740,47 @@ function selectSleep(i, time) {
   document.querySelectorAll('.sleep-slot').forEach(el=>el.classList.remove('selected'));
   document.getElementById(`ss-${i}`).classList.add('selected');
   w4Data.sleep = time;
-  setTimeout(()=>{
+
+  // ── 根據選擇給予不同回饋 ──
+  const feedbacks = [
+    {
+      icon: '🌛',
+      title: '超早睡型！',
+      msg: '晚上 9 點就去睡，非常棒！\n身體可以得到最充足的修復時間。\n\n💡 不過要注意：太早睡有時反而容易凌晨 3-4 點就醒來，導致作息不穩定。\n\n✅ 建議維持在晚上 10-11 點之間效果最佳！'
+    },
+    {
+      icon: '⭐',
+      title: '完美睡眠時段！',
+      msg: '晚上 10-11 點是黃金睡眠時段！\n身體的自律神經與褪黑激素分泌都在這時達到最佳狀態。\n\n🌙 繼續保持！這樣鼻子修復效果最好 ✨'
+    },
+    {
+      icon: '⚠️',
+      title: '有點晚了喔…',
+      msg: '凌晨 12-1 點入睡屬於晚睡型。\n\n中醫認為：\n🕛 子時（23-1點）是肝膽修復的關鍵時段\n錯過的話，身體解毒與免疫功能都會打折！\n\n鼻子過敏在睡眠不足時特別容易發作。\n\n💡 建議：今晚試著提前 30 分鐘上床，慢慢調回來！'
+    },
+    {
+      icon: '🚨',
+      title: '凌晨 2 點…太晚了！',
+      msg: '凌晨 2 點以後才睡，屬於嚴重熬夜型 😱\n\n這樣會造成：\n😵 自律神經失調 → 鼻過敏更容易發作\n💔 免疫力下降 → 症狀變得更嚴重\n🧠 皮質醇升高 → 過敏反應增強\n\n⚠️ 長期熬夜的人，過敏症狀往往比一般人嚴重 2-3 倍！\n\n🌙 從今天起，試著每天提前 15 分鐘上床，慢慢調整回來吧！'
+    }
+  ];
+
+  const fb = feedbacks[i];
+
+  // 先顯示回饋，關閉後才繼續
+  showModal(fb.icon, fb.title, fb.msg);
+
+  // 覆蓋 closeModal，讓關閉後才跳下一步
+  const origClose = window.closeModal;
+  window.closeModal = function() {
+    document.getElementById('modal').classList.remove('show');
+    window.closeModal = origClose;
+    // 繼續進入下一步
     document.getElementById('w4-sleep').classList.add('hidden');
     document.getElementById('w4-rhythm').classList.remove('hidden');
-    setProgress(50); setBubble('讓我解釋一下睡眠和鼻子的關係…','🌙');
-  }, 600);
+    setProgress(50);
+    setBubble('讓我解釋一下睡眠和鼻子的關係…', '🌙');
+  };
 }
 
 function nextW4Step(step) {
@@ -2959,21 +3792,58 @@ function nextW4Step(step) {
   }
 }
 
+const W4_HABIT_OPTS = [
+  {
+    t:'睡前不滑手機', i:'📵', d:'避免藍光刺激神經',
+    why:'手機螢幕的藍光會讓大腦誤以為還是白天，抑制褪黑激素分泌，讓你更難入睡。睡不夠的話，免疫力會下降，鼻子更容易過敏發作！',
+    note:'睡前 1 小時放下手機效果最好，可以改成聽輕音樂或做伸展代替。'
+  },
+  {
+    t:'睡前溫水泡腳', i:'🦶', d:'促進血液循環暖身',
+    why:'泡腳能促進全身血液循環，讓身體自然產生睡意。身體暖了，鼻腔黏膜也會放鬆，呼吸更順暢，更容易進入深層睡眠！',
+    note:'水溫約 40–42°C，泡 15–20 分鐘即可。水溫太熱反而讓人興奮，睡不著喔！'
+  },
+  {
+    t:'固定時間上床', i:'⏰', d:'培養生理時鐘',
+    why:'每天同一時間睡覺，能讓身體的「生理時鐘」穩定下來。規律的睡眠能強化免疫系統，讓鼻子的防禦力更強，對抗過敏原更有力！',
+    note:'就算週末也盡量維持同樣時間，差距不超過 1 小時效果最佳。'
+  },
+  {
+    t:'睡前按摩迎香', i:'👃', d:'通鼻有助入睡',
+    why:'迎香穴在鼻翼兩側，輕輕按摩可以促進鼻腔周圍的血液循環，幫助通鼻、減少鼻塞，讓你能用鼻子順暢呼吸、好好入睡！',
+    note:'用指腹輕柔按壓，每次 1–2 分鐘，感覺到酸脹感才表示有到位喔！'
+  },
+  {
+    t:'保持臥室通風', i:'🌬️', d:'降低室內過敏原',
+    why:'室內空氣不流通，灰塵、塵蟎、黴菌都會悄悄累積！讓空氣流動，能降低這些過敏原的濃度，讓鼻子在睡覺時不用一直「作戰」，好好休息！',
+    note:'注意不要讓冷風直接吹到床上。花粉季節可改用空氣清淨機代替開窗。'
+  },
+  {
+    t:'睡前喝溫熱飲', i:'🍵', d:'暖身放鬆，助眠好入睡',
+    why:'睡前喝一杯溫熱飲（如薑茶）能幫助身體放鬆、促進循環，讓你更容易進入睡眠狀態！',
+    note:'⚠️ 有這些狀況先暫停薑茶：\n・喉嚨痛或不舒服\n・鼻涕是黃色、黏稠的\n・身體覺得很熱、容易口渴\n\n這時候改喝溫白開水就好～'
+  },
+];
+
 function renderW4HabitGrid() {
-  const opts = [
-    {t:'睡前不滑手機',i:'📵',d:'避免藍光刺激神經'},
-    {t:'睡前溫水泡腳',i:'🦶',d:'促進血液循環暖身'},
-    {t:'固定時間上床',i:'⏰',d:'培養生理時鐘'},
-    {t:'睡前按摩迎香',i:'👃',d:'通鼻有助入睡'},
-    {t:'保持臥室通風',i:'🌬️',d:'降低室內過敏原'},
-    {t:'睡前喝溫薑茶',i:'🍵',d:'暖胃驅寒，補肺氣'},
-  ];
-  document.getElementById('w4HabitGrid').innerHTML = opts.map((a,i)=>`
-    <div class="action-item" id="w4h-${i}" onclick="toggleW4Habit(${i},'${a.t}')">
+  document.getElementById('w4HabitGrid').innerHTML = W4_HABIT_OPTS.map((a,i)=>`
+    <div class="action-item" id="w4h-${i}" onclick="tapW4Habit(${i})">
       <div class="action-item-icon">${a.i}</div>
       <div><div class="action-item-text">${a.t}</div><div class="action-item-desc">${a.d}</div></div>
     </div>`).join('');
 }
+
+function tapW4Habit(i) {
+  const a = W4_HABIT_OPTS[i];
+  toggleW4Habit(i, a.t);
+  const isNowSelected = w4Data.habits.includes(a.t);
+  showModal(
+    a.i,
+    a.t,
+    '💡 為什麼這樣做？\n' + a.why + '\n\n⚠️ 注意事項\n' + a.note + '\n\n' + (isNowSelected ? '✅ 已加入你的睡前習慣清單！' : '（已取消選擇）')
+  );
+}
+  
 
 function toggleW4Habit(i, name) {
   const el = document.getElementById(`w4h-${i}`);
@@ -2996,57 +3866,221 @@ function answerW4Q(ans, hideId, showId, correct) {
 }
 
 function finishW4() {
-  s.w4d=true; s.exp+=100; s.lv=Math.max(s.lv,5); s.hp=Math.min(100,s.hp+25); save();
+  s.w4d=true; s.exp+=100; s.lv=Math.max(s.lv,5); s.hp=Math.min(100,s.hp+25);
+  logLevelDone('w4');
+  save();
   sendData({ w4_done:'Yes', w4_sleep:w4Data.sleep, w4_habits:w4Data.habits.join(','), exp:s.exp });
   document.getElementById('w4-quiz').classList.add('hidden');
   document.getElementById('w4-done').classList.remove('hidden');
   setProgress(100); setBibi('🤩');
   setBubble('恭喜！你完成了鼻鼻大冒險全部課程！\n這只是好習慣的開始！', '🏆');
   showToast('🏆 +100 XP！全課程完成！恭喜你！');
+  showBadgeUnlock('🌙', '睡眠守護', '完成 Week 4・掌握睡眠修復祕訣');
 }
 
 // ═══ W7 — 避寒行為（情境決策） ═══
+// ═══ W7 — 避寒行為（拖拉遊戲） ═══
 let wTaskData = [];
-let w7ScenarioPicked = false;
+let w7Done = false, w7WrongCount = 0, w7Hp = 82;
+let w7currentKey = null;
 
 function startW7Scenario() {
   document.getElementById('w7-dialog').classList.add('hidden');
   document.getElementById('w7-scenario').classList.remove('hidden');
+  w7Done = false; w7WrongCount = 0; w7Hp = 82; w7currentKey = null;
   setProgress(40);
-  setBubble('如果你是毛毛，你會怎麼做？\n選出最好的晨起方式！', '🌅');
+  setBubble('把正確的晨起行為拖到鼻鼻身上！', '🌅');
+  w7ShowSpeech('把正確的行為拖過來！');
+  document.querySelectorAll('.w7-drag-card').forEach(c => {
+    c.addEventListener('dragstart', e => { w7currentKey = c.dataset.key; e.dataTransfer.effectAllowed='move'; });
+  });
+}
+
+function w7ShowSpeech(msg, dur=2200) {
+  const el = document.getElementById('w7Speech');
+  if(!el) return;
+  el.innerText = msg; el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), dur);
+}
+
+function w7PokeBibi() {
+  const arr = ['把正確的行為拖過來！','被窩裡穿好衣服再出來！','幫幫我，快拖對的！'];
+  w7ShowSpeech(arr[Math.floor(Math.random()*arr.length)]);
+}
+
+function w7SetHP(val) {
+  w7Hp = Math.max(10, Math.min(100, val));
+  const fill = document.getElementById('w7HpFill');
+  const num = document.getElementById('w7HpNum');
+  if(fill) { fill.style.width = w7Hp + '%'; fill.style.background = w7Hp > 60 ? 'linear-gradient(90deg,#ef5350,#ff8a65)' : w7Hp > 35 ? 'linear-gradient(90deg,#ff9800,#ffc107)' : 'linear-gradient(90deg,#e53935,#ff5252)'; }
+  if(num) num.innerText = w7Hp;
+}
+
+function w7ShowOverlay(scene, label, isGood) {
+  const ov = document.getElementById('w7Overlay');
+  const an = document.getElementById('w7OverlayAnim');
+  const lb = document.getElementById('w7OverlayLabel');
+  if(!ov) return;
+  an.innerText = scene; lb.innerText = label;
+  lb.style.background = isGood ? 'rgba(102,187,106,.9)' : 'rgba(239,83,80,.9)';
+  ov.classList.add('show');
+  setTimeout(() => ov.classList.remove('show'), 1600);
+}
+
+function w7StartDrag(e, key) {
+  if(w7Done) return;
+  const card = document.getElementById('w7card-' + key);
+  if(card.classList.contains('used')) return;
+  w7currentKey = key;
+  card.classList.add('dragging');
+  const ghost = document.getElementById('w7Ghost');
+  document.getElementById('w7GhostScene').innerText = card.dataset.scene;
+  document.getElementById('w7GhostText').innerText = card.dataset.text;
+  ghost.classList.add('visible');
+  const pos = e.touches ? e.touches[0] : e;
+  w7MoveGhost(pos.clientX, pos.clientY);
+  if(e.touches) {
+    document.addEventListener('touchmove', w7OnTouchMove, {passive:false});
+    document.addEventListener('touchend', w7OnTouchEnd);
+  } else {
+    document.addEventListener('mousemove', w7OnMouseMove);
+    document.addEventListener('mouseup', w7OnMouseUp);
+  }
+  e.preventDefault();
+}
+
+function w7MoveGhost(x, y) {
+  const g = document.getElementById('w7Ghost');
+  g.style.left = (x-40)+'px'; g.style.top = (y-44)+'px';
+}
+
+function w7OnMouseMove(e) { w7MoveGhost(e.clientX, e.clientY); w7HoverCheck(e.clientX, e.clientY); }
+function w7OnTouchMove(e) { e.preventDefault(); const t=e.touches[0]; w7MoveGhost(t.clientX, t.clientY); w7HoverCheck(t.clientX, t.clientY); }
+function w7HoverCheck(x, y) {
+  const dz = document.getElementById('w7DropZone');
+  const st = document.getElementById('w7Stage');
+  if(!dz||!st) return;
+  const dzR = dz.getBoundingClientRect(), stR = st.getBoundingClientRect();
+  const over = (x>dzR.left&&x<dzR.right&&y>dzR.top&&y<dzR.bottom)||(x>stR.left&&x<stR.right&&y>stR.top&&y<stR.bottom);
+  dz.classList.toggle('over', over);
+}
+function w7OnMouseUp(e) { w7Drop(e.clientX, e.clientY); document.removeEventListener('mousemove', w7OnMouseMove); document.removeEventListener('mouseup', w7OnMouseUp); }
+function w7OnTouchEnd(e) { const t=e.changedTouches[0]; w7Drop(t.clientX, t.clientY); document.removeEventListener('touchmove', w7OnTouchMove); document.removeEventListener('touchend', w7OnTouchEnd); }
+function w7Drop(x, y) {
+  const ghost = document.getElementById('w7Ghost'); ghost.classList.remove('visible');
+  const dz = document.getElementById('w7DropZone'), st = document.getElementById('w7Stage');
+  if(!dz||!st) return;
+  const dzR = dz.getBoundingClientRect(), stR = st.getBoundingClientRect();
+  const inDZ = (x>dzR.left&&x<dzR.right&&y>dzR.top&&y<dzR.bottom);
+  const inST = (x>stR.left&&x<stR.right&&y>stR.top&&y<stR.bottom);
+  dz.classList.remove('over');
+  const key = w7currentKey;
+  if(key) { document.getElementById('w7card-'+key).classList.remove('dragging'); }
+  if((inDZ||inST) && key) w7ProcessChoice(key);
+  w7currentKey = null;
+}
+function w7OnDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect='move'; document.getElementById('w7DropZone').classList.add('over'); }
+function w7OnDragLeave() { document.getElementById('w7DropZone').classList.remove('over'); }
+function w7OnDrop(e) { e.preventDefault(); if(w7currentKey) w7ProcessChoice(w7currentKey); document.getElementById('w7DropZone').classList.remove('over'); }
+
+function w7ProcessChoice(key) {
+  if(w7Done) return;
+  const card = document.getElementById('w7card-' + key);
+  const isCorrect = card.dataset.correct === '1';
+  const fb = document.getElementById('w7FeedbackBox');
+  const bibi = document.getElementById('w7BibiChar');
+  const dz = document.getElementById('w7DropZone');
+  if(isCorrect) {
+    w7Done = true;
+    card.classList.add('correct-glow');
+    if(dz) dz.classList.add('correct-flash');
+    document.getElementById('w7good-' + key).style.display = 'block';
+    w7ShowOverlay(card.dataset.scene, '✅ ' + card.dataset.text, true);
+    if(bibi) { bibi.style.animation='none'; bibi.innerText='🤩'; bibi.style.transform='scale(1.15)'; setTimeout(()=>{bibi.style.transform=''; bibi.style.animation='heroFloat 3s ease-in-out infinite';},600); }
+    w7SetHP(Math.min(100, w7Hp + 12));
+    w7ShowSpeech('太棒了！鼻子得到保護！', 2500);
+    document.querySelectorAll('.w7-drag-card').forEach(c => { if(c.id !== 'w7card-'+key) c.classList.add('used'); });
+    if(fb) { fb.className = 'feedback-box good'; fb.innerHTML = '<b>' + card.dataset.fb + '</b><br><br>💡 讓身體慢慢適應溫度差異，副交感神經平穩切換，鼻黏膜才不會受到刺激！'; fb.classList.remove('hidden'); }
+    setProgress(65);
+    showToast('✅ 太棒了！這就是正確的做法！');
+    setTimeout(() => {
+      document.getElementById('w7-scenario').classList.add('hidden');
+      document.getElementById('w7-tasks').classList.remove('hidden');
+      setProgress(80);
+      setBubble('知道了晨起護鼻訣竅！\n現在勾選你願意嘗試的行為吧！', '📋');
+    }, 2200);
+  } else {
+    w7WrongCount++;
+    card.classList.add('wrong-glow');
+    if(dz) dz.classList.add('wrong-flash');
+    setTimeout(() => { if(dz) dz.classList.remove('wrong-flash'); card.classList.remove('wrong-glow'); }, 500);
+    document.getElementById('w7con-' + key).style.display = 'block';
+    w7ShowOverlay(card.dataset.scene, '❌ ' + card.dataset.text, false);
+    if(bibi) { bibi.style.animation='none'; bibi.innerText='😰'; }
+    w7SetHP(w7Hp - (w7WrongCount===1?15:18));
+    w7ShowSpeech(w7WrongCount===1?'哎呀！那樣鼻子會難受…':'HP 快沒了！快選對的！', 2200);
+    setTimeout(() => { if(bibi){bibi.style.animation='heroFloat 3s ease-in-out infinite'; bibi.innerText='🤧';} }, 1400);
+    if(fb) { fb.className = 'feedback-box bad'; fb.innerHTML = '<b>' + card.dataset.fb + '</b><br><br>👉 再試一次，找出最好的起床方式！'; fb.classList.remove('hidden'); }
+    card.classList.add('used');
+    showToast('❌ 這樣鼻子會不舒服喔，再試一次！');
+  }
 }
 
 const SCENARIO_FEEDBACK = {
   A: { good: false, title:'直接起床', msg:'鼻鼻說：直接跳起來，冷空氣一吹，鼻黏膜立刻受刺激！\n嘗試在被窩裡先做好準備再起身吧！' },
   B: { good: true,  title:'在被窩穿衣再起床', msg:'✅ 完美！在被窩裡先穿好衣服，讓身體有 2–3 分鐘緩慢適應溫度，是保護鼻黏膜的最佳方式！' },
   C: { good: false, title:'打開窗讓冷風吹', msg:'毛毛說：啊哈啊哈啊哈！這樣會讓鼻子更慘的啦！\n冷風直接接觸鼻黏膜，症狀會加重喔！' },
-  D: { good: false, title:'繼續躺著滑手機', msg:'鼻鼻說：這個… 雖然說是「在床上」，但一直用手機刺激大腦，加上之後突然起床，還是容易發作喔！' },
-};
+  D: { good: false, title:'躺著被窩裡滑手機', msg:'鼻鼻說：雖然還在被窩裡，但一直滑手機會讓大腦和自律神經更興奮；接著又突然起身、接觸冷空氣，鼻子就更容易開始打噴嚏、流鼻水、鼻塞喔！' },
+}; 
 
 function pickScenario(choice) {
+  // 如果已經選對並鎖定了，就不執行任何動作
   if(w7ScenarioPicked) return;
-  w7ScenarioPicked = true;
+
   const fb = SCENARIO_FEEDBACK[choice];
-  const keys = ['A','B','C','D'];
-  keys.forEach(k => {
-    const el = document.getElementById(`sc-${k}`);
-    el.classList.add('disabled');
-    if(k === choice) el.classList.add(fb.good ? 'correct' : 'wrong');
-    else if(k === 'B' && choice !== 'B') el.classList.add('correct'); // always reveal best
-  });
   const box = document.getElementById('w7FeedbackBox');
-  box.className = `feedback-box ${fb.good ? 'good' : 'bad'}`;
-  box.innerText = fb.msg;
-  box.classList.remove('hidden');
-  setProgress(65);
-  if(fb.good) showToast('✅ 選得好！這就是護鼻的第一步！');
-  else showToast('❌ 這樣鼻子會更難受喔！看看正確答案～');
-  setTimeout(() => {
-    document.getElementById('w7-scenario').classList.add('hidden');
-    document.getElementById('w7-tasks').classList.remove('hidden');
-    setProgress(80);
-    setBubble('知道了晨起護鼻訣竅！\n現在勾選你願意嘗試的行為吧！', '📋');
-  }, 2200);
+  const selectedEl = document.getElementById(`sc-${choice}`);
+
+  if (fb.good) {
+    // === 答對了（選 B） ===
+    w7ScenarioPicked = true; // 正式鎖定，進入過關流程
+    
+    // 讓所有按鈕變成禁用狀態，並強調正確答案
+    ['A','B','C','D'].forEach(k => {
+      const el = document.getElementById(`sc-${k}`);
+      el.classList.add('disabled');
+      if(k === 'B') el.classList.add('correct');
+    });
+
+    box.className = `feedback-box good`;
+    box.innerText = fb.msg;
+    box.classList.remove('hidden');
+    
+    setProgress(65);
+    showToast('✅ 太棒了！這就是正確的做法！');
+
+    // 只有在答對的情況下，才會執行 2.2 秒後的跳轉
+    setTimeout(() => {
+      document.getElementById('w7-scenario').classList.add('hidden');
+      document.getElementById('w7-tasks').classList.remove('hidden');
+      setProgress(80);
+      setBubble('知道了晨起護鼻訣竅！\n現在勾選你願意嘗試的行為吧！', '📋');
+    }, 2200);
+
+  } else {
+    // === 答錯了（選 A, C, D） ===
+    // 不設定 w7ScenarioPicked = true，按鈕保持可點擊（除了已經選錯的那個）
+    
+    selectedEl.classList.add('wrong'); // 把選錯的按鈕變紅
+    
+    // 顯示錯誤回饋，引導使用者重選
+    box.className = `feedback-box bad`;
+    box.innerText = fb.msg + "\n\n👉 這不是最好的方法，再試試看其他的選項吧！";
+    box.classList.remove('hidden');
+    
+    showToast('❌ 這樣鼻子會不舒服喔，再試一次！');
+  }
 }
 
 function toggleTask(id, name) {
@@ -3067,13 +4101,16 @@ function toggleTask(id, name) {
 
 function submitW7Tasks() {
   if(wTaskData.length === 0) return showToast('請至少勾選一個行為！');
-  s.w7d = true; s.exp += 50; s.lv = Math.max(s.lv, 6); s.hp = Math.min(100, s.hp + 10); save();
+  s.w7d = true; s.exp += 50; s.lv = Math.max(s.lv, 6); s.hp = Math.min(100, s.hp + 10);
+  logLevelDone('w7');
+  save();
   sendData({ w7_done:'Yes', w7_tasks: wTaskData.join(','), exp: s.exp });
   document.getElementById('w7-tasks').classList.add('hidden');
   document.getElementById('w7-done').classList.remove('hidden');
   setProgress(100); setBibi('😊');
   setBubble('Week 5 完成！晨起護鼻習慣建立中！', '🎉');
   showToast('🎉 +50 XP！Week 5 完成！');
+  showBadgeUnlock('🧥', '晨起勇士', '完成 Week 5・學會晨起護鼻好習慣');
 }
 
 // ═══════════════════════════════════════════
@@ -3138,11 +4175,12 @@ function w8TouchStart(e) { w8IsDragging=true; w8TouchStartX=e.touches[0].clientX
 function w8TouchMove(e) {
   if(!w8IsDragging) return;
   const arena = document.getElementById('w8Arena');
-  const dx = e.touches[0].clientX - w8TouchStartX;
-  const pct = (dx / arena.offsetWidth) * 100;
-  w8CharX = Math.max(8, Math.min(92, w8CharStartX + pct));
+  const rect = arena.getBoundingClientRect();
+  const pct = ((e.touches[0].clientX - rect.left) / arena.offsetWidth) * 100;
+  w8CharX = Math.max(8, Math.min(92, pct));
   moveW8Char();
 }
+
 function w8TouchEnd() { w8IsDragging = false; }
 function w8MouseDown(e) { w8IsDragging=true; w8TouchStartX=e.clientX; w8CharStartX=w8CharX; }
 function w8MouseMove(e) {
@@ -3237,6 +4275,7 @@ function updateW8UI() {
 function endW8Game() {
   w8GameActive = false;
   w8Timers.forEach(t => clearInterval(t));
+  w8Timers = [];
   // remove event listeners
   const arena = document.getElementById('w8Arena');
   arena.removeEventListener('touchstart', w8TouchStart);
@@ -3245,6 +4284,12 @@ function endW8Game() {
   arena.removeEventListener('mousedown', w8MouseDown);
   document.removeEventListener('mousemove', w8MouseMove);
   document.removeEventListener('mouseup', w8MouseUp);
+  w8IsDragging = false;
+  // 隱藏遊戲畫面
+  document.getElementById('w8Arena').classList.add('hidden');
+  document.querySelector('#w8-game .catch-header').classList.add('hidden');
+  document.querySelector('#w8-game .catch-hint').classList.add('hidden');
+
   // show game over
   const bibi = w8Score >= 80 ? '🤩' : w8Score >= 40 ? '😊' : '🤧';
   document.getElementById('w8ResultBibi').innerText = bibi;
@@ -3261,13 +4306,16 @@ function w8Continue() {
 
 function submitW8Tasks() {
   if(wTaskData.length === 0) return showToast('請至少勾選一個飲食習慣！');
-  s.w8d = true; s.exp += 50; s.lv = Math.max(s.lv, 7); s.hp = Math.min(100, s.hp + 10); save();
+  s.w8d = true; s.exp += 50; s.lv = Math.max(s.lv, 7); s.hp = Math.min(100, s.hp + 10);
+  logLevelDone('w8');
+  save();
   sendData({ w8_done:'Yes', w8_score: w8Score, w8_tasks: wTaskData.join(','), exp: s.exp });
   document.getElementById('w8-tasks').classList.add('hidden');
   document.getElementById('w8-done').classList.remove('hidden');
   setProgress(100); setBibi('😊');
   setBubble('Week 6 完成！少冰多溫，鼻子感謝你！', '🎉');
   showToast('🎉 +50 XP！Week 6 完成！');
+  showBadgeUnlock('🥗', '護鼻廚師', '完成 Week 6・掌握護鼻飲食原則');
 }
 
 // ═══════════════════════════════════════════
@@ -3350,7 +4398,14 @@ function startPracticeMode(withCamera) {
   practicePlayerX = 0.5;
   practiceBibiOffset = 0;
   practiceJumping = false;
-  practiceTarget = { x: 0.3 + Math.random()*0.4, shown: true, hit: false };
+  // 隨機選一個好習慣來練習
+const randomHabit = GOOD_BLOCKS[Math.floor(Math.random() * GOOD_BLOCKS.length)];
+practiceTarget = { 
+  x: 0.3 + Math.random()*0.4, 
+  shown: true, 
+  hit: false,
+  habit: randomHabit // 儲存這個方塊的內容
+};
 
   document.getElementById('w9Practice').classList.remove('hidden');
   renderPracDots();
@@ -3440,12 +4495,26 @@ function practiceTriggerJump() {
   const dx = Math.abs(practicePlayerX - practiceTarget.x);
   const hit = dx < 0.18;
 
-  showPracticeSuccess(hit ? '✅ 跳躍偵測成功！' : '⬆️ 偵測到跳躍！繼續練習！');
   practiceJumps++;
   renderPracDots();
   updatePracticeMsg(getPracticeMsg(practiceJumps));
 
-  if(hit) practiceTarget.hit = true;
+  if(hit) {
+    practiceTarget.hit = true;
+    const habitData = practiceTarget.habit;
+    const habitName = habitData.t;
+    
+    // 針對不同動作給予介紹
+    let intro = "";
+    if(habitName === '暖身') intro = "運動前暖身可以讓身體平穩切換狀態，減少鼻黏膜刺激！";
+    else if(habitName === '伸展') intro = "適度伸展能放鬆自律神經，幫助呼吸更順暢。";
+    else if(habitName === '擦汗') intro = "及時擦乾汗水，避免身體著涼，是護鼻的大重點！";
+    else intro = `持續做「${habitName}」，能增強鼻子的防護力喔！`;
+
+    showPracticeSuccess(`✅ 擊中【${habitName}】！\n${intro}`);
+  } else {
+    showPracticeSuccess('⬆️ 偵測到跳躍！但沒對對方塊喔，再試一次！');
+  }
 
   // Show tip progression
   if(practiceJumps===2) activateTip('ptip-move');
@@ -3453,8 +4522,15 @@ function practiceTriggerJump() {
 
   setTimeout(()=>{ practiceJumping=false; }, 500);
   setTimeout(()=>{
-    practiceJumpCooldown=false;
-    practiceTarget = { x: 0.2+Math.random()*0.6, shown:true, hit:false };
+    practiceJumpCooldown = false;
+    // 重新抓取一個好習慣資料給下一個方塊，否則畫不出來
+    const nextHabit = GOOD_BLOCKS[Math.floor(Math.random() * GOOD_BLOCKS.length)];
+    practiceTarget = { 
+      x: 0.2 + Math.random() * 0.6, 
+      shown: true, 
+      hit: false, 
+      habit: nextHabit 
+    };
   }, 900);
 
   if(practiceJumps>=PRACTICE_GOAL){
@@ -3465,58 +4541,54 @@ function practiceTriggerJump() {
 }
 
 function drawPracticeFrame(ctx, w, h) {
-  ctx.clearRect(0,0,w,h);
+  ctx.clearRect(0, 0, w, h);
 
-  // Target circle
-  if(practiceTarget.shown && !practiceTarget.hit) {
+  // 繪製練習方塊
+  if(practiceTarget.shown) {
     const tx = practiceTarget.x * w;
     const ty = h * 0.45;
-    const pulse = 0.85 + 0.15*Math.sin(Date.now()/300);
+    const b = practiceTarget.habit;
+    if(!b) return;
+
     ctx.save();
-    ctx.globalAlpha = 0.75;
-    ctx.fillStyle = '#4caf50';
-    ctx.beginPath();
-    ctx.arc(tx, ty, 36*pulse, 0, Math.PI*2);
+    // 如果已經被擊中，方塊變半透明
+    if(practiceTarget.hit) ctx.globalAlpha = 0.3;
+    
+    ctx.fillStyle = 'rgba(76,175,80,0.9)';
+    roundRect(ctx, tx - 35, ty - 28, 70, 56, 12);
     ctx.fill();
-    ctx.strokeStyle='#81c784'; ctx.lineWidth=3;
+    ctx.strokeStyle = '#81c784'; ctx.lineWidth = 3;
     ctx.stroke();
-    ctx.globalAlpha=1;
-    ctx.font='22px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText('🟢', tx, ty);
-    ctx.font='bold 10px sans-serif'; ctx.fillStyle='#fff';
-    ctx.fillText('跳這裡！', tx, ty+26);
+    
+    ctx.font = '24px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(b.e, tx, ty - 8);
+    ctx.font = 'bold 10px sans-serif'; ctx.fillStyle = '#fff';
+    ctx.fillText(b.t, tx, ty + 12);
     ctx.restore();
   }
 
-  // Bibi
-  if(practiceBibiOffset<0) practiceBibiOffset=0;
-  if(practiceJumping) practiceBibiOffset=Math.min(practiceBibiOffset+16, h*0.42);
-  else practiceBibiOffset=Math.max(practiceBibiOffset-10, 0);
+  // 繪製鼻鼻
+  if(practiceBibiOffset < 0) practiceBibiOffset = 0;
+  if(practiceJumping) practiceBibiOffset = Math.min(practiceBibiOffset + 16, h * 0.42);
+  else practiceBibiOffset = Math.max(practiceBibiOffset - 10, 0);
 
-  const px = practicePlayerX*w;
+  const px = practicePlayerX * w;
   const py = h - 50 - practiceBibiOffset;
   ctx.save();
-  ctx.globalAlpha=0.2; ctx.fillStyle='#000';
-  ctx.beginPath(); ctx.ellipse(px,h-18,26,7,0,0,Math.PI*2); ctx.fill();
+  ctx.globalAlpha = 0.2; ctx.fillStyle = '#000';
+  ctx.beginPath(); ctx.ellipse(px, h - 18, 26, 7, 0, 0, Math.PI * 2); ctx.fill();
   ctx.restore();
-  ctx.font='42px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(practiceJumping?'🤩':'🤧', px, py);
+  ctx.font = '42px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(practiceJumping ? '🤩' : '🤧', px, py);
 
-  // Progress bar
-  const progress = Math.min(practiceJumps/PRACTICE_GOAL, 1);
-  ctx.fillStyle='rgba(0,0,0,0.35)'; roundRect(ctx,10,h-22,w-20,12,6); ctx.fill();
-  ctx.fillStyle='#4caf50'; roundRect(ctx,10,h-22,(w-20)*progress,12,6); ctx.fill();
-  ctx.font='bold 9px sans-serif'; ctx.fillStyle='#fff'; ctx.textAlign='center';
-  ctx.fillText(`${practiceJumps}/${PRACTICE_GOAL} 次跳躍`, w/2, h-13);
+  // 進度條
+  const progress = Math.min(practiceJumps / PRACTICE_GOAL, 1);
+  ctx.fillStyle = 'rgba(0,0,0,0.35)'; roundRect(ctx, 10, h - 22, w - 20, 12, 6); ctx.fill();
+  ctx.fillStyle = '#4caf50'; roundRect(ctx, 10, h - 22, (w - 20) * progress, 12, 6); ctx.fill();
+  ctx.font = 'bold 9px sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+  ctx.fillText(`${practiceJumps}/${PRACTICE_GOAL} 次跳躍`, w / 2, h - 13);
 }
 
-function showPracticeSuccess(msg) {
-  const el = document.getElementById('w9PracticeSuccess');
-  el.innerText = msg;
-  el.classList.remove('hidden');
-  setTimeout(()=>el.classList.add('hidden'), 1000);
-  document.getElementById('practiceJumpCount').innerText = practiceJumps;
-}
 
 function renderPracDots() {
   const container = document.getElementById('pracDots');
@@ -3541,7 +4613,14 @@ function activateTip(id) {
   document.querySelectorAll('.prac-tip-card').forEach(c=>c.classList.remove('active'));
   document.getElementById(id)?.classList.add('active');
 }
-
+function showPracticeSuccess(msg, autoHide = true) {
+  const el = document.getElementById('w9PracticeSuccess');
+  el.innerText = msg;
+  el.classList.remove('hidden');
+  if(autoHide) {
+    setTimeout(() => el.classList.add('hidden'), 1500);
+  }
+}
 function resetPractice() {
   practiceActive = false;
   cancelAnimationFrame(practiceAnimFrame);
@@ -3570,6 +4649,7 @@ function practiceToLive() {
   }
 }
 let w9GameActive=false, w9Timers=[];
+let w9Combo=1;
 let w9FeedChoice='', w9JumpCount=0;
 let w9UseCamera=false;
 
@@ -3593,9 +4673,44 @@ let gCanvas, gCtx, gW, gH;
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 //  ENTRY POINTS
+// W9 運動習慣問卷
+let w9HabitAnswer = '';
+
+function showW9HabitSurvey() {
+  document.getElementById('w9-habit-survey').classList.remove('hidden');
+  setProgress(35);
+  setBubble('先來了解你平常的運動習慣！', '🏃');
+}
+
+function pickW9Habit(key, label, el) {
+  w9HabitAnswer = label;
+  // 標記選擇
+  document.querySelectorAll('#w9HabitChoices .w3-choice').forEach(c => {
+    c.classList.remove('picked');
+    c.style.pointerEvents = 'none'; // 選完鎖定
+  });
+  el.classList.add('picked');
+
+  // 根據選擇給毛毛的回應
+  const responses = {
+    '有': `哇，你已經有運動習慣了！超棒 💪\n\n不過你知道嗎——過敏患者運動「之後」要注意的事也很重要喔！\n\n有些人運動完反而鼻子更難受，這週我們就來看看怎麼「護鼻地運動」！`,
+    '偶爾': `偶爾運動也很好！🌱\n\n對過敏性鼻炎來說，規律的輕度運動比劇烈運動更有幫助。\n\n不需要很激烈，散步、伸展就已經足夠了。這週我們一起來挑戰看看！`,
+    '沒有': `沒關係的！🙂\n\n其實很多鼻炎患者因為運動後更不舒服，就慢慢不動了。\n\n但今天你會發現——只要「方法對」，運動其實是改善鼻炎的好幫手！準備好了嗎？`
+  };
+
+  const responseText = responses[key] || responses['偶爾'];
+  document.getElementById('w9HabitResponseText').innerText = responseText;
+  document.getElementById('w9HabitResponse').classList.remove('hidden');
+
+  // 傳送資料到後端
+  sendData({ w9_habit_baseline: label });
+  setProgress(42);
+}
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function startW9Game() {
   document.getElementById('w9-dialog').classList.add('hidden');
+  document.getElementById('w9-habit-survey').classList.add('hidden');  // ← 加這行
   document.getElementById('w9-game').classList.remove('hidden');
   document.getElementById('w9GameOver').classList.add('hidden');
   document.getElementById('w9CamSetup').classList.remove('hidden');
@@ -3673,7 +4788,16 @@ function transitionToLiveGame(withCamera, alreadyLoaded) {
 
 function setLoadText(t) {
   const el = document.getElementById('w9LoadText');
-  if(el) el.innerText = t;
+  if(el) {
+    el.innerText = t;
+    // 加入進度動畫點點
+    let dots = 0;
+    if(el._dotTimer) clearInterval(el._dotTimer);
+    el._dotTimer = setInterval(() => {
+      dots = (dots + 1) % 4;
+      el.innerText = t + '.'.repeat(dots);
+    }, 400);
+  }
 }
 
 function loadScript(src) {
@@ -3843,10 +4967,9 @@ function beginW9GameLoop() {
 
   // Spawn blocks
   const st = setInterval(() => {
-    if(!w9GameActive) { clearInterval(st); return; }
-    spawnW9CanvasBlock();
-  }, 1200);
-  w9Timers.push(st);
+  if(!w9GameActive) { clearInterval(st); return; }
+  spawnW9CanvasBlock();
+}, 2600); // 改為 2 秒才出一顆，讓你有充分時間移動身體
 
   // Render loop
   function render() {
@@ -3952,12 +5075,16 @@ function spawnW9CanvasBlock() {
   const pool = isGood ? GOOD_BLOCKS : BAD_BLOCKS;
   const data = pool[Math.floor(Math.random() * pool.length)];
   const margin = 50;
+  // 難度曲線：根據剩餘時間計算速度
+  const elapsed = 40 - w9Timer; // 已過幾秒
+  const baseSpeed = 1.2 + (elapsed / 40) * 2.0; // 從1.2慢慢增加到3.2
+  const speed = baseSpeed + Math.random() * 0.8;
   w9Blocks.push({
     id: w9BlockIdCounter++,
     x: margin + Math.random() * (gW - margin*2),
     y: -40,
     w: 68, h: 56,
-    speed: 2.2 + Math.random() * 1.4,
+    speed: speed,
     isGood, e: data.e, t: data.t,
     hit: false, missHandled: false
   });
@@ -4024,9 +5151,13 @@ function endW9Game() {
   if(w9Stream) { w9Stream.getTracks().forEach(t => t.stop()); w9Stream = null; }
   if(practiceStream) { practiceStream.getTracks().forEach(t => t.stop()); practiceStream = null; }
 
-  const go = document.getElementById('w9GameOver');
-  go.classList.remove('hidden');
-  go.style.position = 'relative';
+  // 隱藏遊戲畫面和計分板
+  document.getElementById('w9GameMain').classList.add('hidden');
+  document.querySelector('#w9-game .block-header').classList.add('hidden');
+
+const go = document.getElementById('w9GameOver');
+go.classList.remove('hidden');
+// 不需要再用 position:relative 了
 
   const bibi = w9Score >= 120 ? '🤩' : w9Score >= 60 ? '😊' : '🤧';
   document.getElementById('w9ResultBibi').innerText = bibi;
@@ -4058,13 +5189,17 @@ function pickW9Feed(ans, el) {
 
 function submitW9Tasks() {
   if(wTaskData.length === 0) return showToast('請至少勾選一個習慣！');
-  s.w9d = true; s.exp += 100; s.lv = Math.max(s.lv, 8); s.hp = Math.min(100, s.hp + 20); save();
+  s.w9d = true; s.exp += 100; s.lv = Math.max(s.lv, 8); s.hp = Math.min(100, s.hp + 20);
+  logLevelDone('w9');
+  save();
   sendData({ w9_done:'Yes', w9_score: w9Score, w9_jumps: w9JumpCount, w9_feel: w9FeedChoice, w9_tasks: wTaskData.join(','), exp: s.exp });
   document.getElementById('w9-tasks').classList.add('hidden');
   document.getElementById('w9-done').classList.remove('hidden');
   setProgress(100); setBibi('🤩');
-  setBubble('Week 7 完成！第三章全部完成！你真的太厲害了！', '🏆');
-  showToast('🏆 +100 XP！Week 7 完成！第三章全部完成！');
+  setBubble('Week 7 完成！你把任務全部都完成了！你真的太厲害了！', '🏆');
+  showToast('🏆 +100 XP！Week 7 完成任務達成！');
+  showBadgeUnlock('🏃', '運動達人', '完成 Week 7・養成護鼻運動習慣');
+  setTimeout(() => showBadgeUnlock('🏆', '完課大師', '完成全部七週課程！你是真正的護鼻大師！'), 3000);
 }
 
 // fadeUp keyframe injection
@@ -4100,12 +5235,50 @@ function showModal(icon, title, desc) {
 }
 function closeModal() { document.getElementById('modal').classList.remove('show'); }
 
+let toastTimer = null;
+
 function showToast(msg, dur=2500) {
   const t = document.getElementById('toast');
-  t.innerText = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), dur);
+  t.innerText = msg;
+  t.classList.add('show');
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    t.classList.remove('show');
+    toastTimer = null;
+  }, dur);
+}
+// ← 就加在這裡，showToast 結束後的下一行
+function showBadgeUnlock(emoji, name, desc) {
+  if(navigator.vibrate) {
+    navigator.vibrate([100, 50, 100, 50, 300]);
+  }
+  document.getElementById('bm-emoji').innerText = emoji;
+  document.getElementById('bm-name').innerText = name;
+  document.getElementById('bm-desc').innerText = desc;
+  document.getElementById('badgeModal').classList.add('show');
 }
 
+function closeBadgeModal() {
+  document.getElementById('badgeModal').classList.remove('show');
+}
+function showCertificate() {
+  if(!s.w9d) { showToast('完成全部7週課程才能領取認證！'); return; }
+  document.getElementById('cert-name').innerText = s.nick || '鼻鼻學員';
+  document.getElementById('cert-xp').innerText = s.exp;
+  document.getElementById('cert-days').innerText = getDaysSinceStart();
+  const d = new Date();
+  document.getElementById('cert-date').innerText =
+    `認證日期：${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+  document.getElementById('certModal').classList.add('show');
+}
+
+function closeCertModal() {
+  document.getElementById('certModal').classList.remove('show');
+}
+
+function showCertFull() {
+  showToast('📱 請將此畫面給研究員確認！', 4000);
+}
 function showTips() {
   const tips = [
     ['💧','多喝溫水','保持鼻黏膜濕潤，每天至少 1500ml 溫水，有效減少刺激感。'],
@@ -4134,7 +5307,7 @@ function refreshAllUI() {
 
   const dotsEl = document.getElementById('streakDots');
   const days = ['一','二','三','四','五','六','日'];
-  const todayIdx = new Date().getDay();
+  const todayIdx = (new Date().getDay() + 6) % 7;
   dotsEl.innerHTML = days.map((d,i)=>{
     const cls = i < todayIdx ? 'streak-dot done' : i===todayIdx ? 'streak-dot today' : 'streak-dot';
     return `<div class="${cls}">${i<todayIdx?'✓':d}</div>`;
@@ -4156,29 +5329,36 @@ function refreshAllUI() {
     if(st) st.innerText='⭐⭐⭐';
   }
 
-  if(s.w1d){ markDone('w1'); markActive('w2'); }
-  if(s.w2d){ markDone('w2'); markActive('w3'); }
-  if(s.w3d){ markDone('w3'); markActive('w4'); }
-  if(s.w4d){ markDone('w4'); markActive('w7'); }
-  if(s.w7d){ markDone('w7'); markActive('w8'); }
-  if(s.w8d){ markDone('w8'); markActive('w9'); }
-  if(s.w9d){ markDone('w9'); }
-  document.getElementById('map-badge').classList.add('hidden');
-  updateContinueCard();
-}
+  if (s.w1d) { markDone('w1'); markActive('w2'); }
+  if (s.w2d) { markDone('w2'); markActive('w3'); }
+  if (s.w3d) { markDone('w3'); markActive('w4'); }
+  if (s.w4d) { markDone('w4'); markActive('w7'); }
+  if (s.w7d) { markDone('w7'); markActive('w8'); }
+  if (s.w8d) { markDone('w8'); markActive('w9'); }
+  
+  if (s.w9d) {
+    document.getElementById('badge-w9').classList.add('earned');
+    const badgeAll = document.getElementById('badge-all');
+    badgeAll.classList.add('earned');
+    badgeAll.classList.remove('locked');
+  }
+
+  // 加上這行，確保首頁卡片會更新
+  updateContinueCard(); 
+} 
 
 function updateContinueCard() {
   const cases = [
-    { done:s.w9d, icon:'🏆', tag:'全部完成', title:'護鼻大師！', sub:'恭喜完成所有章節！', pct:'100%' },
-    { done:!s.w9d&&s.w8d, icon:'🏃', tag:'Week 7', title:'運動體驗', sub:'方塊互動遊戲・運動大挑戰', pct:'90%' },
-    { done:!s.w8d&&s.w7d, icon:'🥗', tag:'Week 6', title:'飲食選擇', sub:'接物遊戲・好食物大作戰', pct:'80%' },
-    { done:!s.w7d&&s.w4d, icon:'🧥', tag:'Week 5', title:'避寒行為', sub:'晨起調適・保暖決策遊戲', pct:'70%' },
-    { done:!s.w4d&&s.w3d, icon:'🌙', tag:'Week 4', title:'睡眠修復', sub:'改善睡眠・自律神經調節', pct:'56%' },
-    { done:!s.w3d&&s.w2d, icon:'✨', tag:'Week 3', title:'環境真相', sub:'溫差・濕度・花粉・室內過敏原', pct:'42%' },
-    { done:!s.w2d&&s.w1d, icon:'💆', tag:'Week 2', title:'舒緩實作', sub:'學習穴位按摩・建立好習慣', pct:'28%' },
-    { done:true, icon:'🌿', tag:'Week 1', title:'防線啟動', sub:'認識過敏・找出體質類型', pct:'5%' },
+    { done: s.w9d, icon: '🏆', tag: '全部完成', title: '護鼻大師！', sub: '恭喜完成所有章節！', pct: '100%' },
+    { done: !s.w9d && s.w8d, icon: '🏃', tag: 'Week 7', title: '運動體驗', sub: '方塊互動遊戲・運動大挑戰', pct: '90%' },
+    { done: !s.w8d && s.w7d, icon: '🥗', tag: 'Week 6', title: '飲食選擇', sub: '接物遊戲・好食物大作戰', pct: '80%' },
+    { done: !s.w7d && s.w4d, icon: '🧥', tag: 'Week 5', title: '避寒行為', sub: '晨起調適・保暖決策遊戲', pct: '70%' },
+    { done: !s.w4d && s.w3d, icon: '🌙', tag: 'Week 4', title: '睡眠修復', sub: '改善睡眠・自律神經調節', pct: '56%' },
+    { done: !s.w3d && s.w2d, icon: '✨', tag: 'Week 3', title: '環境真相', sub: '溫差・濕度・花粉・室內過敏原', pct: '42%' },
+    { done: !s.w2d && s.w1d, icon: '💆', tag: 'Week 2', title: '舒緩實作', sub: '學習穴位按摩・建立好習慣', pct: '28%' },
+    { done: true, icon: '🌿', tag: 'Week 1', title: '防線啟動', sub: '認識過敏・找出體質類型', pct: '5%' },
   ];
-  const c = cases.find(x=>x.done);
+  const c = cases.find(x => x.done);
   document.getElementById('continue-icon').innerText = c.icon;
   document.getElementById('continue-tag').innerText = c.tag;
   document.getElementById('continue-title').innerText = c.title;
@@ -4199,17 +5379,30 @@ function continueLearn() {
 
 function renderLeader() {
   const me = s.exp;
-  let icon='🥉', name='銅牌新秀';
-  if(me>=200){icon='💎'; name='鑽石大師';}
-  else if(me>=100){icon='🥇'; name='黃金勇士';}
-  else if(me>=50){icon='🥈'; name='銀牌高手';}
-  document.getElementById('leagueIcon').innerText=icon;
-  document.getElementById('leagueName').innerText=name;
-  const rows = [
-    {n:'小傑',e:me+20,a:'👦'},{n:'阿豪',e:me+8,a:'😎'},
-    {n:s.nick||'我',e:me,a:'🤧',me:true},
-    {n:'Yumi',e:Math.max(0,me-15),a:'👧'},{n:'小明',e:Math.max(0,me-25),a:'🧑'}
-  ].sort((a,b)=>b.e-a.e);
+  const doneCount = [s.w1d,s.w2d,s.w3d,s.w4d,s.w7d,s.w8d,s.w9d].filter(Boolean).length;
+  const myAvatar = doneCount>=7?'🤩':doneCount>=4?'😊':doneCount>=2?'🙂':'🤧';
+
+  // ✅ 固定 NPC 分數，玩家才能真正升排名
+  const npcs = [
+    {n:'小傑', e:480, a:'👦'},
+    {n:'阿豪', e:350, a:'😎'},
+    {n:'Yumi', e:200, a:'👧'},
+    {n:'小明', e:80,  a:'🧑'}
+  ];
+  const myRow = {n: s.nick||'我', e: me, a: myAvatar, me: true};
+  const rows = [...npcs, myRow].sort((a,b)=>b.e-a.e);
+
+ // ✅ 聯盟等級依實際排名判斷（sort 後才算）
+ const myRank = rows.findIndex(r => r.me) + 1;
+ let icon, leagueName;
+ if(myRank === 1)     { icon='🥇'; leagueName='黃金勇士'; }
+ else if(myRank === 2){ icon='🥈'; leagueName='銀牌高手'; }
+ else if(myRank === 3){ icon='🥉'; leagueName='銅牌新秀'; }
+ else                 { icon='🌱'; leagueName='新手學員'; }
+   document.getElementById('leagueIcon').innerText = icon;
+  document.getElementById('leagueName').innerText = leagueName;
+
+  // ✅ 這段是之前被刪掉的排行榜渲染
   document.getElementById('leaderList').innerHTML = rows.map((u,i)=>`
     <div class="leader-row ${u.me?'is-me':''}">
       <div class="leader-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
@@ -4217,7 +5410,7 @@ function renderLeader() {
       <div class="leader-name">${u.n}${u.me?' (我)':''}</div>
       <div class="leader-xp">${u.e} XP</div>
     </div>`).join('');
-}
+}   // ← 這個 } 是 renderLeader 的結束，之前漏掉了！
 
 function renderProfile() {
   document.getElementById('profileName').innerText = s.nick||'鼻鼻學員';
@@ -4246,13 +5439,46 @@ function resetAll() {
   localStorage.removeItem(DB); location.reload();
 }
 
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPLUnXLtLT09rM7jcjFQugfLdh90PHB1b6wjUzRBkB_BX5ni66kv__aUXagqTjP0eLKQ/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhJ2nWADXGrH1-BV5tlsz-dopYM5KF49tMivehAdrESgNeAUlFlnHLFVKNCbROjJEvFg/exec";
 function sendData(payload) {
   try { fetch(GOOGLE_SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(Object.assign({nick:s.nick,exp:s.exp},payload)),headers:{'Content-Type':'application/json'}}); } catch(e){}
 }
 
 // ── INIT ──
+initFirstPlay();
 refreshAllUI();
+renderCountdownCard();
+function renderCountdownCard() {
+  const days = getDaysSinceStart();
+  const icon = document.getElementById('cd-icon');
+  const msg  = document.getElementById('cd-msg');
+  const sub  = document.getElementById('cd-sub');
+  if(!icon||!msg||!sub) return;
+
+  if(!s.firstPlayDate) {
+    icon.innerText = '🌱';
+    msg.innerText  = '今天是第 1 天！';
+    sub.innerText  = '歡迎開始鼻鼻大冒險！';
+  } else if(!isChapterUnlocked(2)) {
+    const left = 14 - days;
+    icon.innerText = '⏳';
+    msg.innerText  = `第二章還有 ${left} 天解鎖`;
+    sub.innerText  = `目前第 ${days} 天・第一章進行中`;
+  } else if(!isChapterUnlocked(3)) {
+    const left = 28 - days;
+    icon.innerText = '⏳';
+    msg.innerText  = `第三章還有 ${left} 天解鎖`;
+    sub.innerText  = `目前第 ${days} 天・第二章進行中`;
+  } else if(!s.w9d) {
+    icon.innerText = '🔥';
+    msg.innerText  = '所有章節已解鎖！';
+    sub.innerText  = `第 ${days} 天・繼續完成任務！`;
+  } else {
+    icon.innerText = '🏆';
+    msg.innerText  = '全部完成！你是護鼻大師！';
+    sub.innerText  = `共花了 ${days} 天・太厲害了！`;
+  }
+}
 </script>
 </body>
 </html>
